@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSituationsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('situations', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('properties_id');
+            $table->string('type_of_building')->nullable();
+            $table->integer('building_repairing')->nullable();
+            $table->integer('year_of_construction')->nullable();
+            $table->integer('building_condition')->nullable();
+            $table->integer('current_fence_situation')->nullable();
+            $table->timestamps();
+            $table->foreign('properties_id')
+                  ->references('id')
+                  ->on('properties')
+                  ->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('situations');
+    }
+}

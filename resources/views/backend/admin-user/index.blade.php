@@ -102,6 +102,7 @@
                     title: 'Do you want to delete it?',
                     showCancelButton: true,
                     confirmButtonText: 'Confirm',
+                    reverseButtons: true,
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({

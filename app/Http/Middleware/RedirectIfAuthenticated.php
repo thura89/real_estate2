@@ -22,6 +22,9 @@ class RedirectIfAuthenticated
             if($guard == 'admin_user'){
                 return redirect(RouteServiceProvider::ADMIN);    
             }
+            if($guard == 'agent_user'){
+                return redirect(RouteServiceProvider::AGENT);    
+            }
             return redirect(RouteServiceProvider::HOME);
         }
 

@@ -12,9 +12,7 @@
     <meta name="msapplication-tap-highlight" content="no" />
     <title>@yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" >
-
-    {{-- Datatables --}}
-    <link href="{{ asset('backend/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     
     {{-- themes css --}}
@@ -36,11 +34,11 @@
             <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
         </div>
     </div>
+    
     <script type="text/javascript" src="{{ asset('backend/js/main.js') }}"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
-
     <!-- Laravel Javascript Validation -->
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
     {{-- Sweet alert --}}
@@ -82,6 +80,13 @@
             Toast.fire({
                 icon: 'success',
                 title: '{{session('update')}}'
+            })
+            @endif
+            
+            @if(session('delete'))
+            Toast.fire({
+                icon: 'success',
+                title: '{{session('delete')}}'
             })
             @endif
 

@@ -1,3 +1,4 @@
+
 <div class="app-sidebar sidebar-shadow">
     <div class="app-header__logo">
         <div class="logo-src"></div>
@@ -59,17 +60,13 @@
                 </li>
                 <li class="app-sidebar__heading">Properties Management</li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.property.index')}}" class="@yield('property-active')">
                         <i class="metismenu-icon pe-7s-menu"></i>
                         Properties
                     </a>
-                    <a href="#">
+                    <a href="{{ route('admin.want2buyrent.index')}}" class="@yield('want2buyrent-active')">
                         <i class="metismenu-icon pe-7s-display2"></i>
-                        Want to Buy List
-                    </a>
-                    <a href="#">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Want to Rent List
+                        Want2BuyRent
                     </a>
                 </li>
                 <li class="app-sidebar__heading">News</li>
@@ -81,16 +78,16 @@
                 </li>
                 <li class="app-sidebar__heading">Settings</li>
                 <li>
+                    <a href="{{ route('admin.profile')}}" class="@yield('profile-active')">
+                        <i class="metismenu-icon pe-7s-id"></i>
+                        Profile
+                    </a>
                     <a href="{{ route('admin.logout') }}"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">
                         <i class="metismenu-icon pe-7s-power">
                         </i>Logout
                     </a>
-
-                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
                 </li>
               
             </ul>

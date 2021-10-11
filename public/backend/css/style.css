@@ -5,6 +5,19 @@ p {
     margin-bottom: 0 !important;
 }
 
+hr {
+    background-color: #3F6AD8 !important;
+}
+
+h5 {
+    text-transform: uppercase;
+    font-size: .8rem;
+    margin: .75rem 0;
+    font-weight: bold;
+    color: #3f6ad8;
+    white-space: nowrap;
+}
+
 .app-main .app-main__inner {
     padding: 30px !important;
 }
@@ -12,6 +25,10 @@ p {
 .app-page-title {
     padding: 20px 30px 20px 30px !important;
     margin: -30px -30px 20px !important;
+}
+
+.disnone {
+    display: none;
 }
 
 
@@ -62,4 +79,87 @@ p {
 
 .action-icon a {
     padding: 5px;
+}
+
+
+/* Image Upload */
+
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    font-size: 200px !important;
+    direction: ltr;
+    cursor: pointer;
+}
+
+
+/* Fixes for IE < 8 */
+
+@media screen\9 {
+    .fileinput-button input {
+        filter: alpha(opacity=0);
+        font-size: 100%;
+        height: 100%;
+    }
+}
+
+.uploaded_image,
+.uploaded_image>img {
+    width: 95px;
+    height: 95px;
+}
+
+.uploaded_image {
+    float: left;
+    position: relative;
+    margin-left: 14px;
+}
+
+.uploaded_image>img {
+    position: absolute;
+    z-index: 0;
+    border-radius: 20px;
+}
+
+.img_rmv {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    padding: 22px;
+    width: 95px;
+    height: 95px;
+}
+
+.uploaded_image>img:hover+.img_rmv {
+    visibility: visible;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.img_rmv:hover {
+    visibility: visible;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none !important;
+}
+
+.img_rmv:focus {
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
+i.profile_img {
+    font-size: 80px;
+}
+
+.preview_image img {
+    width: 100px;
+    border: 1px solid #ddd;
 }

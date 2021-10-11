@@ -72,6 +72,12 @@ class AdminUserController extends Controller
         $adminUser = AdminUser::findOrFail($id);
         return view('backend.admin-user.edit',compact('adminUser'));
     }
+
+    public function profile(){
+        $adminUser = AdminUser::findOrFail(Auth()->user()->id);
+        return view('backend.admin-user.edit',compact('adminUser'));
+    }
+
     public function update($id, UpdateAdminUserRequest $request){
         $adminUser = AdminUser::findOrFail($id);
         $adminUser->name = $request->name;

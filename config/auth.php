@@ -46,6 +46,16 @@ return [
             'provider' => 'admin_users',
         ],
 
+        'agent_user' => [
+            'driver' => 'session',
+            'provider' => 'agent_users',
+        ],
+
+        'developer_user' => [
+            'driver' => 'session',
+            'provider' => 'developer_users',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -75,10 +85,17 @@ return [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
-
         'admin_users' => [
             'driver' => 'eloquent',
             'model' => App\AdminUser::class,
+        ],
+        'agent_users' => [
+            'driver' => 'eloquent',
+            'model' => App\AgentUser::class,
+        ],
+        'developer_users' => [
+            'driver' => 'eloquent',
+            'model' => App\DeveloperUser::class,
         ],
 
         // 'users' => [

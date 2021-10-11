@@ -14,7 +14,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="mb-3">
         <a class="btn btn-primary" href="{{ route('admin.agent-user.create') }}"> <i class="fas fa-plus-circle"></i>

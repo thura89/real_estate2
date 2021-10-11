@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class AgentUser extends Model
+class AgentUser extends Authenticatable
 {
     use Notifiable;
 
@@ -27,4 +27,25 @@ class AgentUser extends Model
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function properties()
+    {
+        return $this->hasMany('App\Property', 'agent_id', 'id');
+    }
+
+    public function agent_profile_imgpath()
+    {
+        if ($this->images) {
+            return asset(('storage/agent/' . $this->images));
+        }
+        return null;
+    }
+    public function getImagesAttribute($value)
+    {
+        if ($value) {
+            return asset('storage/agent/' . $value);
+        } else {
+            return asset('images/profile/no-image.png');
+        }
+    }
 }
