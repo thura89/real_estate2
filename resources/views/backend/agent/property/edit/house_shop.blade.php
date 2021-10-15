@@ -610,7 +610,7 @@
                                     </div>
                                     <div class="col form-group">
                                         <div class="position-relative form-check"><label class="form-check-label"><input
-                                                    type="checkbox" name="carpark " value="1" class="form-check-input"
+                                                    type="checkbox" name="carpark" value="1" class="form-check-input"
                                                     @if ($property->buildingAmenity->carpark == 1) checked @endif>Carpark</label></div>
                                         <div class="position-relative form-check"><label class="form-check-label"><input
                                                     type="checkbox" name="own_transformer" value="1"

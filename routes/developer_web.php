@@ -22,6 +22,10 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
 
+    /* New Project */
+    Route::resource('/new_project', 'NewProjectController');
+    Route::get('/new_project/datatables/ssd', 'NewProjectController@ssd');
+
     /* Agent Profile */
     Route::get('profile', 'DeveloperPageController@profile')->name('profile');
     Route::post('profile/{id}', 'DeveloperPageController@profile_update')->name('profile.update');

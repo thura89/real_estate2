@@ -33,17 +33,18 @@ class DeveloperUser extends Authenticatable
         return $this->hasMany('App\Property', 'developer_id', 'id');
     }
 
-    public function developer_profile_imgpath()
-    {
-        if ($this->images) {
-            return asset(('storage/developer/' . $this->images));
-        }
-        return null;
-    }
-    public function getProfile_imgAttribute($value)
+    public function developer_profile_imgpath($value)
     {
         if ($value) {
-            return asset('storage/developer/' . $value);
+            return asset('storage/developer/' . $value .'hello');
+        } else {
+            return asset('images/profile/no-image.png');
+        }
+    }
+    public function getProfileImgAttribute($value)
+    {
+        if ($value) {
+            return asset('storage/developer/' . $value .'hello');
         } else {
             return asset('images/profile/no-image.png');
         }

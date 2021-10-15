@@ -32,6 +32,10 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('auth:a
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
 
+    /* News */
+    Route::resource('/news', 'NewsController');
+    Route::get('/news/datatables/ssd', 'NewsController@ssd');
+
     /* House  */
     Route::post('/property/create/house_shop' , 'PropertyController@house_shop_create')->name('property.create.house_shop');
     Route::post('/property/update/house_shop' , 'PropertyController@house_shop_update')->name('property.update.house_shop');

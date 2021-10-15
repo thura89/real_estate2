@@ -71,7 +71,7 @@
                 </li>
                 <li class="app-sidebar__heading">News</li>
                 <li>
-                    <a href="forms-controls.html">
+                    <a href="{{ route('admin.news.index')}}" class="@yield('news-active')">
                         <i class="metismenu-icon pe-7s-news-paper">
                         </i>News Management
                     </a>

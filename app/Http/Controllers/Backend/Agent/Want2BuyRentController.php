@@ -33,8 +33,18 @@ class Want2BuyRentController extends Controller
         $data = WantToBuyRent::query()->with([
             'region',
             'township',
-        ])->where('agent_id',auth()->user()->id);
+        ])->where('agent_id', auth()->user()->id);
         return Datatables::of($data)
+            ->filterColumn('region', function ($query, $keyword) {
+                $query->whereHas('region', function ($qr) use ($keyword) {
+                    $qr->where('name', 'LIKE', '%' . $keyword . '%');
+                });
+            })
+            ->filterColumn('township', function ($query, $keyword) {
+                $query->whereHas('township', function ($qt) use ($keyword) {
+                    $qt->where('name', 'LIKE', '%' . $keyword . '%');
+                });
+            })
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
                 return $region->name ?? '-';
@@ -44,7 +54,7 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from .'~'. $each->budget_to  . '</div>';
+                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  .' '. config('const.currency_code')[$each->currency_code].' </div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -134,7 +144,7 @@ class Want2BuyRentController extends Controller
         /* Get Region */
         $regions = Region::get(['name', 'id']);
         $data = WantToBuyRent::findOrFail($id);
-        return view('backend.agent.want2buyrent.edit', compact('id','regions','data'));
+        return view('backend.agent.want2buyrent.edit', compact('id', 'regions', 'data'));
     }
 
     /**

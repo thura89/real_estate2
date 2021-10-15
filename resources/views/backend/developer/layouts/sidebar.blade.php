@@ -43,7 +43,7 @@
                 </li>
                 <li class="app-sidebar__heading">Properties Management</li>
                 <li>
-                    <a href="#" class="@yield('developer-active')">
+                    <a href="{{ route('developer.new_project.index')}}" class="@yield('developer-active')">
                         <i class="metismenu-icon pe-7s-portfolio"></i>
                         Developer New Properties
                     </a>

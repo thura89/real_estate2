@@ -31,7 +31,7 @@
                 @yield('content')
                 @include('backend.developer.layouts.footer')
             </div>
-            <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+            {{-- <script src="http://maps.google.com/maps/api/js?sensor=true"></script> --}}
         </div>
     </div>
     

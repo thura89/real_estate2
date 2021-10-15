@@ -74,19 +74,27 @@
                     },
                     {
                         data: 'budget',
-                        name: 'budget'
+                        name: 'budget',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'properties_type',
-                        name: 'properties_type'
+                        name: 'properties_type',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'properties_category',
-                        name: 'properties_category'
+                        name: 'properties_category',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'co_broke',
-                        name: 'co_broke'
+                        name: 'co_broke',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'created_at',

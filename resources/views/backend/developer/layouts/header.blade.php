@@ -1,7 +1,7 @@
 <div class="app-header header-shadow">
     <div class="app-header__logo">
-        {{-- <div class="logo-src"></div> --}}
-        <h1>Y</h1><h2>O<h2><h3>Y</h3><h4>O</h4><span class="badge">Real Estate</span>
+        <div class="logo-src"></div>
+        {{-- <h1>Y</h1><h2>O<h2><h3>Y</h3><h4>O</h4><span class="badge">Real Estate</span> --}}
         <div class="header__pane ml-auto">
             <div>
                 <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
@@ -44,7 +44,7 @@
                                     class="p-0 btn">
                                     @php
                                         if(Auth::guard('developer_user')->user()->images){
-                                            $profile_img = Auth::guard('developer_user')->user()->images;
+                                            $profile_img =  asset('storage/developer/'.Auth::guard('developer_user')->user()->images) ;
                                         }else{
                                             $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::guard('developer_user')->user()->company_name;
                                         }

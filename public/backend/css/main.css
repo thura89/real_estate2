@@ -10297,9 +10297,10 @@ button,
 }
 
 .app-header__logo .logo-src {
-    height: 23px;
-    width: 97px;
-    background: url(../images/logo-inverse.png)
+    height: 44px;
+    width: 199px;
+    background-position: 0rem;
+    background: url(../images/yoyo.png)
 }
 
 .app-header__menu,
@@ -10425,7 +10426,7 @@ button,
 }
 
 .app-header.header-text-light .app-header__logo .logo-src {
-    background: url(../images/logo.png)
+    background: url(../images/yoyo.png)
 }
 
 .app-header.header-text-light .app-header__mobile-menu .hamburger-inner,
@@ -10523,7 +10524,7 @@ button,
 }
 
 .app-header.header-text-dark .app-header__logo .logo-src {
-    background: url(../images/logo-inverse.png)
+    background: url(../images/yoyo.png)
 }
 
 .app-sidebar {
@@ -10802,7 +10803,7 @@ button,
 }
 
 .app-sidebar.sidebar-text-light .app-header__logo .logo-src {
-    background: url(../images/logo.png)
+    background: url(../images/yoyo.png)
 }
 
 .app-sidebar.sidebar-text-light .app-header__logo .hamburger-inner,

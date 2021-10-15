@@ -65,23 +65,31 @@
                     },
                     {
                         data: 'agent_type',
-                        name: 'agent_type'
+                        name: 'agent_type',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'ip',
-                        name: 'ip'
+                        name: 'ip',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'user_agent',
-                        name: 'user_agent'
+                        name: 'user_agent',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'login_at',
-                        name: 'login_at'
+                        name: 'login_at',
+                        sortable: false,
+                        searchable: false,
                     },
                     {
                         data: 'created_at',
-                        name: 'created_at'
+                        name: 'created_at',
                     },
                     {
                         data: 'action',

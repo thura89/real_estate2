@@ -44,6 +44,11 @@ return array(
                 2 => 'Half Finished',
                 3 => 'Fully Finished'
         ],
+        'preparation' => [
+                1 => 'Not Yet',
+                2 => 'Half Finished',
+                3 => 'Fully Finished'
+        ],
         'furnished_status' => [
                 1 => 'Not Furnished',
                 2 => 'Half Furnished',
@@ -80,6 +85,11 @@ return array(
         'industrial_type' => [
                 1 => 'Only Industrial Land',
                 2 => 'Warehouse And Building',
+        ],
+        'news_category' => [
+                1 => 'RealEstate News',
+                2 => 'RealEstate Knowledge',
+                3 => 'RealEstate FaQ',
         ],
         'floor_level' => [
                 1 => 'Penth House',
@@ -120,6 +130,15 @@ return array(
                 6 => 'Shop',
                 7 => 'Industrial Zone',
         ],
+        'developer_sale_type' => [
+                1 => 'House',
+                2 => 'Land',
+                3 => 'Apartment',
+                4 => 'Condo',
+                5 => 'Villa',
+                6 => 'Shop',
+                7 => 'Office',
+        ],
         'property_type' => [
                 1 => 'Sale',
                 2 => 'Rent',
@@ -143,6 +162,7 @@ return array(
                 0 => 'Pending'
         ],
         'p_img_path' => 'storage/property_images/',
+        'news_img_path' => 'storage/news/',
         'bath_room' => [
                 1 => '1' ,
                 2 => '2' ,

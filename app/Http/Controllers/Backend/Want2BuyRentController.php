@@ -35,8 +35,22 @@ class Want2BuyRentController extends Controller
             'township',
             'adminUser',
             'AgentUser',
-        ])->where('agent_id',auth()->user()->id);
+        ])->where('agent_id', auth()->user()->id);
         return Datatables::of($data)
+            ->filterColumn('region', function ($query, $keyword) {
+                $query->whereHas('address', function ($qa) use ($keyword) {
+                    $qa->whereHas('region', function ($qr) use ($keyword) {
+                        $qr->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            })
+            ->filterColumn('township', function ($query, $keyword) {
+                $query->whereHas('address', function ($qa) use ($keyword) {
+                    $qa->whereHas('township', function ($qt) use ($keyword) {
+                        $qt->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            })
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
                 return $region->name ?? '-';
@@ -46,7 +60,7 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from .'~'. $each->budget_to  . '</div>';
+                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  . '</div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -59,12 +73,11 @@ class Want2BuyRentController extends Controller
             })
             ->editColumn('post_by', function ($each) {
                 if ($each->admin_id) {
-                    return 'Admin - '.$each->adminUser->name ?? 'Admin(-)';
+                    return 'Admin - ' . $each->adminUser->name ?? 'Admin(-)';
                 }
                 if ($each->agent_id) {
-                    return 'Agent - '.$each->agentUser->company_name ?? 'Agent(-)';
+                    return 'Agent - ' . $each->agentUser->company_name ?? 'Agent(-)';
                 }
-                
             })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -145,7 +158,7 @@ class Want2BuyRentController extends Controller
         /* Get Region */
         $regions = Region::get(['name', 'id']);
         $data = WantToBuyRent::findOrFail($id);
-        return view('backend.want2buyrent.edit', compact('id','regions','data'));
+        return view('backend.want2buyrent.edit', compact('id', 'regions', 'data'));
     }
 
     /**
