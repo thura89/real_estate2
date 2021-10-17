@@ -10298,9 +10298,9 @@ button,
 
 .app-header__logo .logo-src {
     height: 44px;
-    width: 199px;
+    width: 160px;
     background-position: 0rem;
-    background: url(../images/yoyo.png)
+    background: url(../images/real_estate_logo.png)
 }
 
 .app-header__menu,
@@ -10426,7 +10426,7 @@ button,
 }
 
 .app-header.header-text-light .app-header__logo .logo-src {
-    background: url(../images/yoyo.png)
+    background: url(../images/real_estate_logo.png)
 }
 
 .app-header.header-text-light .app-header__mobile-menu .hamburger-inner,
@@ -10524,7 +10524,7 @@ button,
 }
 
 .app-header.header-text-dark .app-header__logo .logo-src {
-    background: url(../images/yoyo.png)
+    background: url(../images/real_estate_logo.png)
 }
 
 .app-sidebar {
@@ -10803,7 +10803,7 @@ button,
 }
 
 .app-sidebar.sidebar-text-light .app-header__logo .logo-src {
-    background: url(../images/yoyo.png)
+    background: url(../images/real_estate_logo.png)
 }
 
 .app-sidebar.sidebar-text-light .app-header__logo .hamburger-inner,

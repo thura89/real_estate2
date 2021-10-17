@@ -42,6 +42,6 @@ class DeveloperPageController extends Controller
         $developerUser->images = $profile_img_name;
         $developerUser->password = $request->password ? Hash::make($request->password) : $developerUser->password;
         $developerUser->update();
-        return redirect()->route('developer.dashboard')->with('update', 'Successfully Updated');
+        return redirect()->route('developer.property.index')->with('update', 'Successfully Updated');
     }
 }

@@ -28,7 +28,7 @@ class UpdateAgentUserRequest extends FormRequest
             'email' => 'required|email|unique:admin_users,email',
             'phone' => 'required|min:6|max:11|unique:admin_users,phone',
             'address' => 'required',
-            'images' => 'required',
+            // 'images' => 'required',
         ];
     }
 }

@@ -53,6 +53,17 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <div class="profile_img">
+                                <label for="profile_img">Profile Photo</label>
+                                <input type="file" name="images" id="profile_img" class="form-control"/>
+                            </div>
+                            <div class="preview_image mt-2">
+                                @if ($agentUser->images)
+                                    <img src="{{ $agentUser->images}}" alt="">
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" name="password" class="form-control">
                         </div>
@@ -70,7 +81,15 @@
     {!! JsValidator::formRequest('App\Http\Requests\UpdateAgentUserRequest', '#update') !!}
     <script>
         $(document).ready(function() {
+            $('#profile_img').on('change', function() {
+                $('.preview_image').html('');
+                var f_length = document.getElementById('profile_img').files.length;
 
+                for (let index = 0; index < f_length; index++) {
+                    $('.preview_image').append(
+                        `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+                }
+            });
         });
     </script>
 

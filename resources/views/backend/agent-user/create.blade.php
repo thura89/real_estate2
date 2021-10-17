@@ -20,7 +20,7 @@
         <div class="card">
             <div class="card-body">
                 @include('backend.layouts.flash')
-                <form action="{{ route('admin.agent-user.store')}}" method="POST" id="create">
+                <form action="{{ route('admin.agent-user.store')}}" method="POST" id="create" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="company_name">Company Name</label>
@@ -53,6 +53,15 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <div class="profile_img">
+                            <label for="profile_img">Profile Photo</label>
+                            <input type="file" name="images" id="profile_img" class="form-control"/>
+                        </div>
+                        <div class="preview_image mt-2">
+                            
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password" class="form-control">
                     </div>
@@ -68,10 +77,18 @@
 @endsection
 @section('script')
 {!! JsValidator::formRequest('App\Http\Requests\CreateAgentUserRequest','#create') !!}
-    <script>
-        $(document).ready(function() {
-           
+<script>
+    $(document).ready(function() {
+        $('#profile_img').on('change', function() {
+            $('.preview_image').html('');
+            var f_length = document.getElementById('profile_img').files.length;
+
+            for (let index = 0; index < f_length; index++) {
+                $('.preview_image').append(
+                    `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+            }
         });
-    </script>
+    });
+</script>
 
 @endsection

@@ -36,7 +36,7 @@
             <ul class="vertical-nav-menu">
                 <li class="app-sidebar__heading">Dashboards</li>
                 <li>
-                    <a href="{{ route('agent.dashboard')}}" class="@yield('dashboard-active')">
+                    <a href="#" class="@yield('dashboard-active')">
                         <i class="metismenu-icon pe-7s-rocket"></i>
                         Dashboards
                     </a>

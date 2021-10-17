@@ -42,6 +42,6 @@ class AgentPageController extends Controller
         $agentUser->images = $profile_img_name;
         $agentUser->password = $request->password ? Hash::make($request->password) : $agentUser->password;
         $agentUser->update();
-        return redirect()->route('agent.dashboard')->with('update', 'Successfully Updated');
+        return redirect()->route('agent.property.index')->with('update', 'Successfully Updated');
     }
 }

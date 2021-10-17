@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateAgentUserRequest;
 use App\Http\Requests\UpdateAgentUserRequest;
 
@@ -65,6 +66,12 @@ class AgentUserController extends Controller
         $agentUser->agent_type = $request->agent_type;
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;
+        if ($request->hasFile('images')) {
+            $profile_img = $request->file('images');
+            $profile_img_name = uniqid().'_'.time().'.'.$profile_img->extension();
+            Storage::disk('public')->put('/agent/'.$profile_img_name, file_get_contents($profile_img));
+        }
+        $agentUser->images = $profile_img_name;
         $agentUser->password = Hash::make($request->password);
         $agentUser->save();
         return redirect()->route('admin.agent-user.index')->with('create', 'Successfully Created');
@@ -81,6 +88,16 @@ class AgentUserController extends Controller
         $agentUser->agent_type = $request->agent_type;
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;
+        $profile_img_name = $agentUser->images;
+        
+        if ($request->hasFile('images')) {
+            Storage::disk('public')->delete('/agent/'.$agentUser->images);
+
+            $profile_img = $request->file('images');
+            $profile_img_name = uniqid().'_'.time().'.'.$profile_img->extension();
+            Storage::disk('public')->put('/agent/'.$profile_img_name, file_get_contents($profile_img));
+        }
+        $agentUser->images = $profile_img_name;
         $agentUser->password = $request->password ? Hash::make($request->password) : $agentUser->password;
         $agentUser->update();
         return redirect()->route('admin.agent-user.index')->with('update', 'Successfully Updated');
