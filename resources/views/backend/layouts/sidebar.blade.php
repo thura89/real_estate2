@@ -52,6 +52,10 @@
                         <i class="metismenu-icon pe-7s-id"></i>
                         Agent Management
                     </a>
+                    <a href="{{ route('admin.developer-user.index')}}" class="@yield('developer-user-active')">
+                        <i class="metismenu-icon pe-7s-id"></i>
+                        Developer Management
+                    </a>
                     <a href="#">
                         <i class="metismenu-icon pe-7s-user"></i>
                         User Management
@@ -63,6 +67,10 @@
                     <a href="{{ route('admin.property.index')}}" class="@yield('property-active')">
                         <i class="metismenu-icon pe-7s-menu"></i>
                         Properties
+                    </a>
+                    <a href="{{ route('admin.new_project.index')}}" class="@yield('newproject-active')">
+                        <i class="metismenu-icon pe-7s-portfolio"></i>
+                        Developer New Properties
                     </a>
                     <a href="{{ route('admin.want2buyrent.index')}}" class="@yield('want2buyrent-active')">
                         <i class="metismenu-icon pe-7s-display2"></i>

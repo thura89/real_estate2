@@ -18,6 +18,10 @@ h5 {
     white-space: nowrap;
 }
 
+textarea {
+    height: 150px !important;
+}
+
 .app-main .app-main__inner {
     padding: 30px !important;
 }
@@ -68,6 +72,36 @@ h5 {
 
 .login-wrap .icon span {
     color: #fff;
+}
+
+.upload-img {
+    padding: .5rem;
+    line-height: 0;
+}
+
+.upimg {
+    display: inline-block;
+    width: calc(16.6666667% - 1rem);
+    padding-bottom: calc(16.6666667% - 1rem);
+    height: 0;
+    position: relative;
+    margin: .5rem;
+    /* background: #f3f3f3; */
+    border: 1px solid rgba(26, 54, 126, 0.125);
+    cursor: pointer;
+}
+
+.upimg:hover {
+    background: #f3f3f3;
+}
+
+.upimg img {
+    top: 25%;
+    left: 25%;
+    width: 51%;
+    height: 50%;
+    object-fit: cover;
+    position: absolute;
 }
 
 
@@ -157,6 +191,16 @@ h5 {
 
 i.profile_img {
     font-size: 80px;
+}
+
+.preview_profile_photo img {
+    width: 100px;
+    border: 1px solid #ddd;
+}
+
+.preview_cover_photo img {
+    width: 120px;
+    border: 1px solid #ddd;
 }
 
 .preview_image img {

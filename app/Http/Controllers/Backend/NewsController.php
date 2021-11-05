@@ -32,7 +32,7 @@ class NewsController extends Controller
     public function ssd()
     {
         $data = News::query()->with([
-            'adminUser'
+            'user'
         ]);
         return Datatables::of($data)
             ->editColumn('category', function ($each) {
@@ -46,7 +46,10 @@ class NewsController extends Controller
             })
             ->editColumn('post_by', function ($each) {
                 if ($each->post_by) {
-                    return 'Admin - ' . $each->adminUser->name ?? 'Admin(-)';
+                    
+                        return $each->user->name ? $each->user->name .' (Admin'.'-'.config('const.role_level')[$each->user->user_type].')' : 'Admin(-)';
+                    
+                    // return $each->user->name .' (Admin)' ?? 'Admin(-)';
                 }
             })
             ->editColumn('images', function ($each) {

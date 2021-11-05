@@ -43,7 +43,7 @@ class AgentUser extends Authenticatable
     public function getImagesAttribute($value)
     {
         if ($value) {
-            return asset('storage/agent/' . $value);
+            return asset('/storage/agent/' . $value);
         } else {
             return asset('images/profile/no-image.png');
         }

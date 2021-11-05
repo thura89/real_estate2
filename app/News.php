@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    /* Admin User */
-    public function adminUser()
+    /* User */
+    public function user()
     {
-        return $this->belongsTo(AdminUser::class, 'post_by', 'id');
+        return $this->belongsTo(User::class, 'post_by', 'id');
     }
     // public function getImagesAttribute($value)
     // {

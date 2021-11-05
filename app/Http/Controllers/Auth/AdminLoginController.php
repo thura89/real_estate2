@@ -47,7 +47,32 @@ class AdminLoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.admin_login');
+        if (Auth::check()) {
+            if (auth()->user()->user_type == 1) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Staff */
+            if (auth()->user()->user_type == 2) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Editor */
+            if (auth()->user()->user_type == 3) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Agent */
+            if (auth()->user()->user_type == 4) {
+                return redirect()->route('agent.property.index');
+            }
+            /* Developer */
+            if (auth()->user()->user_type == 5) {
+                return redirect()->route('developer.property.index');
+            }
+            /* User */
+            if (auth()->user()->user_type == 6) {
+                return redirect()->route('user.home');
+            }
+        }
+        return view('auth.common_login');
     }
 
     /**

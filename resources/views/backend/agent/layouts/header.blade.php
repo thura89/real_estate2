@@ -43,10 +43,10 @@
                                 <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     class="p-0 btn">
                                     @php
-                                        if(Auth::guard('agent_user')->user()->images){
-                                            $profile_img = Auth::guard('agent_user')->user()->images;
+                                        if(Auth::user()->images){
+                                            $profile_img = Auth::user()->images;
                                         }else{
-                                            $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::guard('agent_user')->user()->company_name;
+                                            $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::user()->name;
                                         }
                                     @endphp
                                     <img width="42" class="rounded-circle" src="{{ $profile_img }}" alt="">
@@ -72,10 +72,10 @@
                         </div>
                         <div class="widget-content-left  ml-3 header-user-info">
                             <div class="widget-heading">
-                                {{ Auth::guard('agent_user')->user()->company_name }}
+                                {{ Auth::user()->name .'-(Agent - '.Auth::user()->company_name .')'  }}
                             </div>
                             <div class="widget-subheading">
-                                Ph : {{ Auth::guard('agent_user')->user()->phone }}
+                                Ph : {{ Auth::user()->phone }}
                             </div>
                         </div>
                         <div class="widget-content-right header-user-info ml-3">

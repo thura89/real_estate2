@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\AgentUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Socialite;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -48,7 +50,32 @@ class AgentLoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.agent_login');
+        if (Auth::check()) {
+            if (auth()->user()->user_type == 1) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Staff */
+            if (auth()->user()->user_type == 2) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Editor */
+            if (auth()->user()->user_type == 3) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Agent */
+            if (auth()->user()->user_type == 4) {
+                return redirect()->route('agent.property.index');
+            }
+            /* Developer */
+            if (auth()->user()->user_type == 5) {
+                return redirect()->route('developer.property.index');
+            }
+            /* User */
+            if (auth()->user()->user_type == 6) {
+                return redirect()->route('user.home');
+            }
+        }
+        return view('auth.common_login');
     }
 
     /**
@@ -76,6 +103,62 @@ class AgentLoginController extends Controller
         $user->update();
         return redirect($this->redirectTo);
     }
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    /* Socialite */
+    public function redirectToFacebook() {
+        return Socialite::driver('facebook')->redirect();
+    }
+    public function handleFacebookCallback() {
+        try {
+            $user = Socialite::driver('facebook')->user();
+            $finduser = User::where('facebook_id', $user->id)->first();
+            if ($finduser) {
+                Auth::login($finduser);
+                return redirect('/home');
+            } else {
+                $newUser = User::create(['name' => $user->name, 'email' => $user->email, 'facebook_id' => $user->id]);
+                Auth::login($newUser);
+                return redirect()->back();
+            }
+        }
+        catch(Exception $e) {
+            return redirect('auth/facebook');
+        }
+    }
+
 
     /* Logout */
     public function logout(Request $request)
@@ -92,6 +175,6 @@ class AgentLoginController extends Controller
 
         return $request->wantsJson()
             ? new JsonResponse([], 204)
-            : redirect('/agent/login');
+            : redirect('/');
     }
 }

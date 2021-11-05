@@ -43,10 +43,10 @@
                                 <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     class="p-0 btn">
                                     @php
-                                        if(Auth::guard('developer_user')->user()->images){
-                                            $profile_img =  asset('storage/developer/'.Auth::guard('developer_user')->user()->images) ;
+                                        if(Auth::user()->images){
+                                            $profile_img =  asset('storage/developer/'.Auth::user()->images) ;
                                         }else{
-                                            $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::guard('developer_user')->user()->company_name;
+                                            $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::user()->name;
                                         }
                                     @endphp
                                     <img width="42" class="rounded-circle" src="{{ $profile_img }}" alt="">
@@ -72,10 +72,10 @@
                         </div>
                         <div class="widget-content-left  ml-3 header-user-info">
                             <div class="widget-heading">
-                                {{ Auth::guard('developer_user')->user()->company_name }}
+                                {{ Auth::user()->name .'-(Dev - '.Auth::user()->company_name .')'  }}
                             </div>
                             <div class="widget-subheading">
-                                Ph : {{ Auth::guard('developer_user')->user()->phone }}
+                                Ph : {{ Auth::user()->phone }}
                             </div>
                         </div>
                         <div class="widget-content-right header-user-info ml-3">

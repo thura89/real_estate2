@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateAgentUserRequest extends FormRequest
@@ -23,12 +24,20 @@ class UpdateAgentUserRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->route('agent_user');
         return [
+            'name' => 'required',
             'company_name' => 'required',
-            'email' => 'required|email|unique:admin_users,email',
-            'phone' => 'required|min:6|max:11|unique:admin_users,phone',
+            'email' => [
+                'required','email',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
+            'phone' => [
+                'required',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
+            'agent_type' => 'required',
             'address' => 'required',
-            // 'images' => 'required',
         ];
     }
 }

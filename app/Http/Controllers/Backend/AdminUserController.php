@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\User;
 use App\AdminUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreateAdminUserRequest;
 use App\Http\Requests\UpdateAdminUserRequest;
 
@@ -21,10 +23,11 @@ class AdminUserController extends Controller
     public function ssd()
     {
     
-        $data = AdminUser::query();    
+        $data = User::query()->whereIn('user_type',[1,2,3]);//Admin role= [1,2,3]    
         return Datatables::of($data)
-        ->editColumn('role_id',function($each){
-            return config('const.role_level')[$each->role_id];
+        
+        ->editColumn('user_type',function($each){
+            return config('const.role_level')[$each->user_type];
         })
         ->editColumn('user_agent' ,function($each){
             if ($each->user_agent){
@@ -59,36 +62,70 @@ class AdminUserController extends Controller
         return view('backend.admin-user.create');
     }
     public function store(CreateAdminUserRequest $request){
-        $adminUser = new AdminUser();
+        $adminUser = new User();
+        if ($request->hasFile('profile_photo')) {
+            $profile_img = $request->file('profile_photo');
+            $profile_img_name = uniqid().'_'.time().'.'.$profile_img->extension();
+            Storage::disk('public')->put('/profile/'.$profile_img_name, file_get_contents($profile_img));
+        }
+        if ($request->hasFile('cover_photo')) {
+            $cover_img = $request->file('cover_photo');
+            $cover_img_name = uniqid().'_'.time().'.'.$cover_img->extension();
+            Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
+        }
         $adminUser->name = $request->name;
         $adminUser->email = $request->email;
         $adminUser->phone = $request->phone;
-        $adminUser->role_id = $request->role_id;
+        $adminUser->description = $request->description;
+        $adminUser->address = $request->address;
+        $adminUser->user_type = $request->user_type;
+        $adminUser->profile_photo = $profile_img_name;
+        $adminUser->cover_photo = $cover_img_name;
         $adminUser->password = Hash::make($request->password);
         $adminUser->save();
         return redirect()->route('admin.admin-user.index')->with('create', 'Successfully Created');
     }
     public function edit($id){
-        $adminUser = AdminUser::findOrFail($id);
+        $adminUser = User::findOrFail($id);
         return view('backend.admin-user.edit',compact('adminUser'));
     }
 
     public function profile(){
-        $adminUser = AdminUser::findOrFail(Auth()->user()->id);
+        $adminUser = User::findOrFail(Auth()->user()->id);
         return view('backend.admin-user.edit',compact('adminUser'));
     }
 
     public function update($id, UpdateAdminUserRequest $request){
-        $adminUser = AdminUser::findOrFail($id);
+        // return $request->all();
+        $adminUser = User::findOrFail($id);
+
+        if ($request->hasFile('profile_photo')) {
+            Storage::disk('public')->delete('/profile/'.$adminUser->profile_photo);
+            $profile_img = $request->file('profile_photo');
+            $profile_img_name = uniqid().'_'.time().'.'.$profile_img->extension();
+            Storage::disk('public')->put('/profile/'.$profile_img_name, file_get_contents($profile_img));
+            $adminUser->profile_photo = $profile_img_name;
+        }
+        if ($request->hasFile('cover_photo')) {
+            Storage::disk('public')->delete('/cover/'.$adminUser->cover_photo);
+            $cover_img = $request->file('cover_photo');
+            $cover_img_name = uniqid().'_'.time().'.'.$cover_img->extension();
+            Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
+            $adminUser->cover_photo = $cover_img_name;
+        }
         $adminUser->name = $request->name;
         $adminUser->email = $request->email;
         $adminUser->phone = $request->phone;
+        $adminUser->description = $request->description;
+        $adminUser->address = $request->address;
+        $adminUser->user_type = $request->user_type;
         $adminUser->password = $request->password ? Hash::make($request->password) : $adminUser->password;
         $adminUser->update();
+
         return redirect()->route('admin.admin-user.index')->with('update', 'Successfully Updated');
     }
     public function destroy($id){
-        $adminUser = AdminUser::findOrFail($id);
+        $adminUser = User::findOrFail($id);
         $adminUser->delete();
         return 'success';
     }

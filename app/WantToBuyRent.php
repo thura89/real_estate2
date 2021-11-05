@@ -24,6 +24,11 @@ class WantToBuyRent extends Model
     {
         return $this->belongsTo(AdminUser::class, 'admin_id', 'id');
     }
+    /* User */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function setTerms_ConditionAttribute($value)
     {

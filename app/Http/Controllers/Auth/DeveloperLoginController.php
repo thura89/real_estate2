@@ -48,7 +48,32 @@ class DeveloperLoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.developer_login');
+        if (Auth::check()) {
+            if (auth()->user()->user_type == 1) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Staff */
+            if (auth()->user()->user_type == 2) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Admin Editor */
+            if (auth()->user()->user_type == 3) {
+                return redirect()->route('admin.property.index');
+            }
+            /* Agent */
+            if (auth()->user()->user_type == 4) {
+                return redirect()->route('agent.property.index');
+            }
+            /* Developer */
+            if (auth()->user()->user_type == 5) {
+                return redirect()->route('developer.property.index');
+            }
+            /* User */
+            if (auth()->user()->user_type == 6) {
+                return redirect()->route('user.home');
+            }
+        }
+        return view('auth.common_login');
     }
 
     /**
@@ -77,6 +102,32 @@ class DeveloperLoginController extends Controller
         return redirect($this->redirectTo);
     }
 
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+    
     /* Logout */
     public function logout(Request $request)
     {
@@ -92,6 +143,6 @@ class DeveloperLoginController extends Controller
 
         return $request->wantsJson()
             ? new JsonResponse([], 204)
-            : redirect('/developer/login');
+            : redirect('/');
     }
 }

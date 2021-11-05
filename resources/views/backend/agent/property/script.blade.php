@@ -5,6 +5,12 @@
 
         $('.input-images-1').imageUploader();
 
+        $("input[type='file']").on('change',function(){
+            $( "div" ).remove( ".upimg" );
+            var img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";
+            $(img).appendTo('.uploaded');
+        });
+        
         let preloaded = [{
                 id: 1,
                 src: 'https://picsum.photos/500/500?random=1'

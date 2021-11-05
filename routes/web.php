@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FbController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'Auth\AdminLoginController@showLoginForm');
-
 /* User */
 Auth::routes();
 
+
+Route::get('/', 'CommonAuthController@showLoginForm');
+
+/* Social Lite */
+
+Route::get('auth/facebook', 'CommonAuthController@redirectToFacebook');
+Route::get('auth/facebook/callback', 'CommonAuthController@facebookSignin');
+
+/* Multi Auth with Single Page */
+Route::get('/common/login', 'CommonAuthController@showLoginForm');
+Route::post('/common/login', 'CommonAuthController@login')->name('common.login');
 /* Admin */
 Route::get('/admin/login', 'Auth\AdminLoginController@showLoginForm');
 Route::post('/admin/login', 'Auth\AdminLoginController@login')->name('admin.login');

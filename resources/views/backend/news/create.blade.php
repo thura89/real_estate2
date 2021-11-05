@@ -48,9 +48,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="profile_img">
-                                <label for="profile_img">Profile Photo</label>
-                                <input type="file" name="images" id="profile_img" class="form-control"/>
+                            <div class="image">
+                                <label for="image">Photo</label>
+                                <input type="file" name="images" id="image" class="form-control"/>
                             </div>
                             <div class="preview_image mt-2">
                                 
@@ -85,9 +85,9 @@
     @include('backend.property.script')
     <script>
         $(document).ready(function() {
-            $('#profile_img').on('change', function() {
+            $('#image').on('change', function() {
                 $('.preview_image').html('');
-                var f_length = document.getElementById('profile_img').files.length;
+                var f_length = document.getElementById('image').files.length;
 
                 for (let index = 0; index < f_length; index++) {
                     $('.preview_image').append(

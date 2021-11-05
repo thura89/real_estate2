@@ -34,7 +34,6 @@
         </span>
     </div>
     <div class="app-header__content">
-        
         <div class="app-header-right">
             <div class="header-btn-lg pr-0">
                 <div class="widget-content p-0">
@@ -43,8 +42,14 @@
                             <div class="btn-group">
                                 <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     class="p-0 btn">
-                                    <img width="42" class="rounded-circle" src="https://ui-avatars.com/api/?background=0D8ABC&color=fff&name={{ Auth::guard('admin_user')->user()->name }}"
-                                        alt="">
+                                    @php
+                                        if(Auth::user()->profile_photo){
+                                            $profile_img = Auth::user()->profile_photo;
+                                        }else{
+                                            $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::user()->name;
+                                        }
+                                    @endphp
+                                    <img width="42" class="rounded-circle" src="{{ $profile_img }}" alt="">
                                     <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                 </a>
                                 <div tabindex="-1" role="menu" aria-hidden="true"
@@ -67,10 +72,10 @@
                         </div>
                         <div class="widget-content-left  ml-3 header-user-info">
                             <div class="widget-heading">
-                                {{ Auth::guard('admin_user')->user()->name }}
+                                {{ Auth::user()->name }}
                             </div>
                             <div class="widget-subheading">
-                                Ph : {{ Auth::guard('admin_user')->user()->phone }}
+                                Ph : {{ Auth::user()->phone }}
                             </div>
                         </div>
                         <div class="widget-content-right header-user-info ml-3">

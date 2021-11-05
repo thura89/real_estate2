@@ -148,7 +148,6 @@
 
                 // Set the identifier
                 $container.attr('data-index', id);
-
             }
 
             // Stop propagation on click

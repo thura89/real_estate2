@@ -32,7 +32,6 @@ class ApartCondoCreateRequest extends FormRequest
             'type_of_street' => 'required',
             'ward' => 'required',
             'building_name' => 'required',
-            'building_type' => 'required_if:property_category,==,3',
 
             /* AreaSize */
             'measurement' => 'required',

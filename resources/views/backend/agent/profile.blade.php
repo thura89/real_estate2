@@ -24,35 +24,64 @@
                         enctype="multipart/form-data">
                         @csrf
                         @method('POST')
-                        <div class="form-group">
-                            <label for="company_name">Company Name</label>
-                            <input type="text" name="company_name" class="form-control"
-                                value="{{ $agentUser->company_name }}">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="company_name">Company Name</label>
+                                <input type="text" name="company_name" class="form-control"
+                                    value="{{ $agentUser->company_name }}">
+                            </div>
+                            <div class="col-md-6 col form-group">
+                                <label for="name">Name</label>
+                                <input type="name" name="name" class="form-control" value="{{ $agentUser->name }}">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ $agentUser->email }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="number" name="phone" class="form-control" value="{{ $agentUser->phone }}">
+                        <div class="row">
+                            <div class="col-md-4 col form-group">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ $agentUser->email }}">
+                            </div>
+                            <div class="col-md-4 col form-group">
+                                <label for="phone">Phone</label>
+                                <input type="number" name="phone" class="form-control" value="{{ $agentUser->phone }}">
+                            </div>
+                            <div class="col-md-4 col form-group">
+                                <label for="agent_type">Agent Type</label>
+                                <select name="agent_type" class="form-control">
+                                    <option value="">Select</option>
+                                    @foreach (config('const.agent_type') as $key => $agent)
+                                        <option value="{{ $key }}" @if ($agentUser->agent_type == $key) selected @endif>{{ $agent }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <input type="text" name="address" class="form-control" value="{{ $agentUser->address }}">
+                            <textarea name="address" class="form-control" cols="30" rows="10">{{ $agentUser->address}}</textarea>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" class="form-control">{{ $agentUser->address }}</textarea>
+                            <textarea name="description" class="form-control" id="" cols="30" rows="10">{{ $agentUser->description}}</textarea>
                         </div>
                         <div class="form-group">
-                            <div class="profile_img">
-                                <label for="profile_img">Profile Photo</label>
-                                <input type="file" name="images" id="profile_img" class="form-control"/>
+                            <div class="profile_photo">
+                                <label for="profile_photo">Profile Photo</label>
+                                <input type="file" name="profile_photo" id="profile_photo" class="form-control"/>
                             </div>
-                            <div class="preview_image mt-2">
-                                @if ($agentUser->images)
-                                    <img src="{{ $agentUser->images}}" alt="">
+                            <div class="preview_profile_photo mt-2">
+                                @if ($agentUser->profile_photo)
+                                        <img src="{{ $agentUser->profile_photo}}" alt="">
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="cover_photo">
+                                <label for="cover_photo">Cover Photo</label>
+                                <input type="file" name="cover_photo" id="cover_photo" class="form-control"/>
+                            </div>
+                            <div class="preview_cover_photo mt-2">
+                                @if ($agentUser->cover_photo)
+                                        <img src="{{ $agentUser->cover_photo}}" alt="">
                                 @endif
                             </div>
                         </div>
@@ -71,15 +100,24 @@
     </div>
 @endsection
 @section('script')
-    {!! JsValidator::formRequest('App\Http\Requests\UpdateAgentUserRequest', '#update') !!}
+    {!! JsValidator::formRequest('App\Http\Requests\AgentProfileUpdateRequest', '#update') !!}
     <script>
         $(document).ready(function() {
-            $('#profile_img').on('change', function() {
-                $('.preview_image').html('');
-                var f_length = document.getElementById('profile_img').files.length;
-
+            $('#cover_photo').on('change', function() {
+                $('.preview_cover_photo').html('');
+                var f_length = document.getElementById('cover_photo').files.length;
+    
                 for (let index = 0; index < f_length; index++) {
-                    $('.preview_image').append(
+                    $('.preview_cover_photo').append(
+                        `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+                }
+            });
+            $('#profile_photo').on('change', function() {
+                $('.preview_profile_photo').html('');
+                var f_length = document.getElementById('profile_photo').files.length;
+    
+                for (let index = 0; index < f_length; index++) {
+                    $('.preview_profile_photo').append(
                         `<img src="${URL.createObjectURL(event.target.files[index])}">`);
                 }
             });

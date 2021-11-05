@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateAdminUserRequest extends FormRequest
@@ -26,9 +28,16 @@ class UpdateAdminUserRequest extends FormRequest
         $id = $this->route('admin_user');
         return [
             'name' => 'required',
-            'role_id' => 'required',
-            'email' => 'required|email|unique:admin_users,email,' .$id,
-            'phone' => 'required|unique:admin_users,phone,' .$id,
+            'user_type' => 'required',
+            'email' => [
+                'required','email',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
+            'phone' => [
+                'required',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
+            'address' => 'required',
         ];
     }
 }

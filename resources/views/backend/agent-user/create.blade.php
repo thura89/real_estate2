@@ -22,42 +22,58 @@
                 @include('backend.layouts.flash')
                 <form action="{{ route('admin.agent-user.store')}}" method="POST" id="create" enctype="multipart/form-data">
                     @csrf
-                    <div class="form-group">
-                        <label for="company_name">Company Name</label>
-                        <input type="text" name="company_name" class="form-control">
+                    <div class="row">
+                        <div class="col-md-6 col form-group">
+                            <label for="company_name">Company Name</label>
+                            <input type="text" name="company_name" class="form-control">
+                        </div>
+                        <div class="col-md-6 col form-group">
+                            <label for="name">Name</label>
+                            <input type="name" name="name" class="form-control">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" name="email" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="number" name="phone" class="form-control">
+                    <div class="row">
+                        <div class="col-md-4 col form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+                        <div class="col-md-4 col form-group">
+                            <label for="phone">Phone</label>
+                            <input type="number" name="phone" class="form-control">
+                        </div>
+                        <div class="col-md-4 col form-group">
+                            <label for="agent_type">Agent Type</label>
+                            <select name="agent_type" class="form-control">
+                                <option value="">Select</option>
+                                @foreach (config('const.agent_type') as $key => $agent)
+                                    <option value="{{$key}}">{{$agent}}</option>    
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" name="address" class="form-control">
+                        <textarea name="address" class="form-control" cols="30" rows="10"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" class="form-control"></textarea>
-                        
+                        <textarea name="description" class="form-control" id="" cols="30" rows="10"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="agent_type">Agent Type</label>
-                        <select name="agent_type" class="form-control">
-                            @foreach (config('const.agent_type') as $key => $agent)
-                                <option value="{{$key}}">{{$agent}}</option>    
-                            @endforeach
-                            
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div class="profile_img">
-                            <label for="profile_img">Profile Photo</label>
-                            <input type="file" name="images" id="profile_img" class="form-control"/>
+                        <div class="profile_photo">
+                            <label for="profile_photo">Profile Photo</label>
+                            <input type="file" name="profile_photo" id="profile_photo" class="form-control"/>
                         </div>
-                        <div class="preview_image mt-2">
+                        <div class="preview_profile_photo mt-2">
+                            
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="cover_photo">
+                            <label for="cover_photo">Cover Photo</label>
+                            <input type="file" name="cover_photo" id="cover_photo" class="form-control"/>
+                        </div>
+                        <div class="preview_cover_photo mt-2">
                             
                         </div>
                     </div>
@@ -79,12 +95,21 @@
 {!! JsValidator::formRequest('App\Http\Requests\CreateAgentUserRequest','#create') !!}
 <script>
     $(document).ready(function() {
-        $('#profile_img').on('change', function() {
-            $('.preview_image').html('');
-            var f_length = document.getElementById('profile_img').files.length;
+        $('#cover_photo').on('change', function() {
+            $('.preview_cover_photo').html('');
+            var f_length = document.getElementById('cover_photo').files.length;
 
             for (let index = 0; index < f_length; index++) {
-                $('.preview_image').append(
+                $('.preview_cover_photo').append(
+                    `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+            }
+        });
+        $('#profile_photo').on('change', function() {
+            $('.preview_profile_photo').html('');
+            var f_length = document.getElementById('profile_photo').files.length;
+
+            for (let index = 0; index < f_length; index++) {
+                $('.preview_profile_photo').append(
                     `<img src="${URL.createObjectURL(event.target.files[index])}">`);
             }
         });

@@ -61,6 +61,7 @@
                                 <div class="col form-group">
                                     <label for="type_of_street">Type of Street</label>
                                     <select name="type_of_street" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.type_of_street') as $key => $street)
                                             <option value="{{ $key }}">{{ $street }}</option>
                                         @endforeach
@@ -76,16 +77,6 @@
                                     <label for="Building">Building Name</label>
                                     <input type="text" name="building_name" class="form-control">
                                 </div>
-                                @if ($category == 3)
-                                    <div class="col-md-6 form-group">
-                                    <label for="building_type">Building Type</label>
-                                    <select name="building_type" class="form-control">
-                                        @foreach (config('const.building_type') as $key => $street)
-                                            <option value="{{ $key }}">{{ $street }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @endif
                             </div>
                         </div>
                         {{-- Area Size --}}
@@ -97,6 +88,7 @@
                                     <div class="form-group">
                                         <label for="front_area">Measurement</label>
                                         <select name="measurement" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.area') as $key => $area)
                                                 <option value="{{ $key }}">{{ $area }}</option>
                                             @endforeach
@@ -136,33 +128,40 @@
                                 <div class="col-6 col-md-4 form-group">
                                     <label for="width">Partation Type</label>
                                     <select name="partation_type" class="partation_type form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.partation_type') as $key => $type)
                                             <option value="{{ $key }}">{{ $type }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-6 col-md-4 form-group partation_hider">
-                                    <label for="bath_room">Bath Room</label>
-                                    <select name="bath_room" class="form-control">
-                                        @foreach (config('const.bath_room') as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-6 col-md-4 form-group partation_hider">
                                     <label for="level">Bed Room</label>
                                     <select name="bed_room" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.bed_room') as $room)
                                             <option value="{{ $room }}">{{ $room }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-
+                                <div class="col-6 col-md-4 form-group partation_hider">
+                                    <label for="bath_room">Bath Room</label>
+                                    <select name="bath_room" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.bath_room') as $room)
+                                            <option value="{{ $room }}">{{ $room }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-4 form-group">
-                                    <input name="carpark" type="checkbox">
-                                    <label for="carpark">Car Park</label>
+                                    <label for="carpark">CarPark</label>
+                                    <select name="carpark" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.carpark') as $park)
+                                            <option value="{{ $park }}">{{ $park }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -278,6 +277,7 @@
                                 <div class="col-md-6 form-group">
                                     <label for="area">Purchase Type</label>
                                     <select name="purchase_type" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.purchase_type') as $key => $purchase_type)
                                             <option value="{{ $key }}">{{ $purchase_type }}</option>
                                         @endforeach
@@ -308,6 +308,7 @@
                                 <div class="col form-group">
                                     <label for="year_of_construction">Year Of Construction</label>
                                     <select name="year_of_construction" class="form-control">
+                                        <option value="">Select</option>
                                         @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
                                             <option value='{{ $i }}'>{{ $i }}</option>
                                         @endfor
@@ -316,6 +317,7 @@
                                 <div class="col form-group">
                                     <label for="building_repairing">Building Repairing</label>
                                     <select name="building_repairing" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.building_repairing') as $key => $repair)
                                             <option value="{{ $key }}">{{ $repair }}</option>
                                         @endforeach
@@ -324,6 +326,7 @@
                                 <div class="col form-group">
                                     <label for="building_condition">Building Condition</label>
                                     <select name="building_condition" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.building_condition') as $key => $condition)
                                             <option value="{{ $key }}">{{ $condition }}</option>
                                         @endforeach
@@ -365,10 +368,6 @@
                                             </label>
                                         </div>
                                     </fieldset>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="">Addition Note</label>
-                                    <textarea name="note" class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -473,7 +472,7 @@
                                 </div>
                                 <div class="col form-group">
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="carpark " value="1"
+                                                type="checkbox" name="carpark" value="1"
                                                 class="form-check-input">Carpark</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="own_transformer" value="1"
@@ -495,8 +494,8 @@
                                                 type="checkbox" name="cornet_lot" value="1" class="form-check-input">Cornet
                                             Lot</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_garden" value="1"
-                                                class="form-check-input">View: Garden</label></div>
+                                                type="checkbox" name="view_garden" value="1" class="form-check-input">View:
+                                            Garden</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="view_lake" value="1" class="form-check-input">View
                                             Lake</label></div>
@@ -530,9 +529,22 @@
                         <div class="form-group">
                             <h5>Images</h5>
                             <hr>
-                            <div class="input-field">
-                                <label class="active">Photos</label>
-                                <div class="input-images-1" style="padding-top: .5rem;"></div>
+                            <div class="row">
+                                <div class="col form-group">
+                                    <div class="input-field">
+                                        <div class="input-images-1" style="padding-top: .5rem;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- Additional Note --}}
+                        <div class="form-group">
+                            <h5>Additional Note</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col form-group">
+                                    <textarea name="note" class="form-control"></textarea>
+                                </div>
                             </div>
                         </div>
                         {{-- Publish --}}

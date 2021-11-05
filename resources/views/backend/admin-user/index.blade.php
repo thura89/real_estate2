@@ -65,8 +65,8 @@
                         name: 'phone'
                     },
                     {
-                        data: 'role_id',
-                        name: 'role_id',
+                        data: 'user_type',
+                        name: 'user_type',
                         sortable: false,
                         searchable: false,
                     },

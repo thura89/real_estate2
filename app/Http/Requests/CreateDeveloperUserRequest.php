@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAgentUserRequest extends FormRequest
+class CreateDeveloperUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,13 @@ class CreateAgentUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'name' => 'required',
             'company_name' => 'required',
-            'agent_type' => 'required',
-            'email' => 'required|email|unique:admin_users,email',
-            'phone' => 'required|min:6|max:11|unique:admin_users,phone',
+            'address' => 'required',
+            'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|min:6|max:11|unique:users,phone',
             'password' => 'required|min:6|max:20',
         ];
     }

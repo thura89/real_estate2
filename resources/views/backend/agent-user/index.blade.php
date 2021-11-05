@@ -26,6 +26,7 @@
             <div class="card-body">
                 <table class="table table-borderd DataTables">
                     <thead>
+                        <th>#</th>
                         <th>Company Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -51,7 +52,12 @@
                 processing: true,
                 serverSide: true,
                 ajax: "/admin/agent-user/datatables/ssd",
-                columns: [{
+                columns: [
+                    {
+                        data: 'profile_photo',
+                        name: 'profile_photo'
+                    },
+                    {
                         data: 'company_name',
                         name: 'company_name'
                     },

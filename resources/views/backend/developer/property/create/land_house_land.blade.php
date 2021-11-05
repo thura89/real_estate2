@@ -147,15 +147,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-6 col-md-4 form-group partation_hider">
-                                    <label for="bath_room">Bath Room</label>
-                                    <select name="bath_room" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.bath_room') as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+
                                 <div class="col-6 col-md-4 form-group partation_hider">
                                     <label for="level">Bed Room</label>
                                     <select name="bed_room" class="form-control">
@@ -166,11 +158,26 @@
                                     </select>
                                 </div>
 
+                                <div class="col-6 col-md-4 form-group partation_hider">
+                                    <label for="bath_room">Bath Room</label>
+                                    <select name="bath_room" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.bath_room') as $room)
+                                            <option value="{{ $room }}">{{ $room }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-4 form-group">
-                                    <input name="carpark" type="checkbox">
-                                    <label for="carpark">Car Park</label>
+                                    <label for="carpark">CarPark</label>
+                                    <select name="carpark" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.carpark') as $park)
+                                            <option value="{{ $park }}">{{ $park }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -420,10 +427,6 @@
                                         </div>
                                     </fieldset>
                                 </div>
-                                <div class="col form-group">
-                                    <label for="">Addition Note</label>
-                                    <textarea name="note" class="form-control"></textarea>
-                                </div>
                             </div>
                         </div>
                         {{-- Image --}}
@@ -433,6 +436,16 @@
                             <div class="input-field">
                                 <label class="active">Photos</label>
                                 <div class="input-images-1" style="padding-top: .5rem;"></div>
+                            </div>
+                        </div>
+                        {{-- Additional Note --}}
+                        <div class="form-group">
+                            <h5>Additional Note</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col form-group">
+                                    <textarea name="note" class="form-control"></textarea>
+                                </div>
                             </div>
                         </div>
                         {{-- Publish --}}

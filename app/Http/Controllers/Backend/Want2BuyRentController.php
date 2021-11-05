@@ -33,9 +33,8 @@ class Want2BuyRentController extends Controller
         $data = WantToBuyRent::query()->with([
             'region',
             'township',
-            'adminUser',
-            'AgentUser',
-        ])->where('agent_id', auth()->user()->id);
+            'user',
+        ]);
         return Datatables::of($data)
             ->filterColumn('region', function ($query, $keyword) {
                 $query->whereHas('address', function ($qa) use ($keyword) {
@@ -72,12 +71,23 @@ class Want2BuyRentController extends Controller
                 return config('const.broker')[$each->co_broke] ?? '-';
             })
             ->editColumn('post_by', function ($each) {
-                if ($each->admin_id) {
-                    return 'Admin - ' . $each->adminUser->name ?? 'Admin(-)';
+                if ($each->user_id) {
+                    // return $each->user['name'];
+                    if($each->user['user_type'] == 1 || $each->user['user_type'] == 2 || $each->user['user_type'] == 3){
+                        return $each->user['name'] .' (Admin)' ?? 'Admin(-)';    
+                    }
+                    if($each->user['user_type'] == 4){
+                        return $each->user['name'] .' (Agent)'?? 'Agent(-)';    
+                    }
+                    if($each->user['user_type'] == 5){
+                        return $each->user['name'] .' (Dev)'?? 'Developer(-)';    
+                    }
+                    if($each->user['user_type'] == 6){
+                        return $each->user['name'] .' (User)'?? 'User(-)';    
+                    }
+                    return '-';
                 }
-                if ($each->agent_id) {
-                    return 'Agent - ' . $each->agentUser->company_name ?? 'Agent(-)';
-                }
+                return '-';
             })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -111,7 +121,7 @@ class Want2BuyRentController extends Controller
     public function store(Request $request)
     {
         $data = new WantToBuyRent();
-        $data->agent_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
         $data->title = $request->title;
         $data->budget_from = $request->budget_from;
         $data->budget_to = $request->budget_to;
@@ -171,7 +181,7 @@ class Want2BuyRentController extends Controller
     public function update(Request $request, $id)
     {
         $data = WantToBuyRent::findOrFail($id);
-        $data->agent_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
         $data->title = $request->title;
         $data->budget_from = $request->budget_from;
         $data->budget_to = $request->budget_to;

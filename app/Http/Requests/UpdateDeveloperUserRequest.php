@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDeveloperUserRequest extends FormRequest
@@ -23,11 +24,18 @@ class UpdateDeveloperUserRequest extends FormRequest
      */
     public function rules()
     {
-        $id = Auth()->user()->id;
+        $id = $this->route('developer_user');
         return [
+            'name' => 'required',
             'company_name' => 'required',
-            'email' => 'sometimes|email|unique:developer_users,email,'.$id,
-            'phone' => 'sometimes|min:6|max:11|unique:developer_users,phone,'.$id,
+            'email' => [
+                'required','email',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
+            'phone' => [
+                'required',
+                Rule::unique('users')->ignore($id , 'id'),
+            ],
             'address' => 'required',
         ];
     }

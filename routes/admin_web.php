@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('auth:admin_user')->group(function () {
+Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_admin')->group(function () {
     Route::get('/', 'PageController@index')->name('dashboard');  
 
     /* Admin Profile */
@@ -25,9 +25,16 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('auth:a
     Route::resource('/agent-user', 'AgentUserController');
     Route::get('/agent-user/datatables/ssd', 'AgentUserController@ssd');
 
+    Route::resource('/developer-user', 'DeveloperUserController');
+    Route::get('/developer-user/datatables/ssd', 'DeveloperUserController@ssd');
+
     Route::resource('/property', 'PropertyController');
     Route::get('/property/datatables/ssd', 'PropertyController@ssd');
 
+    /* New Project */
+    Route::resource('/new_project', 'NewProjectController');
+    Route::get('/new_project/datatables/ssd', 'NewProjectController@ssd');
+    
     /* Want To Buy & Rent */
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
@@ -52,7 +59,6 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('auth:a
     Route::get('/region' , 'PropertyController@region')->name('region');
     Route::post('/township' , 'PropertyController@township')->name('township');
 
-    Route::post('/property/create/form');
 });
 
 

@@ -71,6 +71,7 @@
                                 <div class="col form-group">
                                     <label for="type_of_street">Type of Street</label>
                                     <select name="type_of_street" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.type_of_street') as $key => $street)
                                             <option value="{{ $key }}" @if ($property->address->type_of_street == $key) selected @endif>
                                                 {{ $street }}
@@ -95,6 +96,7 @@
                                         <div class="col-md-6 form-group">
                                             <label for="front_area">Measurement</label>
                                             <select name="measurement" class="form-control">
+                                                <option value="">Select</option>
                                                 @foreach (config('const.area') as $key => $area)
                                                     <option value="{{ $key }}" @if ($property->areasize->measurement == $key) selected @endif>
                                                         {{ $area }}</option>
@@ -141,6 +143,7 @@
                                     <div class="col-md-4 form-group">
                                         <label for="floor_level">Floor Level</label>
                                         <select name="floor_level" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.floor_level') as $key => $level)
                                                 <option value="{{ $key }}" @if ($property->areasize->level == $key) selected @endif>
                                                     {{ $level }}</option>
@@ -158,24 +161,18 @@
                                 <div class="col-6 col-md-4 form-group">
                                     <label for="width">Partation Type</label>
                                     <select name="partation_type" class="partation_type form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.partation_type') as $key => $type)
                                             <option value="{{ $key }}" @if ($property->partation->type == $key) selected @endif>
                                                 {{ $type }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-6 col-md-4 form-group partation_hider">
-                                    <label for="bath_room">Bath Room</label>
-                                    <select name="bath_room" class="form-control">
-                                        @foreach (config('const.bath_room') as $key => $room)
-                                            <option value="{{ $key }}" @if ($property->partation->bath_room == $key) selected @endif>
-                                                {{ $room }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+
                                 <div class="col-6 col-md-4 form-group partation_hider">
                                     <label for="level">Bed Room</label>
                                     <select name="bed_room" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.bed_room') as $key => $room)
                                             <option value="{{ $key }}" @if ($property->partation->bed_room == $key) selected @endif>
                                                 {{ $room }}</option>
@@ -183,11 +180,28 @@
                                     </select>
                                 </div>
 
+                                <div class="col-6 col-md-4 form-group partation_hider">
+                                    <label for="bath_room">Bath Room</label>
+                                    <select name="bath_room" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.bath_room') as $key => $room)
+                                            <option value="{{ $key }}" @if ($property->partation->bath_room == $key) selected @endif>
+                                                {{ $room }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-4 form-group">
-                                    <input name="carpark" type="checkbox" @if ($property->partation->carpark) checked @endif>
                                     <label for="carpark">Car Park</label>
+                                    <select name="carpark" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.carpark') as $key => $park)
+                                            <option value="{{ $key }}" @if ($property->partation->carpark == $key) selected @endif>
+                                                {{ $park }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -259,6 +273,7 @@
                                     <div class="col form-group">
                                         <label for="area">Area Type</label>
                                         <select name="area" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.area') as $key => $area)
                                                 <option value="{{ $key }}" @if ($property->rentprice->area == $key) selected @endif>
                                                     {{ $area }}</option>
@@ -273,6 +288,7 @@
                                     <div class="col form-group">
                                         <label for="currency_code">Currency Code</label>
                                         <select name="currency_code" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.currency_code') as $key => $currency)
                                                 <option value="{{ $key }}" @if ($property->rentprice->currency_code == $key) selected @endif>
                                                     {{ $currency }}</option>
@@ -284,6 +300,7 @@
                                     <div class="col form-group">
                                         <label for="minimun_month">Minimun Month</label>
                                         <select name="minimum_month" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.minimum_month') as $key => $month)
                                                 <option value="{{ $key }}" @if ($property->rentprice->minimum_month == $key) selected @endif>
                                                     {{ $month }}</option>
@@ -294,6 +311,7 @@
                                         <label for="rent_pay_type">Pay For Rent Type</label>
                                         value {{ $property->rentprice->rent_pay_type }}
                                         <select name="rent_pay_type" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.rent_pay_type') as $key => $rent_pay_type)
                                                 <option value="{{ $key }}" @if ($property->rentprice->rent_pay_type == $key) selected @endif>
                                                     {{ $rent_pay_type }}</option>
@@ -303,6 +321,7 @@
                                     <div class="col form-group">
                                         <label for="rent_payby_daily">Rent Pay By Daily</label>
                                         <select name="rent_payby_daily" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.rent_payby_daily') as $key => $rent_payby_daily)
                                                 <option value="{{ $key }}" @if ($property->rentprice->rent_payby_daily == $key) selected @endif>
                                                     {{ $rent_payby_daily }}</option>
@@ -320,6 +339,7 @@
                                 <div class="col-md-6 form-group">
                                     <label for="area">Purchase Type</label>
                                     <select name="purchase_type" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.purchase_type') as $key => $purchase_type)
                                             <option value="{{ $key }}" @if ($property->payment->purchase_type == $key) selected @endif>
                                                 {{ $purchase_type }}</option>
@@ -356,6 +376,7 @@
                                 <div class="col form-group">
                                     <label for="year_of_construction">Year Of Construction</label>
                                     <select name="year_of_construction" class="form-control">
+                                        <option value="">Select</option>
                                         @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
                                             <option value='{{ $i }}' @if ($property->situation->year_of_construction == $i) selected @endif>
                                                 {{ $i }}</option>
@@ -365,6 +386,7 @@
                                 <div class="col form-group">
                                     <label for="building_repairing">Building Repairing</label>
                                     <select name="building_repairing" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.building_repairing') as $key => $repair)
                                             <option value="{{ $key }}" @if ($property->situation->building_repairing == $key) selected @endif>
                                                 {{ $repair }}</option>
@@ -374,6 +396,7 @@
                                 <div class="col form-group">
                                     <label for="building_condition">Building Condition</label>
                                     <select name="building_condition" class="form-control">
+                                        <option value="">Select</option>
                                         @foreach (config('const.building_condition') as $key => $condition)
                                             <option value="{{ $key }}" @if ($property->situation->building_condition == $key) selected @endif>
                                                 {{ $condition }}</option>
@@ -392,6 +415,7 @@
                                     <div class="col-md-6 form-group">
                                         <label for="shop_type">Shop Type</label>
                                         <select name="shop_type" class="form-control">
+                                            <option value="">Select</option>
                                             @foreach (config('const.shop_type') as $key => $type)
                                                 <option value="{{ $key }}" @if ($property->situation->shop_type == $key) selected @endif>
                                                     {{ $type }}</option>
@@ -439,11 +463,6 @@
                                             </label>
                                         </div>
                                     </fieldset>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="note">Addition Note</label>
-                                    <textarea name="note"
-                                        class="form-control">{{ $property->suppliment->note ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -631,6 +650,17 @@
                             <div class="input-field">
                                 <label class="active">Photos</label>
                                 <div class="input-images-2" style="padding-top: .5rem;"></div>
+                            </div>
+                        </div>
+                        {{-- Additional Note --}}
+                        <div class="form-group">
+                            <h5>Additional Note</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col form-group">
+                                    <textarea name="note"
+                                        class="form-control">{{ $property->suppliment->note ?? '' }}</textarea>
+                                </div>
                             </div>
                         </div>
                         {{-- Publish --}}

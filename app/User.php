@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','facebook_id'
     ];
 
     /**
@@ -25,7 +25,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
+
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     /**
@@ -36,4 +43,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function properties()
+    {
+        return $this->hasMany('App\Property', 'user_id', 'id');
+    }
+
+    public function wantToBuyRents()
+    {
+        return $this->hasMany(WantToBuyRent::class, 'user_id', 'id');
+    }
+
+    public function news()
+    {
+        return $this->hasMany('App\News', 'post_by', 'id');
+    }
+
+    public function getProfilePhotoAttribute($value)
+    {
+        if ($value) {
+            return asset('/storage/profile/' . $value);
+        } else {
+            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->name));
+        }
+    }
+    public function getCoverPhotoAttribute($value)
+    {
+        if ($value) {
+            return asset('/storage/cover/' . $value);
+        } else {
+            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->name));
+        }
+    }
 }

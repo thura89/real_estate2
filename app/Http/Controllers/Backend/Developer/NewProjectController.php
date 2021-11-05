@@ -34,7 +34,8 @@ class NewProjectController extends Controller
         $data = NewProject::query()->with([
             'region',
             'township',
-        ])->where('developer_id', auth()->user()->id);
+        ])->where('developer_id', auth()->user()->id)
+          ->latest('updated_at');
         return Datatables::of($data)
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
@@ -226,7 +227,7 @@ class NewProjectController extends Controller
      */
     public function destroy($id)
     {
-        $data = WantToBuyRent::findOrFail($id);
+        $data = NewProject::findOrFail($id);
         $data->delete();
     }
 }

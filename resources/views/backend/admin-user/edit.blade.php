@@ -20,28 +20,62 @@
         <div class="card">
             <div class="card-body">
                 @include('backend.layouts.flash')
-                <form action="{{ route('admin.admin-user.update' ,$adminUser->id)}}" method="POST" id="update">
+                <form action="{{ route('admin.admin-user.update' ,$adminUser->id)}}" method="POST" id="update" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $adminUser->name }}">
+                    <div class="row">
+                        <div class="col-md-6 col form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" class="form-control" value="{{ $adminUser->name }}">
+                        </div>
+                        <div class="col-md-6 col form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ $adminUser->email }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col form-group">
+                            <label for="phone">Phone</label>
+                            <input type="number" name="phone" class="form-control" value="{{ $adminUser->phone }}">
+                        </div>
+                        <div class="col-md-6 col form-group">
+                            <label for="phone">Role Level</label>
+                            <select name="user_type" class="form-control">
+                                @foreach (config('const.role_level') as $key => $role)
+                                    <option value="{{$key}}" @if($adminUser->user_type == $key) selected @endif>{{$role}}</option>    
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ $adminUser->email }}">
+                        <label for="address">Address</label>
+                        <textarea name="address" class="form-control" id="" cols="30" rows="10">{{ $adminUser->address}}</textarea>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="number" name="phone" class="form-control" value="{{ $adminUser->phone }}">
+                        <label for="description">Description</label>
+                        <textarea name="description" class="form-control" id="" cols="30" rows="10">{{ $adminUser->description}}</textarea>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Role Level</label>
-                        <select name="role_id" class="form-control">
-                            @foreach (config('const.role_level') as $key => $role)
-                                <option value="{{$key}}" @if($adminUser->role_id == $key) selected @endif>{{$role}}</option>    
-                            @endforeach
-                        </select>
+                        <div class="profile_photo">
+                            <label for="profile_photo">Profile Photo</label>
+                            <input type="file" name="profile_photo" id="profile_photo" class="form-control"/>
+                        </div>
+                        <div class="preview_profile_photo mt-2">
+                            @if ($adminUser->profile_photo)
+                                    <img src="{{ $adminUser->profile_photo}}" alt="">
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="cover_photo">
+                            <label for="cover_photo">Cover Photo</label>
+                            <input type="file" name="cover_photo" id="cover_photo" class="form-control"/>
+                        </div>
+                        <div class="preview_cover_photo mt-2">
+                            @if ($adminUser->cover_photo)
+                                    <img src="{{ $adminUser->cover_photo}}" alt="">
+                            @endif
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -59,10 +93,27 @@
 @endsection
 @section('script')
 {!! JsValidator::formRequest('App\Http\Requests\UpdateAdminUserRequest','#update') !!}
-    <script>
-        $(document).ready(function() {
-           
+<script>
+    $(document).ready(function() {
+        $('#cover_photo').on('change', function() {
+            $('.preview_cover_photo').html('');
+            var f_length = document.getElementById('cover_photo').files.length;
+
+            for (let index = 0; index < f_length; index++) {
+                $('.preview_cover_photo').append(
+                    `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+            }
         });
-    </script>
+        $('#profile_photo').on('change', function() {
+            $('.preview_profile_photo').html('');
+            var f_length = document.getElementById('profile_photo').files.length;
+
+            for (let index = 0; index < f_length; index++) {
+                $('.preview_profile_photo').append(
+                    `<img src="${URL.createObjectURL(event.target.files[index])}">`);
+            }
+        });
+    });
+</script>
 
 @endsection

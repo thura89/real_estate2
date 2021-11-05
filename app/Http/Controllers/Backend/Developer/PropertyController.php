@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Backend\Developer;
 use App\Price;
 use App\Region;
 use App\Address;
-use App\DeveloperUser;
 use App\Payment;
 use App\AreaSize;
 use App\Property;
@@ -50,7 +49,8 @@ class PropertyController extends Controller
             'situation',
             'suppliment',
             'unitAmenity',
-        ])->where('developer_id',auth()->user()->id);
+        ])->where('user_id',auth()->user()->id)
+          ->latest('updated_at');
         
         if ($request->get('status') == '0' || $request->get('status') == '1') {
             $data->where('status', $request->get('status'));
@@ -156,7 +156,7 @@ class PropertyController extends Controller
             return view('backend.developer.property.create.land_house_land', compact('regions', 'category', 'type'));
         }
         /* Apartment Condo , Office */
-        if ($category == 3 || $category == 4) {
+        if ($category == 3 || $category == 4 || $category == 8) {
             return view('backend.developer.property.create.apartment_condo_office', compact('regions', 'category', 'type'));
         }
         return back();
@@ -170,7 +170,7 @@ class PropertyController extends Controller
             /* Property Store */
             $property = new Property();
             $property->p_code = UUIDGenerate::pCodeGenerator();
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
@@ -210,7 +210,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark ? 1 : 0;
+            $partation->carpark = $request->carpark;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -331,7 +331,7 @@ class PropertyController extends Controller
             $property = Property::findOrFail($request->id);
 
             /* Property Store */
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->status = $request->status ? 1 : 0; //Publish Status
@@ -362,7 +362,7 @@ class PropertyController extends Controller
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark ? 1 : 0;
+            $property->partation->carpark = $request->carpark;
 
             // Payment Store
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -498,7 +498,7 @@ class PropertyController extends Controller
             /* Property Store */
             $property = new Property();
             $property->p_code = UUIDGenerate::pCodeGenerator();
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
@@ -537,7 +537,7 @@ class PropertyController extends Controller
                 $partation->type = $request->partation_type;
                 $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $partation->carpark = $request->carpark ? 1 : 0;
+                $partation->carpark = $request->carpark;
                 $property->partation()->save($partation);
             }
 
@@ -624,7 +624,7 @@ class PropertyController extends Controller
         try {
             $property = Property::findOrFail($request->id);
             /* Property Store */
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->status = $request->status ? 1 : 0; //Publish Status
@@ -654,7 +654,7 @@ class PropertyController extends Controller
                 $property->partation->type = $request->partation_type;
                 $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $property->partation->carpark = $request->carpark ? 1 : 0;
+                $property->partation->carpark = $request->carpark;
             }
 
             /* Payment Store */
@@ -760,7 +760,7 @@ class PropertyController extends Controller
             /* Property Store */
             $property = new Property();
             $property->p_code = UUIDGenerate::pCodeGenerator();
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
@@ -776,9 +776,6 @@ class PropertyController extends Controller
             $address->township = $request->township;
             $address->type_of_street = $request->type_of_street;
             $address->building_name = $request->building_name;
-            if ($request->property_category == 3) {
-                $address->building_type = $request->building_type;
-            }
             $property->address()->save($address);
 
             /* Area Size Store */
@@ -794,7 +791,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark ? 1 : 0;
+            $partation->carpark = $request->carpark;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -916,7 +913,7 @@ class PropertyController extends Controller
         try {
             $property = Property::findOrFail($request->id);
             // Property Store
-            $property->developer_id = Auth()->user()->id;
+            $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->status = $request->status ? 1 : 0; //Publish Status
@@ -928,9 +925,6 @@ class PropertyController extends Controller
             $property->address->ward = $request->ward;
             $property->address->type_of_street = $request->type_of_street;
             $property->address->building_name = $request->building_name;
-            if ($request->property_category == 3) {
-                $property->address->building_type = $request->building_type;
-            }
 
             //Area Size Store
             $property->areasize->measurement = $request->measurement;
@@ -942,7 +936,7 @@ class PropertyController extends Controller
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark ? 1 : 0;
+            $property->partation->carpark = $request->carpark;
 
             // Payment Store
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -1102,7 +1096,7 @@ class PropertyController extends Controller
             return view('backend.developer.property.edit.landhouse_land', compact('id', 'property', 'regions', 'category', 'images'));
         }
         /* Aparment Condo and Office */
-        if ($category == 3 || $category == 4) {
+        if ($category == 3 || $category == 4 || $category == 8) {
             return view('backend.developer.property.edit.apartment_condo_office', compact('id', 'property', 'regions', 'category', 'images'));
         }
 

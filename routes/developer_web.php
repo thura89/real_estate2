@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->middleware('auth:developer_user')->group(function () {
+Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->middleware('is_developer')->group(function () {
     Route::get('/', 'DeveloperPageController@index')->name('dashboard');  
 
     Route::resource('/property', 'PropertyController');
@@ -45,7 +45,6 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     Route::get('/region' , 'PropertyController@region')->name('region');
     Route::post('/township' , 'PropertyController@township')->name('township');
 
-    Route::post('/property/create/form');
 });
 
 

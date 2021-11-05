@@ -5,6 +5,12 @@ return array(
                 2 => 'Staff',
                 3 => 'Editor',
         ],
+        'Administrator' => 1,
+        'Staff' => 2,
+        'Editor' => 3,
+        'Agent' => 4,
+        'Developer' => 5,
+        'User' => 6,
         'agent_type' => [
                 1 => 'Property Agency',
                 2 => 'Individual Agent',
@@ -75,12 +81,18 @@ return array(
         'land_type' => [
                 1 => 'Garden Land',
                 2 => 'Farm Land',
-                3 => 'Kaing Kyun Land'
+                3 => 'Kaing Kyun Land',
+                4 => 'Other'
+        ],
+        'admin_usertype' => [
+                1 => 'Administrator',
+                2 => 'Staff',
+                3 => 'Editor',
         ],
         'shop_type' => [
                 1 => 'City Market Shop',
                 2 => 'Shop',
-                3 => 'Living Shop'
+                3 => 'Shop House'
         ],
         'industrial_type' => [
                 1 => 'Only Industrial Land',
@@ -124,11 +136,12 @@ return array(
         'property_category' => [
                 1 => 'House',
                 2 => 'Land For House',
-                3 => 'Apartment & Condo',
+                3 => 'Apartment',
                 4 => 'Office',
                 5 => 'Land',
                 6 => 'Shop',
                 7 => 'Industrial Zone',
+                8 => 'Condominium',
         ],
         'developer_sale_type' => [
                 1 => 'House',
@@ -163,6 +176,18 @@ return array(
         ],
         'p_img_path' => 'storage/property_images/',
         'news_img_path' => 'storage/news/',
+        'carpark' => [
+                1 => '1' ,
+                2 => '2' ,
+                3 => '3' ,
+                4 => '4' ,
+                5 => '5' ,
+                6 => '6' ,
+                7 => '7' ,
+                8 => '8' ,
+                9 => '9' ,
+                10 => '10',
+        ],
         'bath_room' => [
                 1 => '1' ,
                 2 => '2' ,
@@ -173,7 +198,7 @@ return array(
                 7 => '7' ,
                 8 => '8' ,
                 9 => '9' ,
-                10 => '10' ,
+                10 => '10',
         ],
         'bed_room' => [
                 1 => '1',

@@ -33,7 +33,7 @@ class Want2BuyRentController extends Controller
         $data = WantToBuyRent::query()->with([
             'region',
             'township',
-        ])->where('developer_id',auth()->user()->id);
+        ])->where('user_id',auth()->user()->id);
         return Datatables::of($data)
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
@@ -87,7 +87,7 @@ class Want2BuyRentController extends Controller
     public function store(Request $request)
     {
         $data = new WantToBuyRent();
-        $data->developer_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
         $data->title = $request->title;
         $data->budget_from = $request->budget_from;
         $data->budget_to = $request->budget_to;
@@ -147,7 +147,7 @@ class Want2BuyRentController extends Controller
     public function update(Request $request, $id)
     {
         $data = WantToBuyRent::findOrFail($id);
-        $data->developer_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
         $data->title = $request->title;
         $data->budget_from = $request->budget_from;
         $data->budget_to = $request->budget_to;

@@ -3,8 +3,18 @@
 <script>
     $(function() {
 
+        
         $('.input-images-1').imageUploader();
 
+        $("input[type='file']").on('change',function(){
+            $( "div" ).remove( ".upimg" );
+            var img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";
+            $(img).appendTo('.uploaded');
+        });
+        // var text = "<span></span>";
+        // $( text ).appendTo( ".image-uploader" );
+
+             
         let preloaded = [{
                 id: 1,
                 src: 'https://picsum.photos/500/500?random=1'
@@ -51,7 +61,6 @@
             if (!$inputImages.length) {
                 $inputImages = $form.find('input[name^="photos"]')
             }
-
             // Get the new files names
             let $fileNames = $('<ul>');
             for (let file of $inputImages.prop('files')) {
@@ -78,6 +87,7 @@
                 // Show the preloadede info and set the list of ids
                 $modal.find('#display-preloaded-images').show().html($preloadedIds.html());
 
+
             } else {
 
                 // Hide the preloaded info
@@ -86,9 +96,9 @@
             }
 
             // Show the modal
-            $modal.css('visibility', 'visible');
+            // $modal.css('visibility', 'visible');
+     
         });
-
         // Input and label handler
         $('input').on('focus', function() {
             $(this).parent().find('label').addClass('active')
@@ -97,10 +107,6 @@
                 $(this).parent().find('label').removeClass('active');
             }
         });
-
-
-
-
     });
 </script>
 <script>
