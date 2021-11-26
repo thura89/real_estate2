@@ -34,7 +34,7 @@ class NewProjectController extends Controller
         $data = NewProject::query()->with([
             'region',
             'township',
-        ])->where('developer_id', auth()->user()->id)
+        ])->where('user_id', auth()->user()->id)
           ->latest('updated_at');
         return Datatables::of($data)
             ->editColumn('region', function ($each) {
@@ -91,7 +91,7 @@ class NewProjectController extends Controller
     public function store(Request $request)
     {
         $data = new NewProject();
-        $data->developer_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
 
         /* Address */
         $data->region = $request->region;
@@ -173,7 +173,7 @@ class NewProjectController extends Controller
     public function update(Request $request, $id)
     {
         $data = NewProject::findOrFail($id);
-        $data->developer_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
 
         /* Address */
         $data->region = $request->region ?? $data->region;

@@ -11,6 +11,11 @@ return array(
         'Agent' => 4,
         'Developer' => 5,
         'User' => 6,
+        'user_type' => [
+                4 => 'Agent',
+                5 => 'Developer',
+                6 => 'User',
+        ],
         'agent_type' => [
                 1 => 'Property Agency',
                 2 => 'Individual Agent',
