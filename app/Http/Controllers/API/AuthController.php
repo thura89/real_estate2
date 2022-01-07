@@ -148,6 +148,7 @@ class AuthController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'verify_code' => 'required',
+            'phone' => 'required',
             'user_type' => 'required|in:4,5,6',
             'agent_type' => 'required_if:user_type,==,4',
             'company_name' => 'required_if:user_type,!=,6',
@@ -159,7 +160,7 @@ class AuthController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail to request', $validate->errors());
         }
-        $user =  User::where('verify_code', $request->verify_code)->first();
+        $user =  User::where('verify_code', $request->verify_code)->where('phone', $request->phone)->first();
         if ($user) {
             if ($request->hasFile('profile_photo')) {
                 $profile_img = $request->file('profile_photo');
