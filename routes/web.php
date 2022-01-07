@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FbController;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,9 @@ Route::get('/', 'CommonAuthController@showLoginForm');
 Route::get('auth/facebook', 'CommonAuthController@redirectToFacebook');
 Route::get('auth/facebook/callback', 'CommonAuthController@facebookSignin');
 
+Route::get('auth/google', 'CommonAuthController@redirectToGoogle');
+Route::get('auth/google/callback', 'CommonAuthController@handleGoogleCallback');
+
 /* Multi Auth with Single Page */
 Route::get('/common/login', 'CommonAuthController@showLoginForm');
 Route::post('/common/login', 'CommonAuthController@login')->name('common.login');
@@ -45,3 +49,9 @@ Route::get('/developer', 'Auth\DeveloperLoginController@showLoginForm');
 Route::get('/developer/login', 'Auth\DeveloperLoginController@showLoginForm');
 Route::post('/developer/login', 'Auth\DeveloperLoginController@login')->name('developer.login');
 Route::post('/developer/logout', 'Auth\DeveloperLoginController@logout')->name('developer.logout');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+});
+
+

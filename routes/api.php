@@ -21,6 +21,13 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('API')->group(function () {
     Route::get('/home', 'PageController@index');
 
+    /* Region and Township */
+    Route::get('/region', 'PageController@region');
+    Route::get('/region/{id}/township', 'PageController@township');
+
+    /* Common Const */
+    Route::get('/common/const', 'PageController@const');
+
     /* Property */
     Route::get('/property-lists', 'PageController@property_list');
     Route::get('/property/{id}/show', 'PageController@show');
@@ -42,6 +49,14 @@ Route::namespace('API')->group(function () {
     Route::get('/developer/{id}/properties', 'DeveloperController@developerProperties');
 
     Route::post('/register', 'AuthController@register');
+    Route::post('/mobile-register/verify', 'AuthController@mobile_register');
+    Route::post('/mobile-register/check_code', 'AuthController@check_code');
+    Route::post('/mobile-register/resend_code', 'AuthController@resend_code');
+    Route::post('/mobile-register/fullinfo', 'AuthController@mobileRegisterFullInfo');
+    Route::post('/mobile-register/forgetpassword_send_code', 'AuthController@forgetPassword_send_code');
+    Route::post('/mobile-register/resetpassword', 'AuthController@resetPassword');
+    
+    
     Route::post('/login', 'AuthController@login');
 
     Route::middleware('auth:api')->group(function () {
@@ -83,6 +98,11 @@ Route::namespace('API')->group(function () {
         /* ApartmentAndCondo */
         Route::post('user/property/create/apart_condo_office' , 'PropertyController@apart_condo_office_create');
         Route::post('user/property/update/apart_condo_office' , 'PropertyController@apart_condo_office_update');
+
+        /* WishList */
+        Route::resource('/wishlist', 'WishlistController', ['except' => ['create', 'edit', 'show', 'update']]);
+
+
     });
 
 });

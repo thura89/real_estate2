@@ -37,8 +37,9 @@ class CommonAuthController extends Controller
             }
             /* User */
             if (auth()->user()->user_type == 6) {
-                return redirect()->route('user.home');
+                return redirect()->route('home');
             }
+            return redirect()->route('home');
         }
         return view('auth.common_login');
     }
@@ -51,7 +52,6 @@ class CommonAuthController extends Controller
     {
         try {
             $user = Socialite::driver('facebook')->user();
-            dd($user);
             $facebookId = User::where('facebook_id', $user->id)->first();
             if($facebookId){
                 Auth::login($facebookId);
@@ -77,13 +77,14 @@ class CommonAuthController extends Controller
                     }
                     /* User */
                     if (auth()->user()->user_type == 6) {
-                        return redirect()->route('user.home');
+                        return redirect()->route('home');
                     }
+                    return redirect()->route('home');
+                    
                 }
             }else{
                 $createUser = User::where('email',$user->email);
                 if($createUser){
-                    $createUser->name = $user->name;
                     $createUser->email = $user->email;
                     $createUser->facebook_id = $user->id;
                     $createUser->name = $user->name;
@@ -122,13 +123,114 @@ class CommonAuthController extends Controller
                     }
                     /* User */
                     if (auth()->user()->user_type == 6) {
-                        return redirect()->route('user.home');
+                        return redirect()->route('home');
                     }
+                    return redirect()->route('home');
+                    
                 }
             }
     
         } catch (Exception $exception) {
             dd($exception->getMessage());
+        }
+    }
+
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function redirectToGoogle()
+    {
+        
+        return Socialite::driver('google')->redirect();
+    }
+        
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function handleGoogleCallback()
+    {
+        try {
+      
+            $user = Socialite::driver('google')->user();
+            $finduser = User::where('google_id', $user->id)->first();
+            if($finduser){
+       
+                Auth::login($finduser);
+                if (Auth::check()) {
+                    if (auth()->user()->user_type == 1) {
+                        return redirect()->route('admin.property.index');
+                    }
+                    /* Admin Staff */
+                    if (auth()->user()->user_type == 2) {
+                        return redirect()->route('admin.property.index');
+                    }
+                    /* Admin Editor */
+                    if (auth()->user()->user_type == 3) {
+                        return redirect()->route('admin.property.index');
+                    }
+                    /* Agent */
+                    if (auth()->user()->user_type == 4) {
+                        return redirect()->route('agent.property.index');
+                    }
+                    /* Developer */
+                    if (auth()->user()->user_type == 5) {
+                        return redirect()->route('developer.property.index');
+                    }
+                    /* User */
+                    if (auth()->user()->user_type == 6) {
+                        return redirect()->route('home');
+                    }
+                    return redirect()->route('home');
+                    
+                }
+       
+            }else{
+                $newUser = User::create([
+                    'name' => $user->name,
+                    'phone' => NULL,
+                    'email' => $user->email,
+                    'profile_photo' => $user->avatar_original,
+                    'google_id' => $user->id,
+                    'user_type' => 6, //Normal User
+                    'password' => encrypt('realesteate@123')
+                ]);
+                
+                Auth::login($newUser);
+      
+                if (auth()->user()->user_type == 1) {
+                    return redirect()->route('admin.property.index');
+                }
+                /* Admin Staff */
+                if (auth()->user()->user_type == 2) {
+                    return redirect()->route('admin.property.index');
+                }
+                /* Admin Editor */
+                if (auth()->user()->user_type == 3) {
+                    return redirect()->route('admin.property.index');
+                }
+                /* Agent */
+                if (auth()->user()->user_type == 4) {
+                    return redirect()->route('agent.property.index');
+                }
+                /* Developer */
+                if (auth()->user()->user_type == 5) {
+                    return redirect()->route('developer.property.index');
+                }
+                /* User */
+                if (auth()->user()->user_type == 6) {
+                    return redirect()->route('home');
+                }
+                return redirect()->route('home');
+                
+            }
+      
+        } catch (Exception $e) {
+            dd($e->getMessage());
         }
     }
     /**

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\News;
 use App\Property;
-use App\NewProject;
 use Illuminate\Http\Request;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\API\RegionResource;
 use App\Http\Resources\PropertyList;
-use App\Http\Resources\NewProjectList;
 use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
 use App\Http\Resources\PropertyDetail348;
+use App\Region;
+use App\Township;
 
 class PageController extends Controller
 {
@@ -97,5 +97,25 @@ class PageController extends Controller
         }
         return ResponseHelper::fail('Fail', null);
         
+    }
+
+    public function region(Request $request)
+    {
+        $data = Region::all();
+        $data = RegionResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        return $data;
+    }
+
+    public function township(Request $request,$id)
+    {
+        $data = Township::where('region_id',$id)->get();
+        $data = RegionResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        return $data;
+    }
+
+    public function const()
+    {
+        $data = config('const');
+        return ResponseHelper::success('Success', $data);
     }
 }

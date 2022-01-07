@@ -8,7 +8,8 @@ class SMS{
     {
         
         $url = 'https://smspoh.com/api/v2/send';
-        $token = 'ovkGVxtc-89FBitf2yukhtJcLZkSsEHwRGPvg04cG2GnXiJY5-_4i_3XzWlHlOuE';
+        // $token = 'ovkGVxtc-89FBitf2yukhtJcLZkSsEHwRGPvg04cG2GnXiJY5-_4i_3XzWlHlOuE'; // mozet89 token
+        $token = 'NHEKajcv-lt0vXliuqMGGwbo93-DkVI8EOfxtRjKrtEKMn9stPWrOkvHtH728x4m';
         $body = [
             'to' => $phone,
             'message' => $message,

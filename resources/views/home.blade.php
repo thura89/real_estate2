@@ -8,9 +8,8 @@
             <div class="page-title-icon">
                 <i class="pe-7s-car icon-gradient bg-mean-fruit">
                 </i>
-            </div>
-            <div>Analytics Dashboard
-                <div class="page-title-subheading">This is an example dashboard created using build-in elements and components.
+                <div style="text-align: center">You Can Create Agent & Developer Account
+                    
                 </div>
             </div>
         </div> 

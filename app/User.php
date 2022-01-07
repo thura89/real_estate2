@@ -9,7 +9,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable ;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','facebook_id'
+        'name', 'email', 'password','facebook_id','google_id','apple_id'
     ];
 
     /**
@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->hasMany(Property::class, 'user_id', 'id');
     }
 
+    public function property_wishlist()
+    {
+        return $this->hasMany(Property::class);
+    }
+
     public function scopeWithAndWhereHas($query, $relation, $constraint){
         return $query->whereHas($relation, $constraint)
                      ->with([$relation => $constraint]);
@@ -63,6 +68,12 @@ class User extends Authenticatable
     public function news()
     {
         return $this->hasMany('App\News', 'post_by', 'id');
+    }
+
+    public function wishlist(){
+
+        return $this->hasMany(Wishlist::class);
+
     }
 
     public function getProfilePhotoAttribute($value)

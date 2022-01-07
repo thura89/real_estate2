@@ -56,15 +56,12 @@ class LoginController extends Controller
     }
     public function login(Request $request)
     {   
-        $input = $request->all();
-   
-        $this->validate($request, [
-            'email' => 'required|email',
+        $request->validate([
+            'phone' => 'required',
             'password' => 'required',
         ]);
-   
-        if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
-        {
+
+        if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             /* AGent Adding */
             $user = User::find(auth()->user()->id);
             $user->ip = $request->ip();

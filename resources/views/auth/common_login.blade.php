@@ -67,6 +67,9 @@
 							<a class="btn btn-lg btn-primary btn-block" href="{{ url('auth/facebook') }}">
 								<strong>Login With Facebook</strong>
 							</a>
+							<a class="btn btn-lg btn-danger btn-block" href="{{ url('auth/google') }}">
+								<strong>Login With Google</strong>
+							</a>
 						</form>
 					</div>
 				</div>

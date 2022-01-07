@@ -19,7 +19,7 @@ class NewProjectController extends Controller
         ])->orderBy('created_at','DESC')->paginate(10);
         $data = NewProjectList::collection($data)->additional(['result'=>true,'message'=>'Success']);
         if($data){
-            return $data;
+            return ResponseHelper::success('Success', $data);
         }else{
             return ResponseHelper::fail('fail', null);
         }
