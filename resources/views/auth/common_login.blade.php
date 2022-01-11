@@ -13,6 +13,8 @@
 	<link rel="stylesheet" href="{{asset('/backend/css/style.css')}}">
     <link href="{{ asset('backend/css/bootstrap.min.css')}}" rel="stylesheet">
 
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5902016702314933"
+     crossorigin="anonymous"></script>
 
 </head>
 
