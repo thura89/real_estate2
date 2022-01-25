@@ -84,6 +84,13 @@
                         </i>News Management
                     </a>
                 </li>
+                <li class="app-sidebar__heading">Slider</li>
+                <li>
+                    <a href="{{ route('admin.slider.index')}}" class="@yield('slider-active')">
+                        <i class="metismenu-icon pe-7s-news-paper">
+                        </i>Slider Management
+                    </a>
+                </li>
                 <li class="app-sidebar__heading">Settings</li>
                 <li>
                     <a href="{{ route('admin.profile')}}" class="@yield('profile-active')">

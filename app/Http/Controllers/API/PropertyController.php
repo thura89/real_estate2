@@ -73,9 +73,8 @@ class PropertyController extends Controller
         $data =  $data->orderBy('created_at','DESC')->paginate(10);
 
 
-        $data = PropertyList::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        return ResponseHelper::success('Success',PropertyList::collection($data));
 
-        return $data;
 
     }
     public function show(Request $request,$id)

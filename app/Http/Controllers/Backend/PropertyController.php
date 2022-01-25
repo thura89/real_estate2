@@ -49,7 +49,7 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ]);
-        if ($request->get('status') == '0' || $request->get('status') == '1') {
+        if ($request->get('status') == '1') {
             $data->where('status', $request->get('status'));
         }
         if ($request->get('category')) {
@@ -125,7 +125,7 @@ class PropertyController extends Controller
                 if ($each->status == 1) {
                     return '<span class="badge badge-pill badge-success">' . config('const.publish_status')[$each->status] . '</span>' ?? '-';
                 }
-                return '<span class="badge badge-pill badge-warning">' . config('const.publish_status')[$each->status] . '</span>' ?? '-';
+                return '-';
             })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -759,7 +759,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = $request->status ? 1 : 0; //Recommended Status
             $property->save();
 
             /* Address Store */

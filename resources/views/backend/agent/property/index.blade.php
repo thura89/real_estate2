@@ -74,14 +74,6 @@
                         <select id='township' class="form-control">
                         </select>
                     </div>
-                    <div class="col">
-                        <select id='status' class="form-control">
-                            <option value="">Status</option>
-                            @foreach (config('const.publish_status') as $key => $status)
-                                <option value="{{ $key }}">{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                 </div>
 
                 <div class="row">
@@ -106,7 +98,6 @@
                         <th>Price</th>
                         <th>Type</th>
                         <th>Category</th>
-                        <th class="no-sort">Status</th>
                         <th>Created At</th>
                         <th class="no-sort">Action</th>
                     </thead>
@@ -128,7 +119,6 @@
                     url: "/agent/property/datatables/ssd",
                     type: 'GET',
                     data: function(d) {
-                        d.status = $('#status').val();
                         d.type = $('#type').val();
                         d.region = $('#region').val();
                         d.township = $('#township').val();
@@ -173,12 +163,6 @@
                     {
                         data: 'category',
                         name: 'category',
-                        sortable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
                         sortable: false,
                         searchable: false,
                     },

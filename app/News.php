@@ -24,12 +24,10 @@ class News extends Model
     //     $this->attributes['images'] = $value;
     // }
 
-    public function getImagesAttribute($value)
-    {
-        if ($value) {
-            return asset('/storage/news/' . $value);
-        } else {
-            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->post_title));
-        }
-    }
+    // public function getImagesAttribute($value)
+    // {
+    //     if (!$value) {
+    //         return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->post_title));
+    //     }
+    // }
 }

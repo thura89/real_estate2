@@ -100,7 +100,7 @@ class AuthController extends Controller
     public function check_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'phone' => 'required|unique:users|max:11',
+            'phone' => 'required|users|max:11',
             'verify_code' => 'required|digits:6',
         ]);
         if ($validate->fails()) {

@@ -49,7 +49,6 @@ class NewsController extends Controller
                     
                         return $each->user->name ? $each->user->name .' (Admin'.'-'.config('const.role_level')[$each->user->user_type].')' : 'Admin(-)';
                     
-                    // return $each->user->name .' (Admin)' ?? 'Admin(-)';
                 }
             })
             ->editColumn('images', function ($each) {
@@ -166,6 +165,7 @@ class NewsController extends Controller
     public function destroy($id)
     {
         $data = News::findOrFail($id);
+        Storage::disk('public')->delete('/news/'.$data->images);
         $data->delete();
     }
 }

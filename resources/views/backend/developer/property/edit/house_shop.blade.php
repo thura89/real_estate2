@@ -663,13 +663,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- Publish --}}
-                        <div class="row">
-                            <div class="col-6 col-md-4 form-group">
-                                <input name="status" type="checkbox" value="1" @if ($property->status == 1) checked @endif>
-                                <label for="status">Publish This Content</label>
-                            </div>
-                        </div>
                         {{-- Submit --}}
                         <div class="row">
                             <div class="col form-group">

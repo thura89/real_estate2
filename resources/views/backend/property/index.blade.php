@@ -76,7 +76,7 @@
                     </div>
                     <div class="col">
                         <select id='status' class="form-control">
-                            <option value="">Status</option>
+                            <option value="">Feature</option>
                             @foreach (config('const.publish_status') as $key => $status)
                                 <option value="{{ $key }}">{{ $status }}</option>
                             @endforeach
@@ -106,7 +106,7 @@
                         <th>Price</th>
                         <th>Type</th>
                         <th>Category</th>
-                        <th class="no-sort">Status</th>
+                        <th class="no-sort">Recommended</th>
                         <th>Created At</th>
                         <th class="no-sort">Action</th>
                     </thead>

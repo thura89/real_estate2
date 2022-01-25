@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Agent;
 
-use App\User;
 use App\Price;
 use App\Region;
 use App\Address;
@@ -10,7 +9,6 @@ use App\Payment;
 use App\AreaSize;
 use App\Property;
 use App\Township;
-use App\AgentUser;
 use App\Partation;
 use App\RentPrice;
 use App\Situation;
@@ -55,9 +53,6 @@ class PropertyController extends Controller
             
         ])->where('user_id',Auth()->user()->id)->latest('updated_at');
         
-        if ($request->get('status') == '0' || $request->get('status') == '1') {
-            $data->where('status', $request->get('status'));
-        }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
@@ -127,12 +122,6 @@ class PropertyController extends Controller
             ->editColumn('category', function ($each) {
                 return config('const.property_category')[$each->category] ?? '-';
             })
-            ->editColumn('status', function ($each) {
-                if ($each->status == 1) {
-                    return '<span class="badge badge-pill badge-success">' . config('const.publish_status')[$each->status] . '</span>' ?? '-';
-                }
-                return '<span class="badge badge-pill badge-warning">' . config('const.publish_status')[$each->status] . '</span>' ?? '-';
-            })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
             })
@@ -141,7 +130,7 @@ class PropertyController extends Controller
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
                 return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['images', 'status', 'action'])
+            ->rawColumns(['images', 'action'])
             ->make(true);
     }
     /* Property Create by Relative */
@@ -178,7 +167,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
             $property->save();
 
             /* Address Store */
@@ -337,7 +326,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
 
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;
@@ -506,7 +495,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
             $property->save();
 
             /* Address Store */
@@ -630,7 +619,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
 
             /* Address Store */
             $property->address->region = $request->region ?? $property->address->region;
@@ -768,7 +757,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
             $property->save();
 
             /* Address Store */
@@ -919,7 +908,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = 0; //Publish Status
 
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;

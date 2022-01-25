@@ -106,7 +106,6 @@
                         <th>Price</th>
                         <th>Type</th>
                         <th>Category</th>
-                        <th class="no-sort">Status</th>
                         <th>Created At</th>
                         <th class="no-sort">Action</th>
                     </thead>
@@ -128,7 +127,6 @@
                     url: "/developer/property/datatables/ssd",
                     type: 'GET',
                     data: function(d) {
-                        d.status = $('#status').val();
                         d.type = $('#type').val();
                         d.region = $('#region').val();
                         d.township = $('#township').val();
@@ -173,12 +171,6 @@
                     {
                         data: 'category',
                         name: 'category',
-                        sortable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
                         sortable: false,
                         searchable: false,
                     },

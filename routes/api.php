@@ -21,12 +21,15 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('API')->group(function () {
     Route::get('/home', 'PageController@index');
 
+    /* Slider */
+    Route::get('/slider', 'SliderController@index');
+
     /* Region and Township */
     Route::get('/region', 'PageController@region');
     Route::get('/region/{id}/township', 'PageController@township');
 
     /* Common Const */
-    Route::get('/common/const', 'PageController@const');
+    Route::post('/common/const', 'PageController@const');
 
     /* Property */
     Route::get('/property-lists', 'PageController@property_list');
@@ -102,6 +105,10 @@ Route::namespace('API')->group(function () {
         /* WishList */
         Route::resource('/wishlist', 'WishlistController', ['except' => ['create', 'edit', 'show', 'update']]);
 
+        /* User Follower */
+        Route::post("follow", 'FollowController@follow');
+        Route::post("unfollow", 'FollowController@unfollow');
+        Route::get("myfollowers", 'FollowController@myFollowerList');
 
     });
 

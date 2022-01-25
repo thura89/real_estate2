@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Region;
 use App\Property;
-use Illuminate\Http\Request;
 
+use App\Township;
+use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\API\RegionResource;
 use App\Http\Resources\PropertyList;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
 use App\Http\Resources\PropertyDetail348;
-use App\Region;
-use App\Township;
+use App\Http\Resources\API\RegionResource;
 
 class PageController extends Controller
 {
@@ -31,11 +32,14 @@ class PageController extends Controller
             'rentPrice',
             'propertyImage',
         ]);
+        if ($request->get('property_type')) {
+            $data->where('properties_type', $request->get('property_type'));
+        }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
-        if ($request->get('property_type')) {
-            $data->where('properties_type', $request->get('property_type'));
+        if ($request->get('recommend_status')) {
+            $data->where('status', $request->get('recommend_status'));
         }
         if ($request->get('region')) {
             $region = $request->get('region');
@@ -49,10 +53,7 @@ class PageController extends Controller
                 $query->where('township', $township);
             });
         }
-        
         $data =  $data->orderBy('created_at','DESC')->paginate(10);
-
-
         $data = PropertyList::collection($data)->additional(['result'=>true,'message'=>'Success']);
 
         return $data;
@@ -102,20 +103,41 @@ class PageController extends Controller
     public function region(Request $request)
     {
         $data = Region::all();
-        $data = RegionResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
-        return $data;
+        return ResponseHelper::success('Success',RegionResource::collection($data));
+        
     }
 
     public function township(Request $request,$id)
     {
         $data = Township::where('region_id',$id)->get();
-        $data = RegionResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
-        return $data;
+        return ResponseHelper::success('Success',RegionResource::collection($data));
+        
     }
 
-    public function const()
+    public function const(Request $request)
     {
-        $data = config('const');
-        return ResponseHelper::success('Success', $data);
+        $validate = Validator::make($request->all(),[
+            'const_name' => 'required',
+            'language' => 'required|in:mm,en',
+        ]);
+
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail to request',$validate->errors());
+        }
+
+        $const_name = $request->const_name;
+        if ($request->language == 'en') {
+            $data = config('const.'.$const_name.'');
+        }
+        if ($request->language == 'mm') {
+            $data = config('const_mm.'.$const_name.'');
+        }
+
+        if ($data) {
+            return ResponseHelper::success('Success', $data);
+        }
+        return ResponseHelper::fail('Fail', null);
+        
+        
     }
 }

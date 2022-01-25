@@ -9,7 +9,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable ;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','facebook_id','google_id','apple_id'
+        'name', 'email', 'password', 'facebook_id', 'google_id', 'apple_id'
     ];
 
     /**
@@ -50,14 +50,12 @@ class User extends Authenticatable
         return $this->hasMany(Property::class, 'user_id', 'id');
     }
 
-    public function property_wishlist()
-    {
-        return $this->hasMany(Property::class);
-    }
 
-    public function scopeWithAndWhereHas($query, $relation, $constraint){
+
+    public function scopeWithAndWhereHas($query, $relation, $constraint)
+    {
         return $query->whereHas($relation, $constraint)
-                     ->with([$relation => $constraint]);
+            ->with([$relation => $constraint]);
     }
 
     public function wantToBuyRents()
@@ -65,15 +63,21 @@ class User extends Authenticatable
         return $this->hasMany(WantToBuyRent::class, 'user_id', 'id');
     }
 
+    /* News */
     public function news()
     {
         return $this->hasMany('App\News', 'post_by', 'id');
     }
 
-    public function wishlist(){
-
+    /* Product Wishlist / Favorite List */
+    public function wishlist()
+    {
         return $this->hasMany(Wishlist::class);
+    }
 
+    public function property_wishlist()
+    {
+        return $this->hasMany(Property::class);
     }
 
     public function getProfilePhotoAttribute($value)
@@ -81,7 +85,7 @@ class User extends Authenticatable
         if ($value) {
             return asset('/storage/profile/' . $value);
         } else {
-            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->name));
+            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=' . str_replace(' ', '+', $this->name));
         }
     }
     public function getCoverPhotoAttribute($value)
@@ -89,7 +93,38 @@ class User extends Authenticatable
         if ($value) {
             return asset('/storage/cover/' . $value);
         } else {
-            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.str_replace(' ', '+', $this->name));
+            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=' . str_replace(' ', '+', $this->name));
         }
+    }
+
+    /* User Follower */
+    public function follow(User $user)
+    {
+        if (!$this->isFollowing($user)) {
+            Follow::create([
+                'user_id' => auth()->id(),
+                'following_id' => $user->id
+            ]);
+        }
+    }
+    
+    public function unfollow(User $user)
+    {
+        Follow::where('user_id', auth()->id())->where('following_id', $user->id)->delete();
+    }
+
+    public function isFollowing(User $user)
+    {
+        return $this->following()->where('users.id', $user->id)->exists();
+    }
+
+    public function following()
+    {
+        return $this->hasManyThrough(User::class, Follow::class, 'user_id', 'id', 'id', 'following_id');
+    }
+
+    public function followers()
+    {
+        return $this->hasManyThrough(User::class, Follow::class, 'following_id', 'id', 'id', 'user_id');
     }
 }

@@ -547,13 +547,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- Publish --}}
-                        <div class="row">
-                            <div class="col-6 col-md-4 form-group">
-                                <input name="status" type="checkbox">
-                                <label for="status">Publish This Content</label>
-                            </div>
-                        </div>
                         {{-- Submit Button --}}
                         <div class="row">
                             <div class="col form-group">

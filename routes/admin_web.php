@@ -43,6 +43,10 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_adm
     Route::resource('/news', 'NewsController');
     Route::get('/news/datatables/ssd', 'NewsController@ssd');
 
+    /* News */
+    Route::resource('/slider', 'SliderController');
+    Route::get('/slider/datatables/ssd', 'SliderController@ssd');
+
     /* House  */
     Route::post('/property/create/house_shop' , 'PropertyController@house_shop_create')->name('property.create.house_shop');
     Route::post('/property/update/house_shop' , 'PropertyController@house_shop_update')->name('property.update.house_shop');

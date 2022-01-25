@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
-@section('title', 'News Management')
-@section('news-active', 'mm-active')
+@section('title', 'Slider Management')
+@section('slider-active', 'mm-active')
 @section('content')
     <div class="app-main__inner">
         <div class="app-page-title">
@@ -10,7 +10,7 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Want2 Buy & Rent Management
+                    <div>App Slider Management
                     </div>
                 </div>
             </div>
@@ -18,13 +18,13 @@
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
-                <a href="{{ route('admin.news.create') }}"
+                <a href="{{ route('admin.slider.create') }}"
                     class="btn-shadow btn btn-primary">
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-business-time fa-w-20"></i>
                     </span>
                     Create
-                    News
+                    Slider
                 </a>
             </div>
         </div>
@@ -33,11 +33,9 @@
                 <div class="card-body">
                     <table class="table table-borderd DataTables">
                         <thead>
-                            <th>#</th>
                             <th>Title</th>
-                            <th>category</th>
-                            <th>Description</th>
-                            <th>PostBy</th>
+                            <th>Image</th>
+                            <th>Status</th>
                             <th>Created At</th>
                             <th class="no-sort">Action</th>
                         </thead>
@@ -57,45 +55,34 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "/admin/news/datatables/ssd",
+                ajax: "/admin/slider/datatables/ssd",
                 columns: [
+                    {
+                        data: 'title',
+                        name: 'title'
+                    },
                     {
                         data: 'images',
                         name: 'images',
                         sortable: false,
                         searchable: false,
-
                     },
                     {
-                        data: 'post_title',
-                        name: 'post_title',
-                        sortable: false,
-                    },
-                    {
-                        data: 'category',
-                        name: 'category',
+                        data: 'status',
+                        name: 'status',
                         sortable: false,
                         searchable: false,
-                    },
-                    {
-                        data: 'post_letter',
-                        name: 'post_letter',
-                        sortable: false,
-                    },
-                    {
-                        data: 'post_by',
-                        name: 'post_by',
-                        sortable: false,
                     },
                     {
                         data: 'created_at',
                         name: 'created_at',
+                        searchable: false,
                     },
                     {
                         data: 'action',
                         name: 'action',
-                        sortable: false,
                         searchable: false,
+                        sortable: false,
                     },
 
                 ],
@@ -115,7 +102,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '/admin/news/' + id,
+                            url: '/admin/slider/' + id,
                             type: 'DELETE',
                             data: {
                                 '_token': "{{ csrf_token() }}",
