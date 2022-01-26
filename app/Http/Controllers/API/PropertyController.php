@@ -44,6 +44,7 @@ class PropertyController extends Controller
 
     public function property_list(Request $request)
     {
+        $sort = 'DESC';
         $data = Property::query()->with([
             'address',
             'partation',
@@ -51,6 +52,9 @@ class PropertyController extends Controller
             'rentPrice',
             'propertyImage',
         ])->where('user_id',Auth()->user()->id);
+        if ($request->get('p_code')) {
+            $data->where('p_code', $request->get('p_code'));
+        }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
@@ -69,8 +73,11 @@ class PropertyController extends Controller
                 $query->where('township', $township);
             });
         }
+        if ($request->get('sort')) {
+            $sort = $request->get('sort');
+        }
         
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
+        $data =  $data->orderBy('updated_at',$sort)->paginate(10);
 
 
         return ResponseHelper::success('Success',PropertyList::collection($data));

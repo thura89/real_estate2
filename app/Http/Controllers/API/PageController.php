@@ -25,6 +25,7 @@ class PageController extends Controller
 
     public function property_list(Request $request)
     {
+        $sort = 'DESC';
         $data = Property::query()->with([
             'address',
             'partation',
@@ -32,12 +33,22 @@ class PageController extends Controller
             'rentPrice',
             'propertyImage',
         ]);
+        if ($request->get('keywords')) {
+            $keyword = $request->get('keywords');
+            $data->whereHas('suppliment', function ($query) use ($keyword) {
+                $query->where('note',  'LIKE', "%$keyword%");
+            });
+        }
+        if ($request->get('p_code')) {
+            $data->where('p_code', $request->get('p_code'));
+        }
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
+
         if ($request->get('recommend_status')) {
             $data->where('status', $request->get('recommend_status'));
         }
@@ -53,13 +64,29 @@ class PageController extends Controller
                 $query->where('township', $township);
             });
         }
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
-        $data = PropertyList::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        if ($request->get('sort')) {
+            $sort = $request->get('sort');
+        }
+        if ($request->min_price || $request->max_price) {
+            $min = $request->min_price;
+            $max = $request->max_price;
+            if ($request->get('property_type') == 1) {
+                $data->whereHas('price', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }else{
+                $data->whereHas('rentprice', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }
+        }
+        $data =  $data->orderBy('updated_at', $sort)->paginate(10);
+
+        $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;
-
     }
-    public function show(Request $request,$id)
+    public function show(Request $request, $id)
     {
         /* Get Property */
         $property = Property::with([
@@ -74,7 +101,7 @@ class PageController extends Controller
             'suppliment',
             'unitAmenity',
             'user'
-        ])->where('id',$id)->first();
+        ])->where('id', $id)->first();
         $category = $property->category;
 
         if ($property) {
@@ -94,50 +121,44 @@ class PageController extends Controller
                 $data = new PropertyDetail348($property);
                 return ResponseHelper::success('Success', $data);
             }
-            
         }
         return ResponseHelper::fail('Fail', null);
-        
     }
 
     public function region(Request $request)
     {
         $data = Region::all();
-        return ResponseHelper::success('Success',RegionResource::collection($data));
-        
+        return ResponseHelper::success('Success', RegionResource::collection($data));
     }
 
-    public function township(Request $request,$id)
+    public function township(Request $request, $id)
     {
-        $data = Township::where('region_id',$id)->get();
-        return ResponseHelper::success('Success',RegionResource::collection($data));
-        
+        $data = Township::where('region_id', $id)->get();
+        return ResponseHelper::success('Success', RegionResource::collection($data));
     }
 
     public function const(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'const_name' => 'required',
             'language' => 'required|in:mm,en',
         ]);
 
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail to request',$validate->errors());
+            return ResponseHelper::fail('Fail to request', $validate->errors());
         }
 
         $const_name = $request->const_name;
         if ($request->language == 'en') {
-            $data = config('const.'.$const_name.'');
+            $data = config('const.' . $const_name . '');
         }
         if ($request->language == 'mm') {
-            $data = config('const_mm.'.$const_name.'');
+            $data = config('const_mm.' . $const_name . '');
         }
 
         if ($data) {
             return ResponseHelper::success('Success', $data);
         }
         return ResponseHelper::fail('Fail', null);
-        
-        
     }
 }

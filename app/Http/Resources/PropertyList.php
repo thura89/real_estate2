@@ -34,9 +34,11 @@ class PropertyList extends JsonResource
         return [
             'id' => $this->id,
             'image' => $image ?? '/backend/images/no-image.jpeg',
+            'p_code' => $this->p_code,
             'price' => $price,
             'street_name' => $this->address->street_name ?? null,
             'township' => $township['name'] ?? null,
+            'property_type' => config('const.property_type')[$this->properties_type],
             'category' => config('const.property_category')[$this->category],
             'bed_room' => $this->partation->bed_room ?? null,
             'bath_room' => $this->partation->bath_room ?? null,
