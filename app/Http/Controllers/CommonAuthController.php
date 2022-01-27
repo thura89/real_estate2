@@ -9,6 +9,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 
 class CommonAuthController extends Controller
@@ -48,10 +49,12 @@ class CommonAuthController extends Controller
         return Socialite::driver('facebook')->redirect();
     }
 
-    public function facebookSignin()
+    public function facebookSignin(Request $request)
     {
+        dd(Socialite::driver('facebook')->user());
         try {
             $user = Socialite::driver('facebook')->user();
+            dd($user);
             $facebookId = User::where('facebook_id', $user->id)->first();
             if($facebookId){
                 Auth::login($facebookId);
@@ -82,53 +85,8 @@ class CommonAuthController extends Controller
                     return redirect()->route('home');
                     
                 }
-            }else{
-                $createUser = User::where('email',$user->email);
-                if($createUser){
-                    $createUser->email = $user->email;
-                    $createUser->facebook_id = $user->id;
-                    $createUser->name = $user->name;
-                    $createUser->update();
-
-                }else{
-                    $createUser = User::create([
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'facebook_id' => $user->id,
-                        'user_type' => config('const.User'),
-                        'password' => encrypt('realesteate@123')
-                    ]); 
-                }
-    
-                Auth::login($createUser);
-                if (Auth::check()) {
-                    if (auth()->user()->user_type == 1) {
-                        return redirect()->route('admin.property.index');
-                    }
-                    /* Admin Staff */
-                    if (auth()->user()->user_type == 2) {
-                        return redirect()->route('admin.property.index');
-                    }
-                    /* Admin Editor */
-                    if (auth()->user()->user_type == 3) {
-                        return redirect()->route('admin.property.index');
-                    }
-                    /* Agent */
-                    if (auth()->user()->user_type == 4) {
-                        return redirect()->route('agent.property.index');
-                    }
-                    /* Developer */
-                    if (auth()->user()->user_type == 5) {
-                        return redirect()->route('developer.property.index');
-                    }
-                    /* User */
-                    if (auth()->user()->user_type == 6) {
-                        return redirect()->route('home');
-                    }
-                    return redirect()->route('home');
-                    
-                }
             }
+            return redirect('/')->withErrors(['fail' => 'You need to register with App']);
     
         } catch (Exception $exception) {
             dd($exception->getMessage());
@@ -189,45 +147,9 @@ class CommonAuthController extends Controller
                     
                 }
        
-            }else{
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'phone' => NULL,
-                    'email' => $user->email,
-                    'profile_photo' => $user->avatar_original,
-                    'google_id' => $user->id,
-                    'user_type' => 6, //Normal User
-                    'password' => encrypt('realesteate@123')
-                ]);
-                
-                Auth::login($newUser);
-      
-                if (auth()->user()->user_type == 1) {
-                    return redirect()->route('admin.property.index');
-                }
-                /* Admin Staff */
-                if (auth()->user()->user_type == 2) {
-                    return redirect()->route('admin.property.index');
-                }
-                /* Admin Editor */
-                if (auth()->user()->user_type == 3) {
-                    return redirect()->route('admin.property.index');
-                }
-                /* Agent */
-                if (auth()->user()->user_type == 4) {
-                    return redirect()->route('agent.property.index');
-                }
-                /* Developer */
-                if (auth()->user()->user_type == 5) {
-                    return redirect()->route('developer.property.index');
-                }
-                /* User */
-                if (auth()->user()->user_type == 6) {
-                    return redirect()->route('home');
-                }
-                return redirect()->route('home');
-                
             }
+            // return redirect('/')->with('fail', 'You need to register with app');
+            return redirect('/')->withErrors(['fail' => 'You need to register with App']);
       
         } catch (Exception $e) {
             dd($e->getMessage());

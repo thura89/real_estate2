@@ -46,76 +46,87 @@
             <div class="card-body">
                 <div class="">
                     <div class=" row">
-                    <div class="col">
-                        <select id='type' class="form-control">
-                            <option value="">Type</option>
-                            @foreach (config('const.property_type') as $key => $type)
-                                <option value="{{ $key }}">{{ $type }}</option>
-                            @endforeach
-                        </select>
+                        <div class="col">
+                            <input type="text" class="form-control" name="p_code" id="p_code" placeholder="P-Code">
+                        </div>
+                        <div class="col">
+                            <select id='category' class="form-control">
+                                <option value="">Category</option>
+                                @foreach (config('const.property_category') as $key => $category)
+                                    <option value="{{ $key }}">{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='region' class="form-control">
+                                <option value="">Region</option>
+                                @foreach ($regions as $key => $reg)
+                                    <option value="{{ $reg->id }}">{{ $reg->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='township' class="form-control">
+                            </select>
+                        </div>
                     </div>
-                    <div class="col">
-                        <select id='category' class="form-control">
-                            <option value="">Category</option>
-                            @foreach (config('const.property_category') as $key => $category)
-                                <option value="{{ $key }}">{{ $category }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='type' class="form-control">
+                                <option value="">Type</option>
+                                @foreach (config('const.property_type') as $key => $type)
+                                    <option value="{{ $key }}">{{ $type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="min_price" id="min_price" placeholder="Min Price">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Max Price">
+                        </div>
+                        <div class="col">
+                            <select id='status' class="form-control">
+                                <option value="">Feature</option>
+                                @foreach (config('const.publish_status') as $key => $status)
+                                    <option value="{{ $key }}">{{ $status }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="col">
-                        <select id='region' class="form-control">
-                            <option value="">Region</option>
-                            @foreach ($regions as $key => $reg)
-                                <option value="{{ $reg->id }}">{{ $reg->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select id='township' class="form-control">
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select id='status' class="form-control">
-                            <option value="">Feature</option>
-                            @foreach (config('const.publish_status') as $key => $status)
-                                <option value="{{ $key }}">{{ $status }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col">
-                        <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary"><i
-                                class="pe-7s-filter"></i> Advance Search</button>
+                    <div class="row">
+                        <div class="col">
+                            <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary"><i
+                                    class="pe-7s-filter"></i> Advance Search</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="content">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-borderd DataTables">
-                    <thead>
-                        <th class="no-sort">Img</th>
-                        <th class="no-sort">P-Code</th>
-                        <th>Region</th>
-                        <th>Township</th>
-                        <th>Price</th>
-                        <th>Type</th>
-                        <th>Category</th>
-                        <th class="no-sort">Recommended</th>
-                        <th>Created At</th>
-                        <th class="no-sort">Action</th>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+        <br>
+        <div class="content">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-borderd DataTables">
+                        <thead>
+                            <th class="no-sort">Img</th>
+                            <th class="no-sort">P-Code</th>
+                            <th>Region</th>
+                            <th>Township</th>
+                            <th>Price</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th class="no-sort">Recommended</th>
+                            <th>Created At</th>
+                            <th class="no-sort">Action</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 @section('script')
@@ -133,6 +144,9 @@
                         d.region = $('#region').val();
                         d.township = $('#township').val();
                         d.category = $('#category').val();
+                        d.p_code = $('#p_code').val();
+                        d.min_price = $('#min_price').val();
+                        d.max_price = $('#max_price').val();
                     }
                 },
                 columns: [{
@@ -192,14 +206,14 @@
                         sortable: false,
                         searchable: false,
                     },
-                    
+
                 ],
                 columnDefs: [{
-                        orderable: false,
-                        targets: 0,
-                        // visible:false
+                    orderable: false,
+                    targets: 0,
+                    // visible:false
 
-                    }]
+                }]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);

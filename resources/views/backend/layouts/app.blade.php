@@ -89,6 +89,13 @@
             })
             @endif
 
+            @if(session('fail'))
+            Toast.fire({
+                icon: 'fail',
+                title: '{{session('fail')}}'
+            })
+            @endif
+
         });
     </script>
     @yield('script')

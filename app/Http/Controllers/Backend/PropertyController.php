@@ -49,7 +49,10 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ]);
-        if ($request->get('status') == '1') {
+        if ($request->get('p_code')) {
+            $data->where('p_code', $request->get('p_code'));
+        }
+        if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }
         if ($request->get('category')) {
@@ -69,6 +72,19 @@ class PropertyController extends Controller
             $data->whereHas('address', function ($query) use ($township) {
                 $query->where('township', $township);
             });
+        }
+        if ($request->get('min_price') || $request->get('max_price')) {
+            $min = $request->get('min_price');
+            $max = $request->get('max_price');
+            if ($request->get('type') == 1) {
+                $data->whereHas('price', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }else{
+                $data->whereHas('rentprice', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }
         }
         return Datatables::of($data)
             ->filterColumn('region', function ($query, $keyword) {
