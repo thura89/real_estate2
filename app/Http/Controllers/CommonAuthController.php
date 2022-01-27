@@ -51,10 +51,8 @@ class CommonAuthController extends Controller
 
     public function facebookSignin(Request $request)
     {
-        dd(Socialite::driver('facebook')->user());
         try {
             $user = Socialite::driver('facebook')->user();
-            dd($user);
             $facebookId = User::where('facebook_id', $user->id)->first();
             if($facebookId){
                 Auth::login($facebookId);
