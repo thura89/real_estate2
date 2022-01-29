@@ -33,6 +33,7 @@
                 <div class="card-body">
                     <table class="table table-borderd DataTables">
                         <thead>
+                            <th>Image</th>
                             <th>Region</th>
                             <th>Township</th>
                             <th>Sale Type</th>
@@ -60,6 +61,12 @@
                 serverSide: true,
                 ajax: "/admin/new_project/datatables/ssd",
                 columns: [
+                    {
+                        data: 'images',
+                        name: 'images',
+                        sortable: false,
+                        searchable: false,
+                    },
                     {
                         data: 'region',
                         name: 'region'

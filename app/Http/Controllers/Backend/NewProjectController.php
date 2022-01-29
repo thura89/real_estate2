@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Backend;
 
 use App\Region;
 use Carbon\Carbon;
+use App\NewProject;
 use App\WantToBuyRent;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
-use App\NewProject;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+use function PHPUnit\Framework\isEmpty;
 
 class NewProjectController extends Controller
 {
@@ -36,6 +39,13 @@ class NewProjectController extends Controller
             'township',
         ])->latest('updated_at');
         return Datatables::of($data)
+            ->editColumn('images', function ($each) {
+                $image = json_decode($each['images']);
+                if ($image) {
+                    return '<img style="width: 100px;height:100px;" src="' . asset(config('const.new_project_img_path')) . '/' . $image[0] . '">' ?? '-';
+                }
+                return '-';
+            })
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
                 return $region->name ?? '-';
@@ -48,7 +58,7 @@ class NewProjectController extends Controller
                 return config('const.developer_sale_type')[$each->new_project_sale_type] ?? '-';
             })
             ->editColumn('price', function ($each) {
-                return $each->min_price .'~'. $each->max_price .' '. config('const.currency_code')[$each->currency_code] ?? '-';
+                return $each->min_price . '~' . $each->max_price . ' ' . config('const.currency_code')[$each->currency_code] ?? '-';
             })
 
             ->editColumn('start_at', function ($each) {
@@ -66,7 +76,7 @@ class NewProjectController extends Controller
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
                 return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['budget', 'action'])
+            ->rawColumns(['images', 'budget', 'action'])
             ->make(true);
     }
 
@@ -90,7 +100,7 @@ class NewProjectController extends Controller
     public function store(Request $request)
     {
         $data = new NewProject();
-        $data->developer_id = Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
 
         /* Address */
         $data->region = $request->region;
@@ -108,7 +118,7 @@ class NewProjectController extends Controller
 
         /* Payment */
         $data->purchase_type = $request->purchase_type;
-        $data->installment = ($request->installment == 'on') ? 1 : 0 ;
+        $data->installment = ($request->installment == 'on') ? 1 : 0;
 
         /* Situation */
         $data->new_project_sale_type = $request->new_project_sale_type;
@@ -131,10 +141,19 @@ class NewProjectController extends Controller
         $data->carpark = $request->carpark ? 1 : 0;
         $data->own_transformer = $request->own_transformer ? 1 : 0;
         $data->disposal = $request->disposal ? 1 : 0;
-        
+
+        /* Project Image */
+        if ($request->hasfile('images')) {
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/new_project/' . $file_name, file_get_contents($image));
+                $images[] = $file_name;
+            }
+        }
+        $data->images = json_encode($images);
         $data->save();
 
-        return redirect()->route('developer.new_project.index')->with('create', 'Successfully Created');
+        return redirect('admin/new_project')->with('create', 'Successfully Created');
     }
 
     /**
@@ -159,7 +178,16 @@ class NewProjectController extends Controller
         /* Get Region */
         $regions = Region::get(['name', 'id']);
         $data = NewProject::findOrFail($id);
-        return view('backend.new_project.edit', compact('id', 'regions', 'data'));
+        $decode_images = json_decode($data['images']) ?? [];
+        $images = [];
+        foreach ($decode_images as $key => $image) {
+            $images[] = [
+                'id' => $image,
+                'src' => asset(config('const.new_project_img_path')) . '/' . $image
+            ];
+        }
+        $images = json_encode($images);
+        return view('backend.new_project.edit', compact('id', 'regions', 'data', 'images'));
     }
 
     /**
@@ -189,7 +217,7 @@ class NewProjectController extends Controller
 
         /* Payment */
         $data->purchase_type = $request->purchase_type;
-        $data->installment = ($request->installment == 'on') ? 1 : 0 ;
+        $data->installment = ($request->installment == 'on') ? 1 : 0;
 
         /* Situation */
         $data->new_project_sale_type = $request->new_project_sale_type;
@@ -213,7 +241,46 @@ class NewProjectController extends Controller
         $data->own_transformer = $request->own_transformer ? 1 : 0;
         $data->disposal = $request->disposal ? 1 : 0;
 
+        /* Photo */
+        $store_data = json_decode($data->images);
+        if (($request->photos[0] != null)) {
+            $count = count($request->photos);
+            $oldreq = $request->old ?? [];
+            $reverse = array_reverse($oldreq) ?? [];
+            $old = array_splice($reverse, $count) ?? [];
+            if($old != null){
+                $diff_data = array_diff($store_data, $old);
+                foreach ($diff_data as $key => $diff) {
+                    Storage::disk('public')->delete('new_project/' . $diff);
+                }    
+            }else{
+                if ($store_data) {
+                    foreach ($store_data as $key => $diff) {
+                        Storage::disk('public')->delete('new_project/' . $diff);
+                    }
+                }
+            }
+            foreach ($request->photos as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/new_project/' . $file_name, file_get_contents($image));
+                $img[] = $file_name;
+            }
+            $merge = array_merge($img,$old);
+            $data->images = json_encode($merge);
+        } else {
+            if ($store_data != $request->old) {
+                $old = $request->old ?? [];
+                $remain_data = array_intersect($store_data, $old);
+                $diff_data = array_diff($store_data, $old);
+                foreach ($diff_data as $key => $diff) {
+                    Storage::disk('public')->delete('new_project/' . $diff);
+                }
+                $data->images = json_encode($remain_data);
+            }
+        }
+
         $data->update();
+
         return redirect()->route('admin.new_project.index')->with('update', 'Successfully Updated');
     }
 
@@ -226,6 +293,12 @@ class NewProjectController extends Controller
     public function destroy($id)
     {
         $data = NewProject::findOrFail($id);
+        $img = json_decode($data->images);
+        if ($img) {
+            foreach ($img as $key => $diff) {
+                Storage::disk('public')->delete('new_project/' . $diff);
+            }
+        }
         $data->delete();
     }
 }

@@ -25,7 +25,6 @@ class PageController extends Controller
 
     public function property_list(Request $request)
     {
-        $sort = 'DESC';
         $data = Property::query()->with([
             'address',
             'partation',
@@ -33,6 +32,7 @@ class PageController extends Controller
             'rentPrice',
             'propertyImage',
         ]);
+        
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
             $data->whereHas('suppliment', function ($query) use ($keyword) {
@@ -48,10 +48,6 @@ class PageController extends Controller
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
-
-        if ($request->get('recommend_status')) {
-            $data->where('status', $request->get('recommend_status'));
-        }
         if ($request->get('region')) {
             $region = $request->get('region');
             $data->whereHas('address', function ($query) use ($region) {
@@ -63,9 +59,6 @@ class PageController extends Controller
             $data->whereHas('address', function ($query) use ($township) {
                 $query->where('township', $township);
             });
-        }
-        if ($request->get('sort')) {
-            $sort = $request->get('sort');
         }
         if ($request->min_price || $request->max_price) {
             $min = $request->min_price;
@@ -80,8 +73,72 @@ class PageController extends Controller
                 });
             }
         }
-        $data =  $data->orderBy('updated_at', $sort)->paginate(10);
+        if ($request->get('sort')) {
+            $sort = $request->get('sort');
+            /* Sort By Max Price */
+            if ($sort == 'max') {
+                if ($request->get('property_type') == 1) {
+                    $data->whereHas('price', function ($query) {
+                        $query->sortByDesc('price');
+                    });
+                } else{
+                    $data->whereHas('rentprice', function ($query) {
+                        $query->sortByDesc('price');
+                    });
+                }
+            }
+            /* Sort By Min Price */
+            if ($sort == 'min') {
+                if ($request->get('property_type') == 1) {
+                    $data->whereHas('price', function ($query) {
+                        $query->sort();
+                    });
+                } else{
+                    $data->whereHas('rentprice', function ($query) {
+                        $query->sort();
+                    });
+                }
+            }
+            if ($sort == 'new') {
+                $data->orderBy('updated_at', 'DESC');
+            }
+            if ($sort == 'old') {
+                $data->orderBy('updated_at', 'ASC');
+            }
+        }else{
+            $data->orderBy('updated_at', 'DESC');
+        }
+        $data = $data->paginate(10);
+        $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
+        return $data;
+    }
+
+    public function recommend_property(Request $request)
+    {
+        $data = Property::query()->with([
+            'address',
+            'partation',
+            'price',
+            'rentPrice',
+            'propertyImage',
+        ]);
+        if ($request->get('property_type')) {
+            $data->where('properties_type', $request->get('property_type'));
+        }
+        if ($request->get('category')) {
+            $data->where('category', $request->get('category'));
+        }
+        if ($request->get('region')) {
+            $region = $request->get('region');
+            $data->whereHas('address', function ($query) use ($region) {
+                $query->where('region', $region);
+            });
+        }
+        $data = $data->where('status', 1)
+                    ->orderBy('updated_at', 'DESC')
+                    ->paginate(10);
+        
         $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;

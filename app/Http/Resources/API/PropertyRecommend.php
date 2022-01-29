@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\API;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PropertyList extends JsonResource
+class PropertyRecommend extends JsonResource
 {
-    
     /**
      * Transform the resource into an array.
      *

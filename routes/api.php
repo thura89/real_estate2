@@ -33,6 +33,7 @@ Route::namespace('API')->group(function () {
 
     /* Property */
     Route::get('/property-lists', 'PageController@property_list');
+    Route::get('/recommend_property', 'PageController@recommend_property');
     Route::get('/property/{id}/show', 'PageController@show');
     
     /* New Project */

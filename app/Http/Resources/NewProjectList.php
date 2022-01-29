@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NewProjectList extends JsonResource
@@ -19,6 +20,8 @@ class NewProjectList extends JsonResource
         $township = $this->township()->first('name');
         return [
             'id' => $this->id,
+            'about_project' => Str::limit($this->about_project, 60, '...'),
+            'sale_type' => config('const.developer_sale_type')[$this->new_project_sale_type],
             'region' => $region->name ?? '-',
             'township' => $township->name ?? '-',
             'price' => number_format($this->min_price) .' to '. number_format($this->max_price) .' '. config('const.currency_code')[$this->currency_code] ?? '-',

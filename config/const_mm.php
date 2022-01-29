@@ -223,6 +223,7 @@ return array(
         ],
         'p_img_path' => 'storage/property_images/',
         'news_img_path' => 'storage/news/',
+        'new_project_img_path' => 'storage/new_project/',
         'sliders_img_path' => 'storage/slider/',
         'carpark' => [
                 1 => '၁',
