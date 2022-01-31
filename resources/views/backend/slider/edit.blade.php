@@ -72,7 +72,7 @@
     </div>
 @endsection
 @section('script')
-    {!! JsValidator::formRequest('App\Http\Requests\SliderRequest', '#update') !!}
+    {!! JsValidator::formRequest('App\Http\Requests\SliderUpdateRequest', '#update') !!}
     @include('backend.property.script')
     <script>
         $(document).ready(function() {

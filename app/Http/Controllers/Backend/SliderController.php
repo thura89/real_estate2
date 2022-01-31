@@ -77,7 +77,6 @@ class SliderController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
         $data = new Slider();
         $data->title = $request->title;
         if ($request->hasFile('images')) {
@@ -86,7 +85,7 @@ class SliderController extends Controller
             Storage::disk('public')->put('/slider/'.$slider_img, file_get_contents($profile_img));
         }
         $data->images = $slider_img;
-        $data->status = ($request->status == 'on') ? 1 : 0 ;
+        $data->status = $request->status ?? 0 ;
 
         $data->save();
 
@@ -140,9 +139,7 @@ class SliderController extends Controller
             }
         }
         $data->images = $slider_img_title;
-        if($request->status){
-            $data->status = ($request->status == 'on') ? 1 : 0 ;
-        }
+        $data->status = $request->status ?? 0;
         $data->update();
         return redirect()->route('admin.slider.index')->with('update', 'Successfully Updated');
     }
