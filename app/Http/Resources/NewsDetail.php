@@ -24,7 +24,7 @@ class NewsDetail extends JsonResource
             ],
             "view_count" => $this->view_count,
             "category" => config('const.news_category')[$this->category],
-            "images" => $this->images,
+            "images" => asset(config('const.news_img_path')) . '/' . $this->images ?? null,
             "post_letter" => $this->post_letter,
             "created_at" => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
         ];

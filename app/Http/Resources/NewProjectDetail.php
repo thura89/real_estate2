@@ -17,7 +17,13 @@ class NewProjectDetail extends JsonResource
     {
         $region = $this->region()->first('name');
         $township = $this->township()->first('name');
-        	
+        
+        $decode_images = json_decode($this->images);
+        $images = [];
+        foreach ($decode_images as $key => $image) {
+            $images[] = asset(config('const.p_img_path')) . '/' . $image;
+        }
+        $images = $images ?? null; 
 
 
         return [
@@ -52,6 +58,7 @@ class NewProjectDetail extends JsonResource
             'carpark' => $this->carpark,
             'own_transformer' => $this->own_transformer,
             'disposal' => $this->disposal,
+            'images' => $images,
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
