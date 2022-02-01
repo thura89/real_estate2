@@ -51,7 +51,7 @@ class PropertyController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ])->where('user_id',Auth()->user()->id);
+        ])->where('user_id', Auth()->user()->id);
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
         }
@@ -76,15 +76,13 @@ class PropertyController extends Controller
         if ($request->get('sort')) {
             $sort = $request->get('sort');
         }
-        
-        $data =  $data->orderBy('updated_at',$sort)->paginate(10);
+
+        $data =  $data->orderBy('updated_at', $sort)->paginate(10);
 
 
-        return ResponseHelper::success('Success',PropertyList::collection($data));
-
-
+        return ResponseHelper::success('Success', PropertyList::collection($data));
     }
-    public function show(Request $request,$id)
+    public function show(Request $request, $id)
     {
         /* Get Property */
         $property = Property::with([
@@ -99,7 +97,7 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
             'user'
-        ])->where('id',$id)->where('user_id',Auth()->user()->id)->first();
+        ])->where('id', $id)->where('user_id', Auth()->user()->id)->first();
         $category = $property->category;
 
         if ($property) {
@@ -119,16 +117,26 @@ class PropertyController extends Controller
                 $data = new PropertyDetail348($property);
                 return ResponseHelper::success('Success', $data);
             }
-            
         }
         return ResponseHelper::fail('Fail', null);
-        
     }
 
+    public function multiSplit($string)
+    {
+        $output = array();
+        $cols = explode(",", $string);
+
+        foreach ($cols as $col) {
+            $dashcols = explode("-", $col);
+            $output[] = $dashcols[0];
+        }
+
+        return $output;
+    }
     /* Create House, Shop */
     public function house_shop_create(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'region' => 'required',
@@ -169,7 +177,7 @@ class PropertyController extends Controller
             /* Payment */
             'purchase_type' => 'required',
             'installment' => 'required_if:property_type,==,1',
-            
+
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
             'currency_code' => 'required_if:property_type,==,2',
@@ -190,7 +198,7 @@ class PropertyController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail to request',$validate->errors());
+            return ResponseHelper::fail('Fail to request', $validate->errors());
         }
 
         DB::beginTransaction();
@@ -201,7 +209,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = $request->lat ?? Null; // Sample lag
             $property->long = $request->long ?? Null;
-             // Sample long
+            // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
             $property->status = $request->status ? 1 : 0; //Publish Status
@@ -293,41 +301,29 @@ class PropertyController extends Controller
             $property->suppliment()->save($suppliment);
 
             /* Unit Aminity */
-            if ($request->property_category == 1) {
-                $unitAmenity = new UnitAmenity();
-                $unitAmenity->refrigerator = $request->refrigerator ? 1 : 0;
-                $unitAmenity->washing_machine = $request->washing_machine ? 1 : 0;
-                $unitAmenity->mirowave = $request->mirowave ? 1 : 0;
-                $unitAmenity->gas_or_electric_stove = $request->gas_or_electric_stove ? 1 : 0;
-                $unitAmenity->air_conditioning = $request->air_conditioning ? 1 : 0;
-                $unitAmenity->tv = $request->tv ? 1 : 0;
-                $unitAmenity->cable_satellite = $request->cable_satellite ? 1 : 0;
-                $unitAmenity->internet_wifi = $request->internet_wifi ? 1 : 0;
-                $unitAmenity->water_heater = $request->water_heater ? 1 : 0;
-                $unitAmenity->security_cctv = $request->security_cctv ? 1 : 0;
-                $unitAmenity->fire_alarm = $request->fire_alarm ? 1 : 0;
-                $unitAmenity->dinning_table = $request->dinning_table ? 1 : 0;
-                $unitAmenity->bed = $request->bed ? 1 : 0;
-                $unitAmenity->sofa_chair = $request->sofa_chair ? 1 : 0;
-                $unitAmenity->private_swimming_pool = $request->private_swimming_pool ? 1 : 0;
-                $property->unitAmenity()->save($unitAmenity);
+            if ($request->unit_amenity) {
+                if ($request->property_category == 1) {
+                    $unitAmenity = new UnitAmenity();
+                    $splice_amenity = $request->unit_amenity;
+                    $splice_amenity = explode('|', $splice_amenity);
+                    foreach ($splice_amenity as $key => $dat) {
+                        $unitAmenity->$dat = 1;
+                    }
+                    $property->unitAmenity()->save($unitAmenity);
+                }
             }
-
+            
             /* Building Amenity */
-            if ($request->property_category == 6) {
-                $buildingAmenity = new BuildingAmenity();
-                $buildingAmenity->elevator = $request->elevator ? 1 : 0;
-                $buildingAmenity->garage = $request->garage ? 1 : 0;
-                $buildingAmenity->fitness_center = $request->fitness_center ? 1 : 0;
-                $buildingAmenity->security = $request->security ? 1 : 0;
-                $buildingAmenity->swimming_pool = $request->swimming_pool ? 1 : 0;
-                $buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-                $buildingAmenity->playground = $request->playground ? 1 : 0;
-                $buildingAmenity->garden = $request->garden ? 1 : 0;
-                $buildingAmenity->carpark = $request->carpark ? 1 : 0;
-                $buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
-                $buildingAmenity->disposal = $request->disposal ? 1 : 0;
-                $property->buildingAmenity()->save($buildingAmenity);
+            if ($request->building_amenity) {
+                if ($request->property_category == 6) {
+                    $buildingAmenity = new BuildingAmenity();
+                    $building_amenity = $request->building_amenity;
+                    $building_amenity = explode('|', $building_amenity);
+                    foreach ($building_amenity as $key => $dat) {
+                        $buildingAmenity->$dat = 1;
+                    }
+                    $property->buildingAmenity()->save($buildingAmenity);
+                }
             }
 
             /* Property Image */
@@ -343,23 +339,24 @@ class PropertyController extends Controller
             $property->propertyImage()->save($property_image);
 
             DB::commit();
-            return ResponseHelper::success('Successfully created',Null);
+            return ResponseHelper::success('Successfully created', Null);
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
-            return ResponseHelper::fail('Fail to request',Null);
+            return ResponseHelper::fail('Fail to request', Null);
         }
     }
     /* Update House , Shop */
     public function house_shop_update(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
-            
+
             /* AreaSize */
             'measurement' => 'required',
             'front_area' => 'required',
@@ -368,7 +365,7 @@ class PropertyController extends Controller
             'fence_width' => 'required_if:property_category,==,1',
             'fence_length' => 'required_if:property_category,==,1',
             'floor_level' => 'required_if:property_category,==,6',
-            
+
             /* partation */
             'partation_type' => 'required',
             'bath_room' => 'required_if:partation_type,==,2',
@@ -384,7 +381,7 @@ class PropertyController extends Controller
             'building_condition' => 'required',
             'type_of_building' => 'required_if:property_category,==,1',
             'shop_type' => 'required_if:property_category,==,6',
-            
+
             /* Property Type */
             'property_type' => 'required',
 
@@ -407,12 +404,10 @@ class PropertyController extends Controller
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
 
-            /* image */
-            'images' => 'required',
         ]);
-        
+
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail Request',$validate->errors());
+            return ResponseHelper::fail('Fail Request', $validate->errors());
         }
 
         DB::beginTransaction();
@@ -496,6 +491,11 @@ class PropertyController extends Controller
 
             /* Unit Aminity */
             if ($property->category == 1) {
+                $splice_amenity = $request->unit_amenity;
+                $splice_amenity = explode('|', $splice_amenity);
+                foreach ($splice_amenity as $key => $dat) {
+                    $property->unitAmenity->$dat = 1;
+                }
                 $property->unitAmenity->refrigerator = $request->refrigerator ? 1 : 0;
                 $property->unitAmenity->washing_machine = $request->washing_machine ? 1 : 0;
                 $property->unitAmenity->mirowave = $request->mirowave ? 1 : 0;
@@ -573,16 +573,16 @@ class PropertyController extends Controller
 
             DB::commit();
 
-            return ResponseHelper::success('Successfully Updated',Null);
+            return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong',NUll);
+            return ResponseHelper::fail('Something Wrong', NUll);
         }
     }
     /* Create Land, House Land , Industrial */
     public function land_house_land_create(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'region' => 'required',
@@ -599,7 +599,7 @@ class PropertyController extends Controller
             'fence_length' => 'required',
             'building_width' => 'required_if:property_category,==,7',
             'building_length' => 'required_if:property_category,==,7',
-            
+
             /* partation */
             'partation_type' => 'required_if:property_category,2|required_if:property_category,7',
             'bath_room' => 'required_if:partation_type,==,2',
@@ -644,7 +644,7 @@ class PropertyController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail to request',$validate->errors());
+            return ResponseHelper::fail('Fail to request', $validate->errors());
         }
 
         DB::beginTransaction();
@@ -764,25 +764,24 @@ class PropertyController extends Controller
             $property->propertyImage()->save($property_image);
 
             DB::commit();
-            return ResponseHelper::success('Successfully Created',null);
-
+            return ResponseHelper::success('Successfully Created', null);
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong',null);
+            return ResponseHelper::fail('Something Wrong', null);
         }
     }
     /* Update Land, House Land , Industrial */
     public function land_house_land_update(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
-            
+
             /* AreaSize */
             'measurement' => 'required',
             'front_area' => 'required',
@@ -790,7 +789,7 @@ class PropertyController extends Controller
             'fence_length' => 'required',
             'building_width' => 'required_if:property_category,==,7',
             'building_length' => 'required_if:property_category,==,7',
-            
+
             /* partation */
             'partation_type' => 'required_if:property_category,2|required_if:property_category,7',
             'bath_room' => 'required_if:partation_type,==,2',
@@ -807,7 +806,7 @@ class PropertyController extends Controller
             'industrial_type' => 'required_if:property_category,==,7',
             'year_of_construction' => 'required_if:property_category,==,7',
             'building_condition' => 'required_if:property_category,==,7',
-            
+
             /* Property Type */
             'property_type' => 'required',
 
@@ -832,7 +831,7 @@ class PropertyController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail Request',$validate->errors());
+            return ResponseHelper::fail('Fail Request', $validate->errors());
         }
         DB::beginTransaction();
         try {
@@ -959,7 +958,7 @@ class PropertyController extends Controller
 
             DB::commit();
 
-            return ResponseHelper::success('Successfully Updated',Null);
+            return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
             return ResponseHelper::fail('Something Wrong', Null);
@@ -969,7 +968,7 @@ class PropertyController extends Controller
     public function apart_condo_office_create(ApartCondoCreateRequest $request)
     {
 
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'region' => 'required',
@@ -998,10 +997,10 @@ class PropertyController extends Controller
             'year_of_construction' => 'required',
             'building_repairing' => 'required',
             'building_condition' => 'required',
-            
+
             /* Property Type */
             'property_type' => 'required',
-            
+
             /* Payment */
             'purchase_type' => 'required',
             'installment' => 'required_if:property_type,==,1',
@@ -1025,7 +1024,7 @@ class PropertyController extends Controller
             'images' => 'required',
         ]);
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail to request',$validate->errors());
+            return ResponseHelper::fail('Fail to request', $validate->errors());
         }
 
         DB::beginTransaction();
@@ -1172,17 +1171,16 @@ class PropertyController extends Controller
             $property->propertyImage()->save($property_image);
 
             DB::commit();
-            return ResponseHelper::success('Successfully Created',Null);
-
+            return ResponseHelper::success('Successfully Created', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong',Null);
+            return ResponseHelper::fail('Something Wrong', Null);
         }
     }
     /* Update Aparment Condo , Office */
     public function apart_condo_office_update(ApartCondoUpdateRequest $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
             'street_name' => 'required',
@@ -1209,10 +1207,10 @@ class PropertyController extends Controller
             'year_of_construction' => 'required',
             'building_repairing' => 'required',
             'building_condition' => 'required',
-            
+
             /* Property Type */
             'property_type' => 'required',
-            
+
             /* Payment */
             'purchase_type' => 'required',
             'installment' => 'required_if:property_type,==,1',
@@ -1233,7 +1231,7 @@ class PropertyController extends Controller
             'sale_area' => 'required_if:property_type,==,1',
         ]);
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail Request',$validate->errors());
+            return ResponseHelper::fail('Fail Request', $validate->errors());
         }
         DB::beginTransaction();
         try {
@@ -1383,10 +1381,10 @@ class PropertyController extends Controller
             $property->push();
 
             DB::commit();
-            return ResponseHelper::success('Successfully Updated',Null);
+            return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong',Null);
+            return ResponseHelper::fail('Something Wrong', Null);
         }
     }
 }

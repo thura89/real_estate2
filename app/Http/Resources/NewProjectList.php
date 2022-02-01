@@ -18,6 +18,8 @@ class NewProjectList extends JsonResource
     {
         $region = $this->region()->first('name');
         $township = $this->township()->first('name');
+        $image = json_decode($this->images);
+        $image = asset(config('const.new_project_img_path')) . '/' . $image[0];
         return [
             'id' => $this->id,
             'about_project' => Str::limit($this->about_project, 60, '...'),
@@ -27,6 +29,7 @@ class NewProjectList extends JsonResource
             'price' => number_format($this->min_price) .' to '. number_format($this->max_price) .' '. config('const.currency_code')[$this->currency_code] ?? '-',
             'start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? '-',
             'end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? '-',
+            'images' => $image ?? '/backend/images/no-image.jpeg',
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
     }
