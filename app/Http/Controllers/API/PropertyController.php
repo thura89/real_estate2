@@ -349,6 +349,7 @@ class PropertyController extends Controller
     /* Update House , Shop */
     public function house_shop_update(Request $request)
     {
+        
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required',
@@ -490,45 +491,46 @@ class PropertyController extends Controller
             $property->suppliment->note = $request->note ?? null;
 
             /* Unit Aminity */
-            if ($property->category == 1) {
-                $splice_amenity = $request->unit_amenity;
-                $splice_amenity = explode('|', $splice_amenity);
-                foreach ($splice_amenity as $key => $dat) {
-                    $property->unitAmenity->$dat = 1;
+            if ($request->unit_amenity) {
+                if ($property->category == 1) {
+                    $splice_amenity = $request->unit_amenity;
+                    $splice_amenity = explode('|', $splice_amenity);
+                    $unit_amenity = config('const.unit_amenity');
+                    $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
+                    $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                    if ($unit_amenity_diff) {
+                        foreach ($unit_amenity_diff as $key => $diff) {
+                            $property->unitAmenity->$diff = 0;
+                        }
+                    }
+                    if ($unit_amenity_intersect) {
+                        foreach ($unit_amenity_intersect as $key => $interset) {
+                            $property->unitAmenity->$interset = 1;
+                        }
+                    }
                 }
-                $property->unitAmenity->refrigerator = $request->refrigerator ? 1 : 0;
-                $property->unitAmenity->washing_machine = $request->washing_machine ? 1 : 0;
-                $property->unitAmenity->mirowave = $request->mirowave ? 1 : 0;
-                $property->unitAmenity->gas_or_electric_stove = $request->gas_or_electric_stove ? 1 : 0;
-                $property->unitAmenity->air_conditioning = $request->air_conditioning ? 1 : 0;
-                $property->unitAmenity->tv = $request->tv ? 1 : 0;
-                $property->unitAmenity->cable_satellite = $request->cable_satellite ? 1 : 0;
-                $property->unitAmenity->internet_wifi = $request->internet_wifi ? 1 : 0;
-                $property->unitAmenity->water_heater = $request->water_heater ? 1 : 0;
-                $property->unitAmenity->security_cctv = $request->security_cctv ? 1 : 0;
-                $property->unitAmenity->fire_alarm = $request->fire_alarm ? 1 : 0;
-                $property->unitAmenity->dinning_table = $request->dinning_table ? 1 : 0;
-                $property->unitAmenity->bed = $request->bed ? 1 : 0;
-                $property->unitAmenity->sofa_chair = $request->sofa_chair ? 1 : 0;
-                $property->unitAmenity->private_swimming_pool = $request->private_swimming_pool ? 1 : 0;
             }
 
             /* Building Aminity */
-            if ($property->category == 6) {
-                $property->buildingAmenity->elevator = $request->elevator ? 1 : 0;
-                $property->buildingAmenity->garage = $request->garage ? 1 : 0;
-                $property->buildingAmenity->fitness_center = $request->fitness_center ? 1 : 0;
-                $property->buildingAmenity->security = $request->security ? 1 : 0;
-                $property->buildingAmenity->swimming_pool = $request->swimming_pool ? 1 : 0;
-                $property->buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-                $property->buildingAmenity->playground = $request->playground ? 1 : 0;
-                $property->buildingAmenity->garden = $request->garden ? 1 : 0;
-                $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
-                $property->buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
-                $property->buildingAmenity->disposal = $request->disposal ? 1 : 0;
+            if ($request->building_amenity) {
+                if ($property->category == 6) {
+                    $splice_building_amenity = $request->building_amenity;
+                    $splice_building_amenity = explode('|', $splice_building_amenity);
+                    $building_amenity = config('const.building_amenity');
+                    $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
+                    $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                    if ($building_amenity_diff) {
+                        foreach ($building_amenity_diff as $key => $diff) {
+                            $property->buildingAmenity->$diff = 0;
+                        }
+                    }
+                    if ($building_amenity_intersect) {
+                        foreach ($building_amenity_intersect as $key => $interset) {
+                            $property->buildingAmenity->$interset = 1;
+                        }
+                    }
+                }    
             }
-
-
             // Splice if not img 
             if ($request->old || $request->photos) {
                 $old_data = $request->old ?? [];
@@ -1110,53 +1112,40 @@ class PropertyController extends Controller
             $suppliment->note = $request->note ?? null;
             $property->suppliment()->save($suppliment);
 
+
             /* Unit Aminity */
-            $unitAmenity = new UnitAmenity();
-            $unitAmenity->refrigerator = $request->refrigerator ? 1 : 0;
-            $unitAmenity->washing_machine = $request->washing_machine ? 1 : 0;
-            $unitAmenity->mirowave = $request->mirowave ? 1 : 0;
-            $unitAmenity->gas_or_electric_stove = $request->gas_or_electric_stove ? 1 : 0;
-            $unitAmenity->air_conditioning = $request->air_conditioning ? 1 : 0;
-            $unitAmenity->tv = $request->tv ? 1 : 0;
-            $unitAmenity->cable_satellite = $request->cable_satellite ? 1 : 0;
-            $unitAmenity->internet_wifi = $request->internet_wifi ? 1 : 0;
-            $unitAmenity->water_heater = $request->water_heater ? 1 : 0;
-            $unitAmenity->security_cctv = $request->security_cctv ? 1 : 0;
-            $unitAmenity->fire_alarm = $request->fire_alarm ? 1 : 0;
-            $unitAmenity->dinning_table = $request->dinning_table ? 1 : 0;
-            $unitAmenity->bed = $request->bed ? 1 : 0;
-            $unitAmenity->sofa_chair = $request->sofa_chair ? 1 : 0;
-            $unitAmenity->private_swimming_pool = $request->private_swimming_pool ? 1 : 0;
-            $property->unitAmenity()->save($unitAmenity);
-
+            if ($request->unit_amenity) {
+                $unitAmenity = new UnitAmenity();
+                $splice_amenity = $request->unit_amenity;
+                $splice_amenity = explode('|', $splice_amenity);
+                foreach ($splice_amenity as $key => $dat) {
+                    $unitAmenity->$dat = 1;
+                }
+                $property->unitAmenity()->save($unitAmenity);
+            }
+            
             /* Building Amenity */
-            $buildingAmenity = new BuildingAmenity();
-            $buildingAmenity->elevator = $request->elevator ? 1 : 0;
-            $buildingAmenity->garage = $request->garage ? 1 : 0;
-            $buildingAmenity->fitness_center = $request->fitness_center ? 1 : 0;
-            $buildingAmenity->security = $request->security ? 1 : 0;
-            $buildingAmenity->swimming_pool = $request->swimming_pool ? 1 : 0;
-            $buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-            $buildingAmenity->playground = $request->playground ? 1 : 0;
-            $buildingAmenity->garden = $request->garden ? 1 : 0;
-            $buildingAmenity->carpark = $request->carpark ? 1 : 0;
-            $buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
-            $buildingAmenity->disposal = $request->disposal ? 1 : 0;
-            $property->buildingAmenity()->save($buildingAmenity);
+            if ($request->building_amenity) {
+                $buildingAmenity = new BuildingAmenity();
+                $building_amenity = $request->building_amenity;
+                $building_amenity = explode('|', $building_amenity);
+                foreach ($building_amenity as $key => $dat) {
+                    $buildingAmenity->$dat = 1;
+                }
+                $property->buildingAmenity()->save($buildingAmenity);
+            }
 
+            /* LotFeature */
+            if ($request->lot_feature) {
+                $lotFeature = new LotFeature();
+                $lot_feature = $request->lot_feature;
+                $lot_feature = explode('|', $lot_feature);
+                foreach ($lot_feature as $key => $dat) {
+                    $lotFeature->$dat = 1;
+                }
+                $property->lotFeature()->save($lotFeature);
+            }
 
-            /* Lot Feature */
-            $lotFeature = new LotFeature();
-            $lotFeature->cornet_lot = $request->cornet_lot ? 1 : 0;
-            $lotFeature->garden = $request->view_garden ? 1 : 0;
-            $lotFeature->lake = $request->view_lake ? 1 : 0;
-            $lotFeature->mountain = $request->view_mountain ? 1 : 0;
-            $lotFeature->river = $request->view_river ? 1 : 0;
-            $lotFeature->pool = $request->view_pool ? 1 : 0;
-            $lotFeature->sea = $request->view_sea ? 1 : 0;
-            $lotFeature->city = $request->view_city ? 1 : 0;
-            $lotFeature->pagoda = $request->view_pagoda ? 1 : 0;
-            $property->lotFeature()->save($lotFeature);
 
             /* Property Image */
             if ($request->hasfile('images')) {
@@ -1297,47 +1286,59 @@ class PropertyController extends Controller
             $property->suppliment->note = $request->note ?? null;
 
             /* Unit Aminity */
-            $property->unitAmenity->refrigerator = $request->refrigerator ? 1 : 0;
-            $property->unitAmenity->washing_machine = $request->washing_machine ? 1 : 0;
-            $property->unitAmenity->mirowave = $request->mirowave ? 1 : 0;
-            $property->unitAmenity->gas_or_electric_stove = $request->gas_or_electric_stove ? 1 : 0;
-            $property->unitAmenity->air_conditioning = $request->air_conditioning ? 1 : 0;
-            $property->unitAmenity->tv = $request->tv ? 1 : 0;
-            $property->unitAmenity->cable_satellite = $request->cable_satellite ? 1 : 0;
-            $property->unitAmenity->internet_wifi = $request->internet_wifi ? 1 : 0;
-            $property->unitAmenity->water_heater = $request->water_heater ? 1 : 0;
-            $property->unitAmenity->security_cctv = $request->security_cctv ? 1 : 0;
-            $property->unitAmenity->fire_alarm = $request->fire_alarm ? 1 : 0;
-            $property->unitAmenity->dinning_table = $request->dinning_table ? 1 : 0;
-            $property->unitAmenity->bed = $request->bed ? 1 : 0;
-            $property->unitAmenity->sofa_chair = $request->sofa_chair ? 1 : 0;
-            $property->unitAmenity->private_swimming_pool = $request->private_swimming_pool ? 1 : 0;
+            if ($request->unit_amenity) {
+                $splice_amenity = explode('|', $request->unit_amenity);
+                $unit_amenity = config('const.unit_amenity');
+                $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
+                $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                if ($unit_amenity_diff) {
+                    foreach ($unit_amenity_diff as $key => $diff) {
+                        $property->unitAmenity->$diff = 0;
+                    }
+                }
+                if ($unit_amenity_intersect) {
+                    foreach ($unit_amenity_intersect as $key => $interset) {
+                        $property->unitAmenity->$interset = 1;
+                    }
+                }
+            }
 
-            /* Building Amenity */
-            $property->buildingAmenity->elevator = $request->elevator ? 1 : 0;
-            $property->buildingAmenity->garage = $request->garage ? 1 : 0;
-            $property->buildingAmenity->fitness_center = $request->fitness_center ? 1 : 0;
-            $property->buildingAmenity->security = $request->security ? 1 : 0;
-            $property->buildingAmenity->swimming_pool = $request->swimming_pool ? 1 : 0;
-            $property->buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-            $property->buildingAmenity->playground = $request->playground ? 1 : 0;
-            $property->buildingAmenity->garden = $request->garden ? 1 : 0;
-            $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
-            $property->buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
-            $property->buildingAmenity->disposal = $request->disposal ? 1 : 0;
+            /* Building Aminity */
+            if ($request->building_amenity) {
+                $splice_building_amenity = explode('|', $request->building_amenity);
+                $building_amenity = config('const.building_amenity');
+                $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
+                $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                if ($building_amenity_diff) {
+                    foreach ($building_amenity_diff as $key => $diff) {
+                        $property->buildingAmenity->$diff = 0;
+                    }
+                }
+                if ($building_amenity_intersect) {
+                    foreach ($building_amenity_intersect as $key => $interset) {
+                        $property->buildingAmenity->$interset = 1;
+                    }
+                }
+            }
 
-
-            /* Lot Feature */
-            $property->lotFeature->cornet_lot = $request->cornet_lot ? 1 : 0;
-            $property->lotFeature->garden = $request->view_garden ? 1 : 0;
-            $property->lotFeature->lake = $request->view_lake ? 1 : 0;
-            $property->lotFeature->mountain = $request->view_mountain ? 1 : 0;
-            $property->lotFeature->river = $request->view_river ? 1 : 0;
-            $property->lotFeature->pool = $request->view_pool ? 1 : 0;
-            $property->lotFeature->sea = $request->view_sea ? 1 : 0;
-            $property->lotFeature->city = $request->view_city ? 1 : 0;
-            $property->lotFeature->pagoda = $request->view_pagoda ? 1 : 0;
-
+            /* LotFeature */
+            if ($request->lot_feature) {
+                $splice_lot_feature = explode('|', $request->lot_feature);
+                $lot_feature = config('const.lot_feature');
+                $lot_feature_diff = array_diff($lot_feature,$splice_lot_feature);
+                $lot_feature_intersect = array_intersect($lot_feature,$splice_lot_feature);
+                if ($lot_feature_diff) {
+                    foreach ($lot_feature_diff as $key => $diff) {
+                        $property->lotFeature->$diff = 0;
+                    }
+                }
+                if ($lot_feature_intersect) {
+                    foreach ($lot_feature_intersect as $key => $interset) {
+                        $property->lotFeature->$interset = 1;
+                    }
+                }
+            }
+            
             /* Splice if not img  */
             if ($request->old || $request->photos) {
                 $old_data = $request->old ?? [];
