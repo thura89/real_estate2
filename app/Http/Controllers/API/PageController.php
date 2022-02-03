@@ -145,6 +145,7 @@ class PageController extends Controller
     }
     public function show(Request $request, $id)
     {
+        
         /* Get Property */
         $property = Property::with([
             'address',
@@ -157,7 +158,8 @@ class PageController extends Controller
             'situation',
             'suppliment',
             'unitAmenity',
-            'user'
+            'user',
+            'wishlist'
         ])->where('id', $id)->first();
         $category = $property->category;
 
@@ -165,6 +167,7 @@ class PageController extends Controller
             /* Redirect to Edit Page By Relative */
             /* House , Shoop */
             if ($category == 1 || $category == 6) {
+                // return $property;
                 $data = new PropertyDetail16($property);
                 return ResponseHelper::success('Success', $data);
             }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\WishList;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PropertyList extends JsonResource
@@ -16,6 +18,7 @@ class PropertyList extends JsonResource
      */
     public function toArray($request)
     {
+        $data = [];
         $image = $this->propertyImage()->first('images');
         $image = json_decode($image['images']);
         $image = asset(config('const.p_img_path')) . '/' . $image[0];
@@ -32,20 +35,29 @@ class PropertyList extends JsonResource
         }
         /* township */
         $township = $this->address ? $this->address->township()->first('name') : null;
-        return [
-            'id' => $this->id,
-            'image' => $image ?? '/backend/images/no-image.jpeg',
-            'p_code' => $this->p_code,
-            'price' => $price,
-            'street_name' => $this->address->street_name ?? null,
-            'township' => $township['name'] ?? null,
-            'property_type' => config('const.property_type')[$this->properties_type],
-            'category' => config('const.property_category')[$this->category],
-            'bed_room' => $this->partation->bed_room ?? null,
-            'bath_room' => $this->partation->bath_room ?? null,
-            'carpark' => $this->partation->carpark ?? null,
-            'recommended_feature' => $this->status,
-            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
-        ];
+        
+        $data['id'] = $this->id;
+        $data['image'] = $image ?? '/backend/images/no-image.jpeg';
+        $data['p_code'] = $this->p_code;
+        $data['price'] = $price;
+        $data['street_name'] = $this->address->street_name ?? null;
+        $data['township'] = $township['name'] ?? null;
+        $data['property_type'] = config('const.property_type')[$this->properties_type];
+        $data['category'] = config('const.property_category')[$this->category];
+        $data['bed_room'] = $this->partation->bed_room ?? null;
+        $data['bath_room'] = $this->partation->bath_room ?? null;
+        $data['carpark'] = $this->partation->carpark ?? null;
+        $data['recommended_feature'] = $this->status;
+        if (Auth::guard('api')->check()) {
+            $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
+            if ($favorite) {
+                $data['favorite_status'] = 1;
+            }else{
+                $data['favorite_status'] = 0;
+            }
+        }
+        $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
+        return $data;
+        
     }
 }

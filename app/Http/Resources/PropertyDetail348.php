@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\WishList;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PropertyDetail348 extends JsonResource
@@ -77,54 +79,34 @@ class PropertyDetail348 extends JsonResource
         $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
         $data['note'] = $this->suppliment ? $this->suppliment->note : null;
         
-        
         /* unitAmenity */
-        $data['unitAmenity'] = [
-            'refrigerator' => $this->unitAmenity->refrigerator ? 1 : 0,
-            'washing_machine' => $this->unitAmenity->washing_machine ? 1 : 0,
-            'mirowave' => $this->unitAmenity->mirowave ? 1 : 0,
-            'gas_or_electric_stove' => $this->unitAmenity->gas_or_electric_stove ? 1 : 0,
-            'air_conditioning' => $this->unitAmenity->air_conditioning ? 1 : 0,
-            'tv' => $this->unitAmenity->tv ? 1 : 0,
-            'cable_satellite' => $this->unitAmenity->cable_satellite ? 1 : 0,
-            'internet_wifi' => $this->unitAmenity->internet_wifi ? 1 : 0,
-            'water_heater' => $this->unitAmenity->water_heater ? 1 : 0,
-            'security_cctv' => $this->unitAmenity->security_cctv ? 1 : 0,
-            'fire_alarm' => $this->unitAmenity->fire_alarm ? 1 : 0,
-            'dinning_table' => $this->unitAmenity->dinning_table ? 1 : 0,
-            'bed' => $this->unitAmenity->bed ? 1 : 0,
-            'sofa_chair' => $this->unitAmenity->sofa_chair ? 1 : 0,
-            'private_swimming_pool' => $this->unitAmenity->private_swimming_pool ? 1 : 0,
-        ];
+        $unit_amenity = config('const.unit_amenity');
+        foreach ($unit_amenity as $key => $unit) {
+            if ($this->unitAmenity->$unit == 1) {
+                $units[] = $unit;
+            }
+        }
+        $data['unitAmenity'] = $units ?? null;
     
         /* BuildingAmenity */
-        $data['BuildingAmenity'] = [
-            'elevator' => $this->buildingAmenity->elevator ? 1 : 0,
-            'garage' => $this->buildingAmenity->garage ? 1 : 0,
-            'fitness_center' => $this->buildingAmenity->fitness_center ? 1 : 0,
-            'security' => $this->buildingAmenity->security ? 1 : 0,
-            'swimming_pool' => $this->buildingAmenity->swimming_pool ? 1 : 0,
-            'spa_hot_tub' => $this->buildingAmenity->spa_hot_tub ? 1 : 0,
-            'playground' => $this->buildingAmenity->playground ? 1 : 0,
-            'garden' => $this->buildingAmenity->garden ? 1 : 0,
-            'carpark' => $this->buildingAmenity->carpark ? 1 : 0,
-            'own_transformer' => $this->buildingAmenity->own_transformer ? 1 : 0,
-            'disposal' => $this->buildingAmenity->disposal ? 1 : 0,
-        ];
+        $building_amenity = config('const.building_amenity');
+        foreach ($building_amenity as $key => $building) {
+            if ($this->buildingAmenity->$building == 1) {
+                $buildings[] = $building;
+            }
+        }
+        $data['BuildingAmenity'] = $buildings ?? null;
+        
 
         /* Lot Feature */
-        $data['lotFeature'] = [
-            'cornet_lot' => $this->lotFeature->cornet_lot ? 1 : 0,
-            'garden' => $this->lotFeature->garden ? 1 : 0,
-            'lake' => $this->lotFeature->lake ? 1 : 0,
-            'mountain' => $this->lotFeature->mountain ? 1 : 0,
-            'river' => $this->lotFeature->river ? 1 : 0,
-            'pool' => $this->lotFeature->pool ? 1 : 0,
-            'sea' => $this->lotFeature->sea ? 1 : 0,
-            'city' => $this->lotFeature->city ? 1 : 0,
-            'pagoda' => $this->lotFeature->pagoda ? 1 : 0,
-        ];
-    
+        $lot_feature = config('const.lot_feature');
+        foreach ($lot_feature as $key => $lot) {
+            if ($this->lotFeature->$lot == 1) {
+                $lots[] = $lot;
+            }
+        }
+        $data['lotFeature'] = $lots ?? null;
+
         /* Get Image */
         if ($this->propertyImage) {
             $img_data = $this->propertyImage()->first('images');
@@ -138,13 +120,21 @@ class PropertyDetail348 extends JsonResource
         /* User */
 
         $data['author'] = [
-            'id' => $this->user ? $this->user->id : null,
-            'name' => $this->user ? $this->user->name : null,
-            'company_name' => $this->user ? $this->user->company_name : null,
-            'user_type' => $this->user ? config('const.user_type')[$this->user->user_type] : null,
-            'profile_photo' => $this->user ? $this->user->profile_photo : null,
-            'cover_photo' => $this->user ? $this->user->cover_photo : null,
+            'id' => $this->user->id ?? null,
+            'name' => $this->user->name ?? null,
+            'company_name' => $this->user->company_name ?? null,
+            'user_type' => config('const.user_type')[$this->user->user_type] ?? null,
+            'profile_photo' => $this->user->profile_photo ?? null,
+            'cover_photo' => $this->user->cover_photo ?? null,
         ];
+        if (Auth::guard('api')->check()) {
+            $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
+            if ($favorite) {
+                $data['favorite_status'] = 1;
+            }else{
+                $data['favorite_status'] = 0;
+            }
+        }
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;
     }

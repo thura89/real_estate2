@@ -44,7 +44,6 @@ class PropertyController extends Controller
 
     public function property_list(Request $request)
     {
-        $sort = 'DESC';
         $data = Property::query()->with([
             'address',
             'partation',
@@ -52,14 +51,20 @@ class PropertyController extends Controller
             'rentPrice',
             'propertyImage',
         ])->where('user_id', Auth()->user()->id);
+        if ($request->get('keywords')) {
+            $keyword = $request->get('keywords');
+            $data->whereHas('suppliment', function ($query) use ($keyword) {
+                $query->where('note',  'LIKE', "%$keyword%");
+            });
+        }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
         }
-        if ($request->get('category')) {
-            $data->where('category', $request->get('category'));
-        }
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
+        }
+        if ($request->get('category')) {
+            $data->where('category', $request->get('category'));
         }
         if ($request->get('region')) {
             $region = $request->get('region');
@@ -73,14 +78,58 @@ class PropertyController extends Controller
                 $query->where('township', $township);
             });
         }
+        if ($request->min_price || $request->max_price) {
+            $min = $request->min_price;
+            $max = $request->max_price;
+            if ($request->get('property_type') == 1) {
+                $data->whereHas('price', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }else{
+                $data->whereHas('rentprice', function ($query) use ($min, $max) {
+                    $query->whereBetween('price', [$min, $max]);
+                });
+            }
+        }
         if ($request->get('sort')) {
             $sort = $request->get('sort');
+            /* Sort By Max Price */
+            if ($sort == 'max') {
+                if ($request->get('property_type') == 1) {
+                    $data->whereHas('price', function ($query) {
+                        $query->sortByDesc('price');
+                    });
+                } else{
+                    $data->whereHas('rentprice', function ($query) {
+                        $query->sortByDesc('price');
+                    });
+                }
+            }
+            /* Sort By Min Price */
+            if ($sort == 'min') {
+                if ($request->get('property_type') == 1) {
+                    $data->whereHas('price', function ($query) {
+                        $query->sort();
+                    });
+                } else{
+                    $data->whereHas('rentprice', function ($query) {
+                        $query->sort();
+                    });
+                }
+            }
+            if ($sort == 'new') {
+                $data->orderBy('updated_at', 'DESC');
+            }
+            if ($sort == 'old') {
+                $data->orderBy('updated_at', 'ASC');
+            }
+        }else{
+            $data->orderBy('updated_at', 'DESC');
         }
+        $data = $data->paginate(10);
+        $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
-        $data =  $data->orderBy('updated_at', $sort)->paginate(10);
-
-
-        return ResponseHelper::success('Success', PropertyList::collection($data));
+        return $data;
     }
     public function show(Request $request, $id)
     {
@@ -138,25 +187,25 @@ class PropertyController extends Controller
     {
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
             /* Area Size */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'front_area' => 'required',
             'building_width' => 'required',
             'building_length' => 'required',
             'fence_width' => 'required_if:property_category,==,1',
             'fence_length' => 'required_if:property_category,==,1',
-            'floor_level' => 'required_if:property_category,==,6',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
 
             /* Partation */
-            'partation_type' => 'required',
+            'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
             'bath_room' => 'required_if:partation_type,==,2',
 
@@ -166,17 +215,17 @@ class PropertyController extends Controller
 
             /* Situation */
             'year_of_construction' => 'required',
-            'building_repairing' => 'required',
-            'building_condition' => 'required',
-            'type_of_building' => 'required_if:property_category,==,1',
-            'shop_type' => 'required_if:property_category,==,6',
+            'building_repairing' => 'required|in:1,2,3',
+            'building_condition' => 'required|in:1,2,3',
+            'type_of_building' => 'required_if:property_category,==,1|in:1,2',
+            'shop_type' => 'required_if:property_category,==,6|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required_if:property_type,==,1',
+            'purchase_type' => 'required|in:1,2,3',
+            'installment' => 'required_if:property_type,==,1|in:1,0',
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
@@ -352,23 +401,23 @@ class PropertyController extends Controller
         
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
             /* AreaSize */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'front_area' => 'required',
             'building_width' => 'required',
             'building_length' => 'required',
             'fence_width' => 'required_if:property_category,==,1',
             'fence_length' => 'required_if:property_category,==,1',
-            'floor_level' => 'required_if:property_category,==,6',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
 
             /* partation */
-            'partation_type' => 'required',
+            'partation_type' => 'required|in:1,2',
             'bath_room' => 'required_if:partation_type,==,2',
             'bed_room' => 'required_if:partation_type,==,2',
 
@@ -378,17 +427,17 @@ class PropertyController extends Controller
 
             /* Situation */
             'year_of_construction' => 'required',
-            'building_repairing' => 'required',
-            'building_condition' => 'required',
-            'type_of_building' => 'required_if:property_category,==,1',
-            'shop_type' => 'required_if:property_category,==,6',
+            'building_repairing' => 'required|in:1,2,3',
+            'building_condition' => 'required|in:1,2,3',
+            'type_of_building' => 'required_if:property_category,==,1|in:1,2',
+            'shop_type' => 'required_if:property_category,==,6|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required_if:property_type,==,1',
+            'purchase_type' => 'required|in:1,2,3',
+            'installment' => 'required_if:property_type,==,1|in:1,0',
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
@@ -586,16 +635,16 @@ class PropertyController extends Controller
     {
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
             /* AreaSize */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'front_area' => 'required',
             'fence_width' => 'required',
             'fence_length' => 'required',
@@ -603,7 +652,7 @@ class PropertyController extends Controller
             'building_length' => 'required_if:property_category,==,7',
 
             /* partation */
-            'partation_type' => 'required_if:property_category,2|required_if:property_category,7',
+            'partation_type' => 'required_if:property_category,2|required_if:property_category,7|in:1,2',
             'bath_room' => 'required_if:partation_type,==,2',
             'bed_room' => 'required_if:partation_type,==,2',
 
@@ -612,19 +661,19 @@ class PropertyController extends Controller
             'electric' => 'required',
 
             /* Situation */
-            'building_repairing' => 'required',
-            'fence_condition' => 'required_if:property_category,==,2',
-            'land_type' => 'required_if:property_category,==,5',
-            'industrial_type' => 'required_if:property_category,==,7',
+            'building_repairing' => 'required|in:1,2,3',
+            'fence_condition' => 'required_if:property_category,==,2|in:1,0',
+            'land_type' => 'required_if:property_category,==,5|in:1,2,3,4',
+            'industrial_type' => 'required_if:property_category,==,7|in:1,2',
             'year_of_construction' => 'required_if:property_category,==,7',
-            'building_condition' => 'required_if:property_category,==,7',
+            'building_condition' => 'required_if:property_category,==,7|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required_if:property_type,==,1',
+            'purchase_type' => 'required|in:1,2,3',
+            'installment' => 'required_if:property_type,==,1|in:1,0',
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
@@ -778,14 +827,16 @@ class PropertyController extends Controller
     {
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'region' => 'required',
+            'township' => 'required',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
             /* AreaSize */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'front_area' => 'required',
             'fence_width' => 'required',
             'fence_length' => 'required',
@@ -793,7 +844,7 @@ class PropertyController extends Controller
             'building_length' => 'required_if:property_category,==,7',
 
             /* partation */
-            'partation_type' => 'required_if:property_category,2|required_if:property_category,7',
+            'partation_type' => 'required_if:property_category,2|required_if:property_category,7|in:1,2',
             'bath_room' => 'required_if:partation_type,==,2',
             'bed_room' => 'required_if:partation_type,==,2',
 
@@ -802,19 +853,19 @@ class PropertyController extends Controller
             'electric' => 'required',
 
             /* Situation */
-            'building_repairing' => 'required',
-            'fence_condition' => 'required_if:property_category,==,2',
-            'land_type' => 'required_if:property_category,==,5',
-            'industrial_type' => 'required_if:property_category,==,7',
+            'building_repairing' => 'required|in:1,2,3',
+            'fence_condition' => 'required_if:property_category,==,2|in:1,0',
+            'land_type' => 'required_if:property_category,==,5|in:1,2,3,4',
+            'industrial_type' => 'required_if:property_category,==,7|in:1,2',
             'year_of_construction' => 'required_if:property_category,==,7',
-            'building_condition' => 'required_if:property_category,==,7',
+            'building_condition' => 'required_if:property_category,==,7|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required_if:property_type,==,1',
+            'purchase_type' => 'required|in:1,2,3',
+            'installment' => 'required_if:property_type,==,1|in:1,0',
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
@@ -830,6 +881,7 @@ class PropertyController extends Controller
             'sale_currency_code' => 'required_if:property_type,==,1',
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
+
         ]);
 
         if ($validate->fails()) {
@@ -972,22 +1024,19 @@ class PropertyController extends Controller
 
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
-            'region' => 'required',
-            'township' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required',
 
             /* AreaSize */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'building_width' => 'required',
             'building_length' => 'required',
-            'floor_level' => 'required',
-
+            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             /* Partation */
-            'partation_type' => 'required',
+            'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
             'bath_room' => 'required_if:partation_type,==,2',
 
@@ -997,11 +1046,11 @@ class PropertyController extends Controller
 
             /* Situation */
             'year_of_construction' => 'required',
-            'building_repairing' => 'required',
-            'building_condition' => 'required',
+            'building_repairing' => 'required|in:1,2,3',
+            'building_condition' => 'required|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
             'purchase_type' => 'required',
@@ -1171,20 +1220,19 @@ class PropertyController extends Controller
     {
         $validate = Validator::make($request->all(), [
             /* Address */
-            'property_category' => 'required',
+            'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'street_name' => 'required',
-            'type_of_street' => 'required',
+            'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
             'building_name' => 'required',
 
             /* AreaSize */
-            'measurement' => 'required',
+            'measurement' => 'required|in:1,2',
             'building_width' => 'required',
             'building_length' => 'required',
-            'floor_level' => 'required',
-
+            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             /* Partation */
-            'partation_type' => 'required',
+            'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
             'bath_room' => 'required_if:partation_type,==,2',
 
@@ -1194,15 +1242,15 @@ class PropertyController extends Controller
 
             /* Situation */
             'year_of_construction' => 'required',
-            'building_repairing' => 'required',
-            'building_condition' => 'required',
+            'building_repairing' => 'required|in:1,2,3',
+            'building_condition' => 'required|in:1,2,3',
 
             /* Property Type */
-            'property_type' => 'required',
+            'property_type' => 'required|in:1,2',
 
             /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required_if:property_type,==,1',
+            'purchase_type' => 'required|in:1,2,3',
+            'installment' => 'required_if:property_type,==,1|in:1,0',
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',

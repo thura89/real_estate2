@@ -82,6 +82,6 @@ class Property extends Model
     /* WishList */
     public function wishlist()
     {
-        return $this->hasMany(Wishlist::class);
+        return $this->hasMany(WishList::class);
     }
 }

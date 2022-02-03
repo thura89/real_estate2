@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\WishList;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PropertyDetail257 extends JsonResource
@@ -107,13 +109,21 @@ class PropertyDetail257 extends JsonResource
         /* User */
 
         $data['author'] = [
-            'id' => $this->user ? $this->user->id : null,
-            'name' => $this->user ? $this->user->name : null,
-            'company_name' => $this->user ? $this->user->company_name : null,
-            'user_type' => $this->user ? config('const.user_type')[$this->user->user_type] : null,
-            'profile_photo' => $this->user ? $this->user->profile_photo : null,
-            'cover_photo' => $this->user ? $this->user->cover_photo : null,
+            'id' => $this->user->id ?? null,
+            'name' => $this->user->name ?? null,
+            'company_name' => $this->user->company_name ?? null,
+            'user_type' => config('const.user_type')[$this->user->user_type] ?? null,
+            'profile_photo' => $this->user->profile_photo ?? null,
+            'cover_photo' => $this->user->cover_photo ?? null,
         ];
+        if (Auth::guard('api')->check()) {
+            $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
+            if ($favorite) {
+                $data['favorite_status'] = 1;
+            }else{
+                $data['favorite_status'] = 0;
+            }
+        }
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;
 
