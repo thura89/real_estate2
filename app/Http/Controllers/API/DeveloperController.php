@@ -20,19 +20,16 @@ class DeveloperController extends Controller
 
     public function developerList(Request $request)
     {
-        $data = User::query()->having('user_type',config('const.Developer'));
+        $data = User::query()->with('properties')->where('user_type',config('const.Developer'));
 
         if ($request->get('keywords')) {
-            
             $data->where('name','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('company_name','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('email','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
-                //  return $data;
-
         }
         
-        $data =  $data->with('properties')->orderBy('created_at','DESC')->paginate(10);
+        $data =  $data->orderBy('created_at','DESC')->paginate(10);
 
         $data = DeveloperList::collection($data)->additional(['result'=>true,'message'=>'Success']);
 

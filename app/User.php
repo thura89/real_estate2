@@ -49,9 +49,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Property::class, 'user_id', 'id');
     }
-
-
-
+    public function newprojects()
+    {
+        return $this->hasMany(NewProject::class, 'user_id', 'id');
+    }
+    
     public function scopeWithAndWhereHas($query, $relation, $constraint)
     {
         return $query->whereHas($relation, $constraint)

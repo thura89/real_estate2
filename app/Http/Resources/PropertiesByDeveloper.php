@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
+use App\Follow;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\PropertiesDataByRelatedDeveloper;
 
@@ -16,15 +17,23 @@ class PropertiesByDeveloper extends JsonResource
      */
     public function toArray($request)
     {
-        // return PropertiesDataByRelated::collection($this->properties);
-        return [
-            'id' =>  $this->id ?? null,
-            'name' =>  $this->name ?? null,
-            'company_name' =>  $this->company_name ?? null,
-            'profile_photo' =>  $this->profile_photo ?? null,
-            'cover_photo' =>  $this->cover_photo ?? null,
-            'count' => $this->properties ? $this->properties->count() : null,
-            'properties' => PropertiesDataByRelatedDeveloper::collection($this->whenLoaded('properties')),
-        ];
+        $data = [];
+        $data['id'] =  $this->id ?? null;
+        $data['name'] =  $this->name ?? null;
+        $data['company_name'] =  $this->company_name ?? null;
+        $data['profile_photo'] =  $this->profile_photo ?? null;
+        $data['cover_photo'] =  $this->cover_photo ?? null;
+        $data['count'] = $this->properties ? $this->properties->count() : null;
+        if (Auth::guard('api')->check()) {
+            $follower = Follow::where('user_id',Auth::guard('api')->user()->id)->where('following_id',$this->id)->first();
+            if ($follower) {
+                $data['follower_status'] = 1;
+            }else{
+                $data['follower_status'] = 0;
+            }
+        }
+        $data['properties'] = PropertiesDataByRelatedDeveloper::collection($this->whenLoaded('properties'));
+        return $data;
+        
     }
 }

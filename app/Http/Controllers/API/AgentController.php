@@ -14,14 +14,9 @@ use App\Http\Resources\PropertiesByAgent;
 
 class AgentController extends Controller
 {
-    public function index(Request $request)
-    {
-        return Property::all();
-    }
-
     public function agentList(Request $request)
     {
-        $data = User::query()->having('user_type',config('const.Agent'));
+        $data = User::query()->where('user_type',config('const.Agent'));
 
         if ($request->get('keywords')) {
             $data->where('name','like', '%' . $request->get('keywords') . '%')
@@ -41,7 +36,7 @@ class AgentController extends Controller
     }
     public function agentProperties(Request $request,$id)
     {
-        $data = User::having('id',$id)->having('user_type' , 4);
+        $data = User::where('id',$id)->where('user_type' , config('const.Agent'));
         
         if ($request->get('category')) {
             $category = $request->get('category');
