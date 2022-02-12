@@ -95,6 +95,175 @@
                         </div>
                     </div>
 
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='currency_code' class="form-control">
+                                <option value="">Currency Code</option>
+                                @foreach (config('const.currency_code') as $key => $code)
+                                    <option value="{{ $key }}">{{ $code }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='purchase_type' class="form-control">
+                                <option value="">Purchase Type</option>
+                                @foreach (config('const.purchase_type') as $key => $purchase_type)
+                                    <option value="{{ $key }}">{{ $purchase_type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='installment' class="form-control">
+                                <option value="">Installment</option>
+                                @foreach (config('const.installment') as $key => $installment)
+                                    <option value="{{ $installment }}">{{ $installment }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id="year_of_construction" name="year_of_construction" class="form-control">
+                                <option value="">Year Of Construction</option>
+                                @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
+                                    <option value='{{ $i }}'>{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='building_repairing' class="form-control">
+                                <option value="">building_repairing</option>
+                                @foreach (config('const.building_repairing') as $key => $building_repairing)
+                                    <option value="{{ $key }}">{{ $building_repairing }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='building_condition' class="form-control">
+                                <option value="">Building Condition</option>
+                                @foreach (config('const.building_condition') as $key => $building_condition)
+                                    <option value="{{ $key }}">{{ $building_condition }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='fence_condition' class="form-control">
+                                <option value="">Fence Condition</option>
+                                @foreach (config('const.fence_condition') as $key => $fence_condition)
+                                    <option value="{{ $key }}">{{ $fence_condition }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='water_sys' class="form-control">
+                                <option value="">Water System</option>
+                                @foreach (config('const.water_sys') as $key => $water_sys)
+                                    <option value="{{ $water_sys }}">{{ $water_sys }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='electricity_sys' class="form-control">
+                                <option value="">Electricity System</option>
+                                @foreach (config('const.electricity_sys') as $key => $electricity_sys)
+                                    <option value="{{ $electricity_sys }}">{{ $electricity_sys }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='type_of_street' class="form-control">
+                                <option value="">Type Of Street</option>
+                                @foreach (config('const.type_of_street') as $key => $type_of_street)
+                                    <option value="{{ $key }}">{{ $type_of_street }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='measurement' class="form-control">
+                                <option value="">Measurement</option>
+                                @foreach (config('const.area') as $key => $measurement)
+                                    <option value="{{ $key }}">{{ $measurement }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="front_area" id="front_area" placeholder="Front Area">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="number" class="form-control" name="building_width" id="building_width" placeholder="Building Width">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="building_length" id="building_length" placeholder="Building Length">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="fence_width" id="fence_width" placeholder="Fence Width">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="fence_length" id="fence_length" placeholder="Fence Length">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='floor_level' class="form-control">
+                                <option value="">Floor Level</option>
+                                @foreach (config('const.floor_level') as $key => $floor_level)
+                                    <option value="{{ $key }}">{{ $floor_level }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='partation_type' class="form-control">
+                                <option value="">Partation Type</option>
+                                @foreach (config('const.partation_type') as $key => $partation_type)
+                                    <option value="{{ $key }}">{{ $partation_type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='bath_room' class="form-control">
+                                <option value="">Bath Room</option>
+                                @foreach (config('const.bath_room') as $key => $bath_room)
+                                    <option value="{{ $key }}">{{ $bath_room }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='bed_room' class="form-control">
+                                <option value="">Bed Room</option>
+                                @foreach (config('const.bed_room') as $key => $bed_room)
+                                    <option value="{{ $key }}">{{ $bed_room }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <select id='carpark' class="form-control">
+                                <option value="">CarPark</option>
+                                @foreach (config('const.carpark') as $key => $carpark)
+                                    <option value="{{ $key }}">{{ $carpark }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id='sort' class="form-control">
+                                <option value="">Sort</option>
+                                @foreach (config('const.sort') as $key => $sort)
+                                    <option value="{{ $sort }}">{{ $sort }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col">
                             <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary"><i
@@ -147,6 +316,30 @@
                         d.p_code = $('#p_code').val();
                         d.min_price = $('#min_price').val();
                         d.max_price = $('#max_price').val();
+                        d.currency_code = $('#currency_code').val();
+                        d.purchase_type = $('#purchase_type').val();
+                        d.installment = $('#installment').val();
+                        d.year_of_construction = $('#year_of_construction').val();
+                        d.building_repairing = $('#building_repairing').val();
+                        d.building_condition = $('#building_condition').val();
+                        d.fence_condition = $('#fence_condition').val();
+                        d.water_sys = $('#water_sys').val();
+                        d.electricity_sys = $('#electricity_sys').val();
+                        d.type_of_street = $('#type_of_street').val();
+                        d.measurement = $('#measurement').val();
+                        d.front_area = $('#front_area').val();
+                        d.building_width = $('#building_width').val();
+                        d.building_length = $('#building_length').val();
+                        d.fence_width = $('#fence_width').val();
+                        d.fence_length = $('#fence_length').val();
+                        d.floor_level = $('#floor_level').val();
+                        d.height = $('#height').val();
+                        d.partation_type = $('#partation_type').val();
+                        d.bed_room = $('#bed_room').val();
+                        d.bath_room = $('#bath_room').val();
+                        d.carpark = $('#carpark').val();
+                        d.sort = $('#sort').val();
+                        console.log(d.currency_code);
                     }
                 },
                 columns: [{
@@ -271,6 +464,7 @@
                     }
                 });
             });
+            
         });
     </script>
 

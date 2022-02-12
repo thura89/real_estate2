@@ -302,6 +302,20 @@ return array(
                 'city',
                 'pagoda',
         ],
+        'sort' => [
+                'new',
+                'old',
+                'min',
+                'max',
+        ],
+        'water_sys' => [
+                1 => 'Yes',
+                0 => 'No'
+        ],
+        'electricity_sys' => [
+                1 => 'Yes',
+                0 => 'No'
+        ]
         // 'region' => [
         //         1 => 'Yangon Region',
         //         2 => 'Mandalay Region',

@@ -86,6 +86,216 @@ class PropertyController extends Controller
                 });
             }
         }
+
+        if ($request->get('currency_code')) {
+            $currency_code = $request->get('currency_code');
+            if ($request->get('property_type') == 1) {
+                $data->whereHas('price', function ($query) use ($currency_code) {
+                    $query->where('currency_code', $currency_code);
+                });
+            }else{
+                $data->whereHas('rentprice', function ($query) use ($currency_code) {
+                    $query->where('currency_code', $currency_code);
+                });
+            }
+        }
+
+        if ($request->get('purchase_type')) {
+            $purchase_type = $request->get('purchase_type');
+            $data->whereHas('payment', function ($query) use ($purchase_type) {
+                $query->where('purchase_type', $purchase_type);
+            });
+        }
+
+        if ($request->get('installment')) {
+            $installment = $request->get('installment');
+            if ($installment === 'yes') {
+                $data->whereHas('payment', function ($query) use ($installment) {
+                    $query->where('installment',1);
+                });
+            }
+            if ($installment === 'no') {
+                $data->whereHas('payment', function ($query) use ($installment) {
+                    $query->where('installment',0);
+                });
+            }
+        }
+
+        if ($request->get('year_of_construction')) {
+            $year_of_construction = $request->get('year_of_construction');
+            $data->whereHas('situation', function ($query) use ($year_of_construction) {
+                $query->where('year_of_construction', $year_of_construction);
+            });
+        }
+        if ($request->get('building_repairing')) {
+            $building_repairing = $request->get('building_repairing');
+            $data->whereHas('situation', function ($query) use ($building_repairing) {
+                $query->where('building_repairing', $building_repairing);
+            });
+        }
+        if ($request->get('building_condition')) {
+            $building_condition = $request->get('building_condition');
+            $data->whereHas('situation', function ($query) use ($building_condition) {
+                $query->where('building_condition', $building_condition);
+            });
+        }
+
+        if ($request->get('fence_condition')) {
+            $fence_condition = $request->get('fence_condition');
+            $data->whereHas('situation', function ($query) use ($fence_condition) {
+                $query->where('fence_condition', $fence_condition);
+            });
+        }
+
+        if ($request->get('water_sys')) {
+            $water_sys = $request->get('water_sys');
+            if ($water_sys == 'yes') {
+                $data->whereHas('suppliment', function ($query) use ($water_sys) {
+                    $query->where('water_sys', 1);
+                });
+            }
+
+            if ($water_sys == 'no') {
+                $data->whereHas('suppliment', function ($query) use ($water_sys) {
+                    $query->where('water_sys', 0);
+                });
+            }
+            
+        }
+
+        if ($request->get('electricity_sys')) {
+            $electricity_sys = $request->get('electricity_sys');
+            if ($electricity_sys == 'yes') {
+                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
+                    $query->where('electricity_sys', 1);
+                });
+            }
+            if ($electricity_sys == 'no') {
+                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
+                    $query->where('electricity_sys', 0);
+                });
+            }
+        }
+
+        if ($request->get('type_of_street')) {
+            $type_of_street = $request->get('type_of_street');
+            $data->whereHas('address', function ($query) use ($type_of_street) {
+                $query->where('type_of_street', $type_of_street);
+            });
+        }
+        if ($request->get('measurement')) {
+            $measurement = $request->get('measurement');
+            $data->whereHas('areasize', function ($query) use ($measurement) {
+                $query->where('measurement', $measurement);
+            });
+        }
+        if ($request->get('front_area')) {
+            $front_area = $request->get('front_area');
+            $data->whereHas('areasize', function ($query) use ($front_area) {
+                $query->where('front_area', $front_area);
+            });
+        }
+        if ($request->get('building_width')) {
+            $building_width = $request->get('building_width');
+            $data->whereHas('areasize', function ($query) use ($building_width) {
+                $query->where('building_width', $building_width);
+            });
+        }
+        if ($request->get('building_length')) {
+            $building_length = $request->get('building_length');
+            $data->whereHas('areasize', function ($query) use ($building_length) {
+                $query->where('building_length', $building_length);
+            });
+        }
+        if ($request->get('fence_width')) {
+            $fence_width = $request->get('fence_width');
+            $data->whereHas('areasize', function ($query) use ($fence_width) {
+                $query->where('fence_width', $fence_width);
+            });
+        }
+        if ($request->get('fence_length')) {
+            $fence_length = $request->get('fence_length');
+            $data->whereHas('areasize', function ($query) use ($fence_length) {
+                $query->where('fence_length', $fence_length);
+            });
+        }
+        if ($request->get('floor_level')) {
+            $floor_level = $request->get('floor_level');
+            $data->whereHas('areasize', function ($query) use ($floor_level) {
+                $query->where('floor_level', $floor_level);
+            });
+        }
+        if ($request->get('height')) {
+            $height = $request->get('height');
+            $data->whereHas('areasize', function ($query) use ($height) {
+                $query->where('height', $height);
+            });
+        }
+        
+        if ($request->get('partation_type')) {
+            $partation_type = $request->get('partation_type');
+            $data->whereHas('partation', function ($query) use ($partation_type) {
+                $query->where('type', $partation_type);
+            });
+        }
+
+        if ($request->get('bed_room')) {
+            $bed_room = $request->get('bed_room');
+            $data->whereHas('partation', function ($query) use ($bed_room) {
+                $query->where('bed_room', $bed_room);
+            });
+        }
+
+        if ($request->get('bath_room')) {
+            $bath_room = $request->get('bath_room');
+            $data->whereHas('partation', function ($query) use ($bath_room) {
+                $query->where('bath_room', $bath_room);
+            });
+        }
+
+        if ($request->get('carpark')) {
+            $carpark = $request->get('carpark');
+            $data->whereHas('partation', function ($query) use ($carpark) {
+                $query->where('carpark', $carpark);
+            });
+        }
+        
+        if ($request->get('sort')) {
+            $sort = $request->get('sort');
+            /* Sort By Max Price */
+            // if ($sort == 'max') {
+            //     if ($request->get('property_type') == 1) {
+            //         $data->whereHas('price', function ($query) {
+            //             $query->orderBy('price', 'DESC');
+            //         });
+            //     } else{
+            //         $data->whereHas('rentprice', function ($query) {
+            //             $query->orderBy('price', 'DESC');
+            //         });
+            //     }
+            // }
+            // /* Sort By Min Price */
+            // if ($sort == 'min') {
+            //     if ($request->get('property_type') == 1) {
+            //         $data->whereHas('price', function ($query) {
+            //             $query->orderBy('price');
+            //         });
+            //     } else{
+            //         $data->whereHas('rentprice', function ($query) {
+            //             $query->orderBy('price', 'ASC');
+            //         });
+            //     }
+            // }
+            if ($sort == 'new') {
+                $data->orderBy('updated_at', 'DESC');
+            }
+            if ($sort == 'old') {
+                $data->orderBy('updated_at', 'ASC');
+            }
+        }else{
+            $data->orderBy('updated_at', 'DESC');
+        }
+
         return Datatables::of($data)
             ->filterColumn('region', function ($query, $keyword) {
                 $query->whereHas('address', function ($qa) use ($keyword) {
