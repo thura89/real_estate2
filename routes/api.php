@@ -57,7 +57,7 @@ Route::namespace('API')->group(function () {
     Route::post('/mobile-register/check_code', 'AuthController@check_code');
     Route::post('/mobile-register/resend_code', 'AuthController@resend_code');
     Route::post('/mobile-register/fullinfo', 'AuthController@mobileRegisterFullInfo');
-    Route::post('/mobile-register/forgetpassword_send_code', 'AuthController@forgetPassword_send_code');
+    Route::post('/mobile/forgetpassword_send_code', 'AuthController@forgetPassword_send_code');
     Route::post('/mobile-register/resetpassword', 'AuthController@resetPassword');
     
     

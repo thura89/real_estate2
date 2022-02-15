@@ -75,6 +75,9 @@
                             <a class="btn btn-lg btn-danger btn-block" href="{{ url('auth/google') }}">
                                 <strong>Login With Google</strong>
                             </a>
+                            <a class="btn btn-lg btn-info btn-block" href="{{ url('auth/google') }}">
+                                <strong>Login With Apple</strong>
+                            </a>
                         </form>
                     </div>
                 </div>

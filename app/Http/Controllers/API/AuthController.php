@@ -94,13 +94,13 @@ class AuthController extends Controller
         $user->save();
 
         SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
-        return ResponseHelper::success('Successfully Created Verify code', null);
+        return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
     }
 
     public function check_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'phone' => 'required|users|max:11',
+            'phone' => 'required|exists:users|max:11',
             'verify_code' => 'required|digits:6',
         ]);
         if ($validate->fails()) {
@@ -126,7 +126,7 @@ class AuthController extends Controller
         }
     }
 
-    public function resend_verify_code(Request $request)
+    public function resend_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'phone' => 'required|max:11',
@@ -139,7 +139,7 @@ class AuthController extends Controller
             $user->verify_code = UUIDGenerate::vCodeGenerator();
             $user->update();
             SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
-            return ResponseHelper::success('Successfully Created Verify code', null);
+            return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
         }
         return ResponseHelper::fail('Fail to request', $validate->errors());
     }
@@ -148,7 +148,7 @@ class AuthController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'verify_code' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|exists:users|max:11',
             'user_type' => 'required|in:4,5,6',
             'agent_type' => 'required_if:user_type,==,4',
             'company_name' => 'required_if:user_type,!=,6',
@@ -196,7 +196,7 @@ class AuthController extends Controller
     public function forgetPassword_send_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'phone' => 'required',
+            'phone' => 'required|exists:users|max:11',
         ]);
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail to request', $validate->errors());
@@ -207,7 +207,7 @@ class AuthController extends Controller
             $user->verify_code = UUIDGenerate::vCodeGenerator();
             $user->update();
             SMS::send($user->phone, 'Dear ' . $user->name . ', Your password reset_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
-            return ResponseHelper::success('Successfully Created reset_code', null);
+            return ResponseHelper::success('Successfully Created reset_code', $user->verify_code);
         }
         return ResponseHelper::fail('Fail to request', 'Please Register');
     }
@@ -238,7 +238,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'phone' => 'required',
+            'phone' => 'required|exists:users|max:11',
             'password' => 'required',
         ]);
 
