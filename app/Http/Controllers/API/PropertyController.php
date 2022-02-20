@@ -568,7 +568,7 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully created', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Fail to request', Null);
+            return ResponseHelper::fail('Fail to request', $e);
         }
     }
     /* Update House , Shop */
@@ -803,7 +803,7 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', NUll);
+            return ResponseHelper::fail('Something Wrong', $e);
         }
     }
     /* Create Land, House Land , Industrial */
@@ -995,7 +995,7 @@ class PropertyController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', null);
+            return ResponseHelper::fail('Something Wrong', $e);
         }
     }
     /* Update Land, House Land , Industrial */
@@ -1191,7 +1191,7 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', Null);
+            return ResponseHelper::fail('Something Wrong', $e);
         }
     }
     /* Create Aparment Condo , Office */
@@ -1388,7 +1388,7 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully Created', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', Null);
+            return ResponseHelper::fail('Something Wrong', $e);
         }
     }
     /* Update Aparment Condo , Office */
