@@ -406,7 +406,7 @@ class PropertyController extends Controller
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
-            'currency_code' => 'required_if:property_type,==,2',
+            'currency_code' => 'required_if:property_type,==,2|in:mmk,sg,us',
             'price_by_area' => 'required_if:property_type,==,2',
             'area' => 'required_if:property_type,==,2',
             'minimum_month' => 'required_if:property_type,==,2',
@@ -415,7 +415,7 @@ class PropertyController extends Controller
 
             /* Sale Price */
             'sale_price' => 'required_if:property_type,==,1',
-            'sale_currency_code' => 'required_if:property_type,==,1',
+            'sale_currency_code' => 'required_if:property_type,==,1|in:mmk,sg,us',
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
 
@@ -617,7 +617,7 @@ class PropertyController extends Controller
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
-            'currency_code' => 'required_if:property_type,==,2',
+            'currency_code' => 'required_if:property_type,==,2|in:mmk,sg,us',
             'price_by_area' => 'required_if:property_type,==,2',
             'area' => 'required_if:property_type,==,2',
             'minimum_month' => 'required_if:property_type,==,2',
@@ -626,7 +626,7 @@ class PropertyController extends Controller
 
             /* Sale Price */
             'sale_price' => 'required_if:property_type,==,1',
-            'sale_currency_code' => 'required_if:property_type,==,1',
+            'sale_currency_code' => 'required_if:property_type,==,1|in:mmk,sg,us',
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
 
@@ -853,7 +853,7 @@ class PropertyController extends Controller
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
-            'currency_code' => 'required_if:property_type,==,2',
+            'currency_code' => 'required_if:property_type,==,2|in:mmk,sg,us',
             'price_by_area' => 'required_if:property_type,==,2',
             'area' => 'required_if:property_type,==,2',
             'minimum_month' => 'required_if:property_type,==,2',
@@ -862,7 +862,7 @@ class PropertyController extends Controller
 
             /* Sale Price */
             'sale_price' => 'required_if:property_type,==,1',
-            'sale_currency_code' => 'required_if:property_type,==,1',
+            'sale_currency_code' => 'required_if:property_type,==,1|in:mmk,sg,us',
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
 
@@ -1234,7 +1234,7 @@ class PropertyController extends Controller
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
-            'currency_code' => 'required_if:property_type,==,2',
+            'currency_code' => 'required_if:property_type,==,2|in:mmk,sg,us',
             'price_by_area' => 'required_if:property_type,==,2',
             'area' => 'required_if:property_type,==,2',
             'minimum_month' => 'required_if:property_type,==,2',
@@ -1430,7 +1430,7 @@ class PropertyController extends Controller
 
             /* Rent Price */
             'price' => 'required_if:property_type,==,2',
-            'currency_code' => 'required_if:property_type,==,2',
+            'currency_code' => 'required_if:property_type,==,2|in:mmk,sg,us',
             'price_by_area' => 'required_if:property_type,==,2',
             'area' => 'required_if:property_type,==,2',
             'minimum_month' => 'required_if:property_type,==,2',
@@ -1439,7 +1439,7 @@ class PropertyController extends Controller
 
             /* Sale Price */
             'sale_price' => 'required_if:property_type,==,1',
-            'sale_currency_code' => 'required_if:property_type,==,1',
+            'sale_currency_code' => 'required_if:property_type,==,1|in:mmk,sg,us',
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
         ]);
@@ -1609,7 +1609,7 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully Updated', Null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', Null);
+            return ResponseHelper::fail('Something Wrong', $e);
         }
     }
 }

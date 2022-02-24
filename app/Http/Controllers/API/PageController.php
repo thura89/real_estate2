@@ -252,9 +252,13 @@ class PageController extends Controller
             /* Sort By Max Price */
             // if ($sort == 'max') {
             //     if ($request->get('property_type') == 1) {
+                    
             //         $data->whereHas('price', function ($query) {
-            //             $query->orderBy('price', 'DESC');
+            //             $query->sort('price');
             //         });
+
+            //         return $data->get();
+                    
             //     } else{
             //         $data->whereHas('rentprice', function ($query) {
             //             $query->orderBy('price', 'DESC');
@@ -282,7 +286,7 @@ class PageController extends Controller
         }else{
             $data->orderBy('updated_at', 'DESC');
         }
-        $data = $data->paginate(10);
+        $data = $data->paginate('10');
         $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;
