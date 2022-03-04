@@ -31,7 +31,7 @@
                             <div class="form-group">
                                 <input id="phone" placeholder="phone" type="phone"
                                     class="form-control rounded-left @error('phone') is-invalid @enderror" name="phone"
-                                    value="{{ old('phone') }}" required autocomplete="phone" autofocus>
+                                    value="{{ old('phone') }}" autocomplete="phone" autofocus>
 
                                 @error('phone')
                                     <span class="invalid-feedback" role="alert">
@@ -42,7 +42,7 @@
                             <div class="form-group d-flex">
                                 <input id="password" placeholder="Password" type="password"
                                     class="form-control rounded-left @error('password') is-invalid @enderror"
-                                    name="password" required autocomplete="current-password">
+                                    name="password" autocomplete="current-password">
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -86,5 +86,53 @@
 
     </section>
 </body>
+{{-- Sweet alert --}}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+
+        @if (session('fail_validator'))
+            const sec_fail = @php echo session('fail_validator') @endphp;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            const propertyValues=Object.values(sec_fail);  
+            console.log(propertyValues);
+            Toast.fire({
+                    icon: 'error',
+                    title: propertyValues,
+            });
+            
+        @endif
+        @if (session('fail'))
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                    icon: 'error',
+                    title: '{{session("fail")}}',
+            });
+            
+        @endif
+
+    });
+</script>
 
 </html>

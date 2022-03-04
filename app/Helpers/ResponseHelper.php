@@ -16,10 +16,8 @@
     {
         return response()->json([
             'result' => false,
-            'message' => [
-               'message' => $message,
-               'errors' => $data
-            ] 
+            'message' => $message,
+            'data' => $data,
         ]);
     }
  }

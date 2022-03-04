@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -33,33 +35,25 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /* Socialite */
-    public function redirectToFacebook() {
-        return Socialite::driver('facebook')->redirect();
-    }
-    public function handleFacebookCallback() {
-        try {
-            $user = Socialite::driver('facebook')->user();
-            $finduser = User::where('facebook_id', $user->id)->first();
-            if ($finduser) {
-                Auth::login($finduser);
-                return redirect('/home');
-            } else {
-                $newUser = User::create(['name' => $user->name, 'email' => $user->email, 'facebook_id' => $user->id]);
-                Auth::login($newUser);
-                return redirect()->back();
-            }
-        }
-        catch(Exception $e) {
-            return redirect('auth/facebook');
-        }
-    }
     public function login(Request $request)
     {   
-        $request->validate([
+        $validate = Validator::make($request->all(), [
             'phone' => 'required',
             'password' => 'required',
         ]);
+
+        if ($validate->fails()) {
+
+            
+            $errors = $validate->errors();
+ 
+            $error = [];
+            foreach ($errors->all() as $error){
+                echo $error;
+            }
+            return redirect()->route('common.login')->with('fail_validator', $errors);
+        }
+        
 
         if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             /* AGent Adding */
@@ -68,7 +62,7 @@ class LoginController extends Controller
             $user->user_agent = $request->server('HTTP_USER_AGENT');
             $user->login_at = date('Y-m-d H:i:s');
             $user->update();
-
+            
             /* Admin */
             if (auth()->user()->user_type == 1) {
                 return redirect()->route('admin.property.index');
@@ -95,8 +89,10 @@ class LoginController extends Controller
             }
 
         }else{
-            return redirect()->route('common.login')
-                ->with('error','Email-Address And Password Are Wrong.');
+            // return 'here';
+            // return redirect()->route('common.login')
+            //     ->with('error','Email-Address And Password Are Wrong.');
+                return redirect()->route('common.login')->with('fail', 'Username / Password invalid');
         }
           
     }
