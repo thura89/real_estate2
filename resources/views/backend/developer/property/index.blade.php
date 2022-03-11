@@ -14,7 +14,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
@@ -44,7 +43,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class=" row">
+                <div class="row">
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="p_code" id="p_code" placeholder="P-Code">
                     </div>
@@ -68,8 +67,8 @@
                         <select id='township' class="form-control">
                         </select>
                     </div>
-                
-                
+
+
                     <div class="col-md-3 mt-2">
                         <select id='type' class="form-control">
                             <option value="">Type</option>
@@ -92,7 +91,7 @@
                             @endforeach
                         </select>
                     </div>
-                 
+
                     <div class="col-md-3 mt-2">
                         <select id='currency_code' class="form-control">
                             <option value="">Currency Code</option>
@@ -141,7 +140,7 @@
                             @endforeach
                         </select>
                     </div>
-                    
+
                     <div class="col-md-3 mt-2" id='type_of_street'>
                         <select id='type_of_street' class="form-control">
                             <option value="">Type Of Street</option>
@@ -166,7 +165,7 @@
                             @endfor
                         </select>
                     </div>
-                
+
                     <div class="col-md-3 mt-2" id='building_repairing'>
                         <select id='building_repairing' class="form-control">
                             <option value="">Building Repairing</option>
@@ -192,21 +191,26 @@
                         </select>
                     </div>
                     <div class="col-md-3 mt-2" id="front_area">
-                        <input type="number" class="form-control" name="front_area" id="front_area" placeholder="Front Area">
+                        <input type="number" class="form-control" name="front_area" id="front_area"
+                            placeholder="Front Area">
                     </div>
                     <div class="col-md-3 mt-2" id="building_width">
-                        <input type="number" class="form-control" name="building_width" id="building_width" placeholder="Building Width">
+                        <input type="number" class="form-control" name="building_width" id="building_width"
+                            placeholder="Building Width">
                     </div>
                     <div class="col-md-3 mt-2" id="building_length">
-                        <input type="number" class="form-control" name="building_length" id="building_length" placeholder="Building Length">
+                        <input type="number" class="form-control" name="building_length" id="building_length"
+                            placeholder="Building Length">
                     </div>
                     <div class="col-md-3 mt-2" id="fence_width">
-                        <input type="number" class="form-control" name="fence_width" id="fence_width" placeholder="Fence Width">
+                        <input type="number" class="form-control" name="fence_width" id="fence_width"
+                            placeholder="Fence Width">
                     </div>
                     <div class="col-md-3 mt-2" id="fence_length">
-                        <input type="number" class="form-control" name="fence_length" id="fence_length" placeholder="Fence Length">
+                        <input type="number" class="form-control" name="fence_length" id="fence_length"
+                            placeholder="Fence Length">
                     </div>
-                
+
                     <div class="col-md-3 mt-2" id='repairing'>
                         <select id='building_repairing' class="form-control">
                             <option value="">Repairing</option>
@@ -215,7 +219,7 @@
                             @endforeach
                         </select>
                     </div>
-                    
+
                     <div class="col-md-3 mt-2" id='land_type'>
                         <select id='land_type' class="form-control">
                             <option value="">Land Type</option>
@@ -275,29 +279,28 @@
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <div class="content">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-borderd DataTables">
-                    <thead>
-                        <th class="no-sort">#</th>
-                        <th class="no-sort">P-Code</th>
-                        <th>Region</th>
-                        <th>Township</th>
-                        <th>Price</th>
-                        <th>Type</th>
-                        <th>Category</th>
-                        <th>Created At</th>
-                        <th class="no-sort">Action</th>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+        <br>
+        <div class="content">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-borderd DataTables">
+                        <thead>
+                            <th class="no-sort">#</th>
+                            <th class="no-sort">P-Code</th>
+                            <th>Region</th>
+                            <th>Township</th>
+                            <th>Price</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Created At</th>
+                            <th class="no-sort">Action</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 @section('script')
@@ -367,14 +370,14 @@
                         sortable: false,
                         searchable: false,
                     },
-                    
+
                 ],
                 columnDefs: [{
-                        orderable: false,
-                        targets: 0,
-                        // visible:false
+                    orderable: false,
+                    targets: 0,
+                    // visible:false
 
-                    }]
+                }]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);
@@ -430,8 +433,8 @@
                     $('#bed_room').show('fast');
                 }
             });
-            
-            
+
+
             $('#floor_level').hide('fast');
             $('#fence_length').hide('fast');
             $('#fence_width').hide('fast');
@@ -446,9 +449,9 @@
             $('#land_type').hide('fast');
             $('#repairing').hide('fast');
             $('#carpark').hide('fast');
-            
 
-            
+
+
             $('#category').on('change', function() {
                 $('#floor_level').hide('fast');
                 $('#fence_length').hide('fast');
@@ -547,7 +550,6 @@
                     $('#building_repairing').show('fast');
                 }
             });
-
             $('#township').html('<option value="">Choose First Region</option>');
             $('#region').on('change', function() {
                 var region_id = this.value;

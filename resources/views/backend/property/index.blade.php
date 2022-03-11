@@ -45,7 +45,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="">
-                    <div class=" row">
+                    <div class="row">
                         <div class="col-md-3">
                             <input type="text" class="form-control" name="p_code" id="p_code" placeholder="P-Code">
                         </div>
