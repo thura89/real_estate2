@@ -46,10 +46,10 @@
             <div class="card-body">
                 <div class="">
                     <div class=" row">
-                        <div class="col">
+                        <div class="col-md-3">
                             <input type="text" class="form-control" name="p_code" id="p_code" placeholder="P-Code">
                         </div>
-                        <div class="col">
+                        <div class="col-md-3">
                             <select id='category' class="form-control">
                                 <option value="">Category</option>
                                 @foreach (config('const.property_category') as $key => $category)
@@ -57,7 +57,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3">
                             <select id='region' class="form-control">
                                 <option value="">Region</option>
                                 @foreach ($regions as $key => $reg)
@@ -65,13 +65,13 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3">
                             <select id='township' class="form-control">
                             </select>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col">
+                    
+                    
+                        <div class="col-md-3 mt-2">
                             <select id='type' class="form-control">
                                 <option value="">Type</option>
                                 @foreach (config('const.property_type') as $key => $type)
@@ -79,13 +79,13 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2">
                             <input type="number" class="form-control" name="min_price" id="min_price" placeholder="Min Price">
                         </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2">
                             <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Max Price">
                         </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2">
                             <select id='status' class="form-control">
                                 <option value="">Feature</option>
                                 @foreach (config('const.publish_status') as $key => $status)
@@ -93,10 +93,8 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
+                     
+                        <div class="col-md-3 mt-2">
                             <select id='currency_code' class="form-control">
                                 <option value="">Currency Code</option>
                                 @foreach (config('const.currency_code') as $key => $code)
@@ -104,7 +102,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2" id='purchase_type'>
                             <select id='purchase_type' class="form-control">
                                 <option value="">Purchase Type</option>
                                 @foreach (config('const.purchase_type') as $key => $purchase_type)
@@ -112,50 +110,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
-                            <select id='installment' class="form-control">
-                                <option value="">Installment</option>
-                                @foreach (config('const.installment') as $key => $installment)
-                                    <option value="{{ $installment }}">{{ $installment }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id="year_of_construction" name="year_of_construction" class="form-control">
-                                <option value="">Year Of Construction</option>
-                                @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
-                                    <option value='{{ $i }}'>{{ $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
-                            <select id='building_repairing' class="form-control">
-                                <option value="">building_repairing</option>
-                                @foreach (config('const.building_repairing') as $key => $building_repairing)
-                                    <option value="{{ $key }}">{{ $building_repairing }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='building_condition' class="form-control">
-                                <option value="">Building Condition</option>
-                                @foreach (config('const.building_condition') as $key => $building_condition)
-                                    <option value="{{ $key }}">{{ $building_condition }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='fence_condition' class="form-control">
-                                <option value="">Fence Condition</option>
-                                @foreach (config('const.fence_condition') as $key => $fence_condition)
-                                    <option value="{{ $key }}">{{ $fence_condition }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2" id='water_sys'>
                             <select id='water_sys' class="form-control">
                                 <option value="">Water System</option>
                                 @foreach (config('const.water_sys') as $key => $water_sys)
@@ -163,10 +118,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
+                        <div class="col-md-3 mt-2" id='electricity_sys'>
                             <select id='electricity_sys' class="form-control">
                                 <option value="">Electricity System</option>
                                 @foreach (config('const.electricity_sys') as $key => $electricity_sys)
@@ -174,79 +126,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
-                            <select id='type_of_street' class="form-control">
-                                <option value="">Type Of Street</option>
-                                @foreach (config('const.type_of_street') as $key => $type_of_street)
-                                    <option value="{{ $key }}">{{ $type_of_street }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='measurement' class="form-control">
-                                <option value="">Measurement</option>
-                                @foreach (config('const.area') as $key => $measurement)
-                                    <option value="{{ $key }}">{{ $measurement }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" name="front_area" id="front_area" placeholder="Front Area">
-                        </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
-                            <input type="number" class="form-control" name="building_width" id="building_width" placeholder="Building Width">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" name="building_length" id="building_length" placeholder="Building Length">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" name="fence_width" id="fence_width" placeholder="Fence Width">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" name="fence_length" id="fence_length" placeholder="Fence Length">
-                        </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
-                            <select id='floor_level' class="form-control">
-                                <option value="">Floor Level</option>
-                                @foreach (config('const.floor_level') as $key => $floor_level)
-                                    <option value="{{ $key }}">{{ $floor_level }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='partation_type' class="form-control">
-                                <option value="">Partation Type</option>
-                                @foreach (config('const.partation_type') as $key => $partation_type)
-                                    <option value="{{ $key }}">{{ $partation_type }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='bath_room' class="form-control">
-                                <option value="">Bath Room</option>
-                                @foreach (config('const.bath_room') as $key => $bath_room)
-                                    <option value="{{ $key }}">{{ $bath_room }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
-                            <select id='bed_room' class="form-control">
-                                <option value="">Bed Room</option>
-                                @foreach (config('const.bed_room') as $key => $bed_room)
-                                    <option value="{{ $key }}">{{ $bed_room }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mt-2">
-                        <div class="col">
+                        <div class="col-md-3 mt-2" id='carpark'>
                             <select id='carpark' class="form-control">
                                 <option value="">CarPark</option>
                                 @foreach (config('const.carpark') as $key => $carpark)
@@ -254,7 +134,131 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3 mt-2" id='installment'>
+                            <select id='installment' class="form-control">
+                                <option value="">Installment</option>
+                                @foreach (config('const.installment') as $key => $installment)
+                                    <option value="{{ $installment }}">{{ $installment }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3 mt-2" id='type_of_street'>
+                            <select id='type_of_street' class="form-control">
+                                <option value="">Type Of Street</option>
+                                @foreach (config('const.type_of_street') as $key => $type_of_street)
+                                    <option value="{{ $key }}">{{ $type_of_street }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='measurement'>
+                            <select id='measurement' class="form-control">
+                                <option value="">Measurement</option>
+                                @foreach (config('const.area') as $key => $measurement)
+                                    <option value="{{ $key }}">{{ $measurement }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id="year_of_construction">
+                            <select id="year_of_construction" name="year_of_construction" class="form-control">
+                                <option value="">Year Of Construction</option>
+                                @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
+                                    <option value='{{ $i }}'>{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    
+                        <div class="col-md-3 mt-2" id='building_repairing'>
+                            <select id='building_repairing' class="form-control">
+                                <option value="">Building Repairing</option>
+                                @foreach (config('const.building_repairing') as $key => $building_repairing)
+                                    <option value="{{ $key }}">{{ $building_repairing }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='building_condition'>
+                            <select id='building_condition' class="form-control">
+                                <option value="">Building Condition</option>
+                                @foreach (config('const.building_condition') as $key => $building_condition)
+                                    <option value="{{ $key }}">{{ $building_condition }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='fence_condition'>
+                            <select id='fence_condition' class="form-control">
+                                <option value="">Fence Condition</option>
+                                @foreach (config('const.fence_condition') as $key => $fence_condition)
+                                    <option value="{{ $key }}">{{ $fence_condition }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id="front_area">
+                            <input type="number" class="form-control" name="front_area" id="front_area" placeholder="Front Area">
+                        </div>
+                        <div class="col-md-3 mt-2" id="building_width">
+                            <input type="number" class="form-control" name="building_width" id="building_width" placeholder="Building Width">
+                        </div>
+                        <div class="col-md-3 mt-2" id="building_length">
+                            <input type="number" class="form-control" name="building_length" id="building_length" placeholder="Building Length">
+                        </div>
+                        <div class="col-md-3 mt-2" id="fence_width">
+                            <input type="number" class="form-control" name="fence_width" id="fence_width" placeholder="Fence Width">
+                        </div>
+                        <div class="col-md-3 mt-2" id="fence_length">
+                            <input type="number" class="form-control" name="fence_length" id="fence_length" placeholder="Fence Length">
+                        </div>
+                    
+                        <div class="col-md-3 mt-2" id='repairing'>
+                            <select id='building_repairing' class="form-control">
+                                <option value="">Repairing</option>
+                                @foreach (config('const.building_repairing') as $key => $building_repairing)
+                                    <option value="{{ $key }}">{{ $building_repairing }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3 mt-2" id='land_type'>
+                            <select id='land_type' class="form-control">
+                                <option value="">Land Type</option>
+                                @foreach (config('const.land_type') as $key => $land_type)
+                                    <option value="{{ $key }}">{{ $land_type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='floor_level'>
+                            <select id='floor_level' class="form-control">
+                                <option value="">Floor Level</option>
+                                @foreach (config('const.floor_level') as $key => $floor_level)
+                                    <option value="{{ $key }}">{{ $floor_level }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='partation_type'>
+                            <select id='partation_type' class="form-control partation_type">
+                                <option value="">Partation Type</option>
+                                @foreach (config('const.partation_type') as $key => $partation_type)
+                                    <option value="{{ $key }}">{{ $partation_type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='bath_room'>
+                            <select id='bath_room' class="form-control">
+                                <option value="">Bath Room</option>
+                                @foreach (config('const.bath_room') as $key => $bath_room)
+                                    <option value="{{ $key }}">{{ $bath_room }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-2" id='bed_room'>
+                            <select id='bed_room' class="form-control">
+                                <option value="">Bed Room</option>
+                                @foreach (config('const.bed_room') as $key => $bed_room)
+                                    <option value="{{ $key }}">{{ $bed_room }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mt-2" id='sort'>
                             <select id='sort' class="form-control">
                                 <option value="">Sort</option>
                                 @foreach (config('const.sort') as $key => $sort)
@@ -266,7 +270,7 @@
 
                     <div class="row">
                         <div class="col">
-                            <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary"><i
+                            <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary col"><i
                                     class="pe-7s-filter"></i> Advance Search</button>
                         </div>
                     </div>
@@ -339,7 +343,6 @@
                         d.bath_room = $('#bath_room').val();
                         d.carpark = $('#carpark').val();
                         d.sort = $('#sort').val();
-                        console.log(d.currency_code);
                     }
                 },
                 columns: [{
@@ -442,6 +445,144 @@
     </script>
     <script>
         $(document).ready(function() {
+            /* Type change Installment change */
+            $('#installment').hide();
+            $('#type').on('change', function() {
+                if ($('#type').val() == '1') {
+                    $('#installment').show('fast');
+                }
+                if ($('#type').val() == '2' || $('#type').val() == '') {
+                    $('#installment').hide("fast");
+                }
+            });
+
+            $('#bath_room').hide();
+            $('#bed_room').hide();
+            $('#partation_type').on('change', function() {
+                var p_type = $("#partation_type").find('.partation_type').val();
+                if (p_type == '2') {
+                    $('#bath_room').show('fast');
+                    $('#bed_room').show('fast');
+                }
+            });
+            
+            
+            $('#floor_level').hide('fast');
+            $('#fence_length').hide('fast');
+            $('#fence_width').hide('fast');
+            $('#building_length').hide('fast');
+            $('#building_width').hide('fast');
+            $('#front_area').hide('fast');
+            $('#fence_condition').hide('fast');
+            $('#building_condition').hide('fast');
+            $('#building_repairing').hide('fast');
+            $('#year_of_construction').hide('fast');
+            $('#partation_type').hide('fast');
+            $('#land_type').hide('fast');
+            $('#repairing').hide('fast');
+            $('#carpark').hide('fast');
+            
+
+            
+            $('#category').on('change', function() {
+                $('#floor_level').hide('fast');
+                $('#fence_length').hide('fast');
+                $('#fence_width').hide('fast');
+                $('#building_length').hide('fast');
+                $('#building_width').hide('fast');
+                $('#front_area').hide('fast');
+                $('#fence_condition').hide('fast');
+                $('#building_condition').hide('fast');
+                $('#building_repairing').hide('fast');
+                $('#year_of_construction').hide('fast');
+                $('#partation_type').hide('fast');
+                $('#carpark').hide('fast');
+                $('#bath_room').hide();
+                $('#bed_room').hide();
+                /* House */
+                if ($('#category').val() == '1') {
+                    $('#fence_length').show('fast');
+                    $('#fence_width').show('fast');
+                    $('#building_length').show('fast');
+                    $('#building_width').show('fast');
+                    $('#front_area').show('fast');
+                    $('#building_condition').show('fast');
+                    $('#building_repairing').show('fast');
+                    $('#year_of_construction').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+
+                    $('#partation_type').on('change', function() {
+                        console.log($('#partation_type').val());
+                        if ($('#partation_type').val() == '2') {
+                            console.log($('#partation_type').val());
+                            $('#bath_room').show('fast');
+                            $('#bed_room').show('fast');
+                        }
+                    });
+                }
+                if ($('#category').val() == '2') {
+                    $('#fence_length').show('fast');
+                    $('#fence_width').show('fast');
+                    $('#front_area').show('fast');
+                    $('#fence_condition').show('fast');
+                    $('#building_repairing').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+                }
+                if ($('#category').val() == '3' || $('#category').val() == '4') {
+                    $('#floor_level').show('fast');
+                    $('#building_length').show('fast');
+                    $('#building_width').show('fast');
+                    $('#building_condition').show('fast');
+                    $('#building_repairing').show('fast');
+                    $('#year_of_construction').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+                }
+                if ($('#category').val() == '5') {
+                    $('#front_area').show('fast');
+                    $('#fence_length').show('fast');
+                    $('#fence_width').show('fast');
+                    $('#land_type').show('fast');
+                    $('#repairing').show('fast');
+                }
+                if ($('#category').val() == '6') {
+                    $('#front_area').show('fast');
+                    $('#building_length').show('fast');
+                    $('#building_width').show('fast');
+                    $('#floor_level').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+                    $('#year_of_construction').show('fast');
+                    $('#building_repairing').show('fast');
+                    $('#building_condition').show('fast');
+                }
+                if ($('#category').val() == '7') {
+                    $('#front_area').show('fast');
+                    $('#fence_length').show('fast');
+                    $('#fence_width').show('fast');
+                    $('#building_length').show('fast');
+                    $('#building_width').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+                    $('#repairing').show('fast');
+                    $('#year_of_construction').show('fast');
+                    $('#building_condition').show('fast');
+                }
+
+                if ($('#category').val() == '8') {
+                    $('#building_length').show('fast');
+                    $('#building_width').show('fast');
+                    $('#floor_level').show('fast');
+                    $('#partation_type').show('fast');
+                    $('#carpark').show('fast');
+                    $('#year_of_construction').show('fast');
+                    $('#building_condition').show('fast');
+                    $('#building_repairing').show('fast');
+                }
+            });
+            
             $('#township').html('<option value="">Choose First Region</option>');
             $('#region').on('change', function() {
                 var region_id = this.value;
@@ -464,6 +605,8 @@
                     }
                 });
             });
+
+
             
         });
     </script>

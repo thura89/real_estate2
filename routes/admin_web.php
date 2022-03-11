@@ -28,6 +28,9 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_adm
     Route::resource('/developer-user', 'DeveloperUserController');
     Route::get('/developer-user/datatables/ssd', 'DeveloperUserController@ssd');
 
+    Route::resource('/dump-user', 'DumpUserController');
+    Route::get('/dump-user/datatables/ssd', 'DumpUserController@ssd');
+
     Route::resource('/property', 'PropertyController');
     Route::get('/property/datatables/ssd', 'PropertyController@ssd');
 

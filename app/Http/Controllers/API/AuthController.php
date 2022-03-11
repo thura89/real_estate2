@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\User;
+use Carbon\Carbon;
 use App\Helpers\SMS;
 use Illuminate\Http\Request;
 use App\Helpers\UUIDGenerate;
 use App\Helpers\ResponseHelper;
+use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -85,16 +87,25 @@ class AuthController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail to request', $validate->errors());
         }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email ?? null;
-        $user->password = Hash::make($request->password);
-        $user->phone = $request->phone;
-        $user->verify_code = UUIDGenerate::vCodeGenerator();
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email ?? null;
+            $user->password = Hash::make($request->password);
+            $user->phone = $request->phone;
+            $user->verify_code = UUIDGenerate::vCodeGenerator();
+            $user->save();
 
-        SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
-        return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
+            DB::commit();
+            SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
+
+            return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return ResponseHelper::fail('Something Wrong', $e);
+        }
+        
     }
 
     public function check_code(Request $request)

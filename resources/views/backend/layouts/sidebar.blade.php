@@ -56,9 +56,9 @@
                         <i class="metismenu-icon pe-7s-id"></i>
                         Developer Management
                     </a>
-                    <a href="#">
+                    <a href="{{ route('admin.dump-user.index')}}" class="@yield('dump-user-active')">
                         <i class="metismenu-icon pe-7s-user"></i>
-                        User Management
+                        Dump/User Management
                     </a>
                   
                 </li>

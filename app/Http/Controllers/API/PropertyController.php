@@ -993,8 +993,8 @@ class PropertyController extends Controller
             DB::commit();
             return ResponseHelper::success('Successfully Created', null);
         } catch (\Exception $e) {
-
             DB::rollBack();
+            return $e;
             return ResponseHelper::fail('Something Wrong', $e);
         }
     }
