@@ -31,6 +31,9 @@ class AuthController extends Controller
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|min:6|max:11|unique:users,phone',
+            'facebook_id' => 'required_without_all:google_id,apple_id',
+            'google_id' => 'required_without_all:facebook_id,apple_id',
+            'apple_id' => 'required_without_all:facebook_id,google_id',
         ]);
 
         if ($validate->fails()) {
@@ -60,6 +63,9 @@ class AuthController extends Controller
         }
         if ($request->facebook_id) {
             $user->facebook_id = $request->facebook_id;
+        }
+        if ($request->apple_id) {
+            $user->apple_id = $request->apple_id;
         }
         $user->address = $request->address;
         $user->description = $request->description;
