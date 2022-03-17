@@ -52,7 +52,8 @@ Route::namespace('API')->group(function () {
     Route::get('/developer-lists', 'DeveloperController@developerList');
     Route::get('/developer/{id}/properties', 'DeveloperController@developerProperties');
 
-    Route::post('/register', 'AuthController@register');
+    Route::post('/social/register', 'AuthController@register');
+    Route::post('/social/login', 'AuthController@loginWithSocial');
     Route::post('/mobile-register/verify', 'AuthController@mobile_register');
     Route::post('/mobile-register/check_code', 'AuthController@check_code');
     Route::post('/mobile-register/resend_code', 'AuthController@resend_code');

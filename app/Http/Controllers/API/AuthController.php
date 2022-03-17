@@ -263,39 +263,39 @@ class AuthController extends Controller
 
     public function loginWithSocial(Request $request)
     {
-        $request->validate([
-            'email' => 'required|unique:users|email|max:60',
-            'phone' => 'required|unique:users|max:11',
+        $validate = Validator::make($request->all(), [
+            'facebook_id' => 'required_without_all:google_id,apple_id',
+            'google_id' => 'required_without_all:facebook_id,apple_id',
+            'apple_id' => 'required_without_all:facebook_id,google_id',
         ]);
-
-        $socialUser = User::where('phone', $request->phone)->first();
-        if ($socialUser) {
-            if ($request->google_id) {
-                $user = User::where('google_id', $request->google_id)->first();
-                if ($user == null) {
-                    return ResponseHelper::fail('Fail Login', null);
-                }
-                $token = $user->createToken('Real Estate')->accessToken;
-                return ResponseHelper::success('Successfully Login', $token);
-            }
-            if ($request->facebook_id) {
-                $user = User::where('facebook_id', $request->facebook_id)->first();
-                if ($user == null) {
-                    return ResponseHelper::fail('Fail Login', null);
-                }
-                $token = $user->createToken('Real Estate')->accessToken;
-                return ResponseHelper::success('Successfully Login', $token);
-            }
-            if ($request->apple_id) {
-                $user = User::where('apple_id', $request->apple_id)->first();
-                if ($user == null) {
-                    return ResponseHelper::fail('Fail Login', null);
-                }
-                $token = $user->createToken('Real Estate')->accessToken;
-                return ResponseHelper::success('Successfully Login', $token);
-            }
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail to request', $validate->errors());
         }
-        return ResponseHelper::fail('Fail Login', null);
+
+        if ($request->google_id) {
+            $user = User::where('google_id', $request->google_id)->first();
+            if ($user == null) {
+                return ResponseHelper::fail('Fail Login', null);
+            }
+            $token = $user->createToken('Real Estate')->accessToken;
+            return ResponseHelper::success('Successfully Login', $token);
+        }
+        if ($request->facebook_id) {
+            $user = User::where('facebook_id', $request->facebook_id)->first();
+            if ($user == null) {
+                return ResponseHelper::fail('Fail Login', null);
+            }
+            $token = $user->createToken('Real Estate')->accessToken;
+            return ResponseHelper::success('Successfully Login', $token);
+        }
+        if ($request->apple_id) {
+            $user = User::where('apple_id', $request->apple_id)->first();
+            if ($user == null) {
+                return ResponseHelper::fail('Fail Login', null);
+            }
+            $token = $user->createToken('Real Estate')->accessToken;
+            return ResponseHelper::success('Successfully Login', $token);
+        }
     }
 
     public function changePassword(Request $request)
