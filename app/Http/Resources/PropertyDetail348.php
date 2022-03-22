@@ -123,6 +123,7 @@ class PropertyDetail348 extends JsonResource
         $data['author'] = [
             'id' => $this->user->id ?? null,
             'name' => $this->user->name ?? null,
+            'phone' => $this->user->phone ?? null,
             'company_name' => $this->user->company_name ?? null,
             'user_type' => config('const.user_type')[$this->user->user_type] ?? null,
             'profile_photo' => $this->user->profile_photo ?? null,
