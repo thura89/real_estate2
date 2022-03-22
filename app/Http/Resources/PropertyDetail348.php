@@ -25,7 +25,8 @@ class PropertyDetail348 extends JsonResource
         
         $data['category'] = $this->category; 
         $data['properties_type'] = $this->properties_type; 
-        $data['p_code'] = $this->p_code; 
+        $data['p_code'] = $this->p_code;
+        $data['title'] = $this->title; 
         $data['address'] = [
             'street_name' => $this->address ? $this->address->street_name : null,
             'type_of_street' => $this->address ? config('const.type_of_street')[$this->address->type_of_street] : null,

@@ -38,6 +38,13 @@
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
+                                    <label for="title">Title</label>
+                                    <input value="{{ $property->title }}" type="text" name="title"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col form-group">
                                     <label for="region">Region</label>
                                     @php
                                         $region = $property->address->region()->first('name');

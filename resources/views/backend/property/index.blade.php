@@ -47,6 +47,9 @@
                 <div class="">
                     <div class="row">
                         <div class="col-md-3">
+                            <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                        </div>
+                        <div class="col-md-3">
                             <input type="text" class="form-control" name="p_code" id="p_code" placeholder="P-Code">
                         </div>
                         <div class="col-md-3">
@@ -65,7 +68,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mt-2">
                             <select id='township' class="form-control">
                             </select>
                         </div>
@@ -284,6 +287,7 @@
                     <table class="table table-borderd DataTables">
                         <thead>
                             <th class="no-sort">Img</th>
+                            <th class="no-sort">Title</th>
                             <th class="no-sort">P-Code</th>
                             <th>Region</th>
                             <th>Township</th>
@@ -314,6 +318,7 @@
                     data: function(d) {
                         d.status = $('#status').val();
                         d.type = $('#type').val();
+                        d.title = $('#title').val();
                         d.region = $('#region').val();
                         d.township = $('#township').val();
                         d.category = $('#category').val();
@@ -348,6 +353,12 @@
                 columns: [{
                         data: 'images',
                         name: 'images',
+                        sortable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'title',
+                        name: 'title',
                         sortable: false,
                         searchable: false,
                     },

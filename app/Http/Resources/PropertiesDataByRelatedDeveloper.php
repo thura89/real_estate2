@@ -36,6 +36,7 @@ class PropertiesDataByRelatedDeveloper extends JsonResource
         $township = $this->address ? $this->address->township()->first('name') : null;
         
         $data['id'] = $this->id;
+        $data['title'] = $this->title;
         $data['image'] = $image ?? '/backend/images/no-image.jpeg';
         $data['price'] = $price;
         $data['street_name'] = $this->address->street_name ?? null;

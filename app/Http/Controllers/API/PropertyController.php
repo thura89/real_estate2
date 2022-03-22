@@ -54,9 +54,10 @@ class PropertyController extends Controller
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            $data->whereHas('suppliment', function ($query) use ($keyword) {
-                $query->where('note',  'LIKE', "%$keyword%");
-            });
+            $data->where('title',  'LIKE', "%$keyword%")
+                 ->orWhereHas('suppliment', function ($query) use ($keyword) {
+                    $query->where('note',  'LIKE', "%$keyword%");
+                });
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
@@ -365,6 +366,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',
@@ -431,7 +433,9 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+
             $property->p_code = UUIDGenerate::pCodeGenerator();
+            $property->title = $request->title;
             $property->user_id = Auth()->user()->id;
             $property->lat = $request->lat ?? Null; // Sample lag
             $property->long = $request->long ?? Null;
@@ -578,6 +582,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
@@ -642,6 +647,7 @@ class PropertyController extends Controller
             $property = Property::findOrFail($request->id);
 
             /* Property Store */
+            $property->title = $request->title;
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
@@ -812,6 +818,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',
@@ -878,6 +885,7 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+            $property->title = $request->title;
             $property->p_code = UUIDGenerate::pCodeGenerator();
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -1004,6 +1012,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',
@@ -1067,6 +1076,7 @@ class PropertyController extends Controller
         try {
             $property = Property::findOrFail($request->id);
             /* Property Store */
+            $property->title = $request->title;
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
@@ -1201,6 +1211,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
@@ -1258,6 +1269,7 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+            $property->title = $request->title;
             $property->p_code = UUIDGenerate::pCodeGenerator();
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -1397,6 +1409,7 @@ class PropertyController extends Controller
         $validate = Validator::make($request->all(), [
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
+            'title' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required|in:1,2,3',
             'ward' => 'required',
@@ -1450,6 +1463,7 @@ class PropertyController extends Controller
         try {
             $property = Property::findOrFail($request->id);
             /* Property Store */
+            $property->title = $request->title;
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long

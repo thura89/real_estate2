@@ -35,7 +35,8 @@ class PageController extends Controller
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            $data->whereHas('suppliment', function ($query) use ($keyword) {
+            $data->where('title','LIKE', "%$keyword%")
+                 ->orWhereHas('suppliment', function ($query) use ($keyword) {
                 $query->where('note',  'LIKE', "%$keyword%");
             });
         }

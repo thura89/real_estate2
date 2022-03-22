@@ -40,6 +40,7 @@ class PropertiesDataByRelated extends JsonResource
         
         $data['id'] = $this->id;
         $data['user'] = $this->user_id;
+        $data['title'] = $this->title;
         $data['image'] = $image ?? '/backend/images/no-image.jpeg';
         $data['price'] = $price;
         $data['street_name'] = $this->address->street_name ?? null;

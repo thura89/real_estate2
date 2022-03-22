@@ -49,6 +49,9 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ]);
+        if ($request->get('title')) {
+            $data->where('title', $request->get('title'));
+        }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
         }
@@ -316,6 +319,9 @@ class PropertyController extends Controller
                     $qa->where('price', 'LIKE', '%' . $keyword . '%');
                 });
             })
+            ->filterColumn('title', function ($query, $keyword) {  
+                    $query->where('title', 'LIKE', '%' . $keyword . '%');
+            })
             ->addColumn('images', function ($each) {
                 $image = $each->propertyImage()->first('images');
                 $image = json_decode($image['images']);
@@ -323,6 +329,9 @@ class PropertyController extends Controller
                     return '<img style="width: 100px;height:100px;" src="' . asset(config('const.p_img_path')) . '/' . $image[0] . '">' ?? '-';
                 }
                 return '';
+            })
+            ->editColumn('title', function ($each) {
+                return $each->title;
             })
             ->editColumn('p_code', function ($each) {
                 return $each->p_code;
@@ -389,6 +398,7 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+            $property->title = $request->title;
             $property->p_code = UUIDGenerate::pCodeGenerator();
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -549,7 +559,7 @@ class PropertyController extends Controller
         try {
             /* Call Id */
             $property = Property::findOrFail($request->id);
-
+            $property->title = $request->title;
             /* Property Store */
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -717,6 +727,7 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+            $property->title = $request->title;
             $property->p_code = UUIDGenerate::pCodeGenerator();
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -845,6 +856,7 @@ class PropertyController extends Controller
             $property = Property::findOrFail($request->id);
             /* Property Store */
             $property->user_id = Auth()->user()->id;
+            $property->title = $request->title;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->status = $request->status ? 1 : 0; //Publish Status
@@ -979,6 +991,7 @@ class PropertyController extends Controller
         try {
             /* Property Store */
             $property = new Property();
+            $property->title = $request->title;
             $property->p_code = UUIDGenerate::pCodeGenerator();
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
@@ -1134,6 +1147,7 @@ class PropertyController extends Controller
             $property = Property::findOrFail($request->id);
             // Property Store
             $property->user_id = Auth()->user()->id;
+            $property->title = $request->title;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
             $property->status = $request->status ? 1 : 0; //Publish Status

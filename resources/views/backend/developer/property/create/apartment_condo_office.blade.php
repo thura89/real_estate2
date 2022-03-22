@@ -37,6 +37,12 @@
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col form-group">
                                     <label for="region">Region</label>
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>

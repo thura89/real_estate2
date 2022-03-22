@@ -29,6 +29,7 @@ class ApartCondoUpdateRequest extends FormRequest
             'street_name' => 'required',
             'type_of_street' => 'required',
             'ward' => 'required',
+            'title' => 'required',
             'building_name' => 'required',
 
             /* AreaSize */

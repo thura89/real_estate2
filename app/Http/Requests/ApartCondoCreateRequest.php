@@ -27,6 +27,7 @@ class ApartCondoCreateRequest extends FormRequest
             /* Address */
             'property_category' => 'required',
             'region' => 'required',
+            'title' => 'required',
             'township' => 'required',
             'street_name' => 'required',
             'type_of_street' => 'required',

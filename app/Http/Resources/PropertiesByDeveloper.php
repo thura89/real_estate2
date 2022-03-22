@@ -20,6 +20,7 @@ class PropertiesByDeveloper extends JsonResource
         $data = [];
         $data['id'] =  $this->id ?? null;
         $data['name'] =  $this->name ?? null;
+        $data['phone'] =  $this->phone ?? null;
         $data['company_name'] =  $this->company_name ?? null;
         $data['profile_photo'] =  $this->profile_photo ?? null;
         $data['cover_photo'] =  $this->cover_photo ?? null;

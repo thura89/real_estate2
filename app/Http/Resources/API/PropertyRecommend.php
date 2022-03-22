@@ -34,6 +34,7 @@ class PropertyRecommend extends JsonResource
         return [
             'id' => $this->id,
             'image' => $image ?? '/backend/images/no-image.jpeg',
+            'title' => $this->title,
             'p_code' => $this->p_code,
             'price' => $price,
             'street_name' => $this->address->street_name ?? null,

@@ -20,6 +20,7 @@ class PropertiesByAgent extends JsonResource
         return [
             'id' =>  $this->id ?? null,
             'name' =>  $this->name ?? null,
+            'phone' =>  $this->phone ?? null,
             'company_name' =>  $this->company_name ?? null,
             'agent_type' =>  config('const.agent_type')[$this->agent_type] ?? null,
             'profile_photo' =>  $this->profile_photo ?? null,

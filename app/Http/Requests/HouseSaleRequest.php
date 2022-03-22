@@ -27,6 +27,7 @@ class HouseSaleRequest extends FormRequest
         return [
             /* Address */
             'property_category' => 'required',
+            'title' => 'required',
             'region' => 'required',
             'township' => 'required',
             'street_name' => 'required',

@@ -39,6 +39,7 @@ class PropertyWishlist extends JsonResource
             'wishlist_id' => $wishlist->id ?? null,
             'property_id' => $this->id,
             'image' => $image ?? '/backend/images/no-image.jpeg',
+            'title' => $this->title,
             'price' => $price,
             'street_name' => $this->address->street_name ?? null,
             'township' => $township['name'] ?? null,

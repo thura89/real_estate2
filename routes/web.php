@@ -22,6 +22,8 @@ Auth::routes();
 
 Route::get('/', 'CommonAuthController@showLoginForm');
 
+Route::get('/test_route', 'StagingController@test_route');
+
 /* Social Lite */
 
 Route::get('auth/facebook', 'CommonAuthController@redirectToFacebook');

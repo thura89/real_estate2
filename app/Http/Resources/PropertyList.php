@@ -38,6 +38,7 @@ class PropertyList extends JsonResource
         
         $data['id'] = $this->id;
         $data['image'] = $image ?? '/backend/images/no-image.jpeg';
+        $data['title'] = $this->title;
         $data['p_code'] = $this->p_code;
         $data['price'] = $price;
         $data['street_name'] = $this->address->street_name ?? null;
