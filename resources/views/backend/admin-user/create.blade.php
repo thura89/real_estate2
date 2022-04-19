@@ -50,6 +50,24 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="region">Region</label>
+                            <select name="region" id="region" class="form-control">
+                                <option value="">Select Region</option>
+                                @foreach ($regions as $key => $region)
+                                    <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                        {{ $region->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col pl-0 form-group">
+                            <label for="township">Township</label>
+                            <select name="township" id="township" class="form-control">
+
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="address">Address</label>
                         <textarea name="address" class="form-control" id="" cols="30" rows="10"></textarea>
@@ -112,6 +130,29 @@
                         `<img src="${URL.createObjectURL(event.target.files[index])}">`);
                 }
             });
+            $('#township').html('<option value="">Choose First Region</option>');
+            $('#region').on('change', function() {
+                var region_id = this.value;
+                $("#township").html('');
+                $.ajax({
+                    url: "{{ url('/admin/township') }}",
+                    type: "POST",
+                    data: {
+                        region_id: region_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('#township').html('<option value="">Select Township</option>');
+                        $.each(result.township, function(key, value) {
+                            $("#township").append('<option value="' + value.id + '">' +
+                                value.name + '</option>');
+                        });
+
+                    }
+                });
+            });
+
         });
     </script>
 

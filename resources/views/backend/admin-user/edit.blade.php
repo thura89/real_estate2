@@ -47,6 +47,32 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="region">Region</label>
+                            @php
+                                $region = $adminUser->region()->first('name');
+                            @endphp
+                            <span class="region_old badge badge-secondary">{{ $region['name'] ?? '' }}</span>
+                            <select name="region" class="region form-control">
+                                <option value="">Select Region</option>
+                                @foreach ($regions as $key => $region)
+                                    <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                        {{ $region->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col form-group">
+                            <label for="township">Township</label>
+                            @php
+                                $township = $adminUser->township()->first('name');
+                            @endphp
+                            <span class="township_old badge badge-secondary">{{ $township['name'] ?? ''}}</span>
+                            <select name="township" class="township form-control">
+
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="address">Address</label>
                         <textarea name="address" class="form-control" id="" cols="30" rows="10">{{ $adminUser->address}}</textarea>
@@ -112,6 +138,34 @@
                 $('.preview_profile_photo').append(
                     `<img src="${URL.createObjectURL(event.target.files[index])}">`);
             }
+        });
+
+        $('.region').on('change', function() {
+            $('.region_old').hide();
+            $('.township_old').hide();
+            var region_id = this.value;
+            if (region_id == '') {
+                $('.region_old').show();
+                $('.township_old').show();
+            }
+            $(".township").html('');
+            $.ajax({
+                url: "{{ url('/admin/township') }}",
+                type: "POST",
+                data: {
+                    region_id: region_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function(result) {
+                    $('.township').html('<option value="">Select State</option>');
+                    $.each(result.township, function(key, value) {
+                        $(".township").append('<option value="' + value.id + '">' +
+                            value.name + '</option>');
+                    });
+
+                }
+            });
         });
     });
 </script>

@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    
+    @yield('modal')
     <script type="text/javascript" src="{{ asset('backend/js/main.js') }}"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>

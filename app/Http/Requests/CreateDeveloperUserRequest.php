@@ -27,6 +27,8 @@ class CreateDeveloperUserRequest extends FormRequest
         return [
             'name' => 'required',
             'company_name' => 'required',
+            'region' => 'required',
+            'township' => 'required',
             'address' => 'required',
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',

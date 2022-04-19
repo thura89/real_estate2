@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\User;
+use App\Region;
 use App\AdminUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
@@ -18,16 +19,42 @@ class AdminUserController extends Controller
 {
     public function index()
     {
-        return view('backend.admin-user.index');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.admin-user.index',compact('regions'));
     }
-    public function ssd()
+    public function ssd(Request $request)
     {
-    
-        $data = User::query()->whereIn('user_type',[1,2,3]);//Admin role= [1,2,3]    
+        $data = User::query()->whereIn('user_type',[1,2,3])
+                            ->with([
+                                'region',
+                                'township'
+                                ]);//Admin role= [1,2,3]    
+        if ($request->get('keywords')) {
+            $keywords = $request->get('keywords');
+            $data->where(function($query) use ($keywords){
+                $query->orWhere('company_name', 'LIKE' , '%'.$keywords.'%')
+                        ->orWhere('name', 'LIKE' , '%'.$keywords.'%')
+                        ->orWhere('email', 'LIKE' , '%'.$keywords.'%')
+                        ->orWhere('phone', 'LIKE' , '%'.$keywords.'%');
+            });
+        }
+        if ($request->get('region')) {
+            $data->where('region', $request->get('region'));
+        }
+        if ($request->get('township')) {
+            $data->where('township', $request->get('township'));
+        }
+        if ($request->get('user_type')) {
+            $data->where('user_type', $request->get('user_type'));
+        }
         return Datatables::of($data)
         
         ->editColumn('user_type',function($each){
             return config('const.role_level')[$each->user_type];
+        })
+        ->editColumn('region', function ($each) {
+            $region = $each->region()->first('name');
+            return $region->name ?? '-';
         })
         ->editColumn('user_agent' ,function($each){
             if ($each->user_agent){
@@ -39,12 +66,13 @@ class AdminUserController extends Controller
 
                 return '<span class="badge badge-primary">'.$device.'</span></br>'.
                        '<span class="badge badge-success">'.$platform.'</span></br>'.
-                       '<span class="badge badge-info">'.$browser.'</span>';
+                       '<span class="badge badge-info">'.$browser.'</span>'.
+                       '<span class="badge badge-info">'.$each->ip.'</span>';
             }
             return '-';
         })
         ->editColumn('login_at',function($each){
-            return Carbon::parse($each->login_at)->format('d-m-y H:i:s');
+            return Carbon::parse($each->login_at)->diffForHumans();
         })
         ->editColumn('created_at',function($each){
             return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -59,7 +87,8 @@ class AdminUserController extends Controller
         
     }
     public function create(){
-        return view('backend.admin-user.create');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.admin-user.create',compact('regions'));
     }
     public function store(CreateAdminUserRequest $request){
         $adminUser = new User();
@@ -77,6 +106,8 @@ class AdminUserController extends Controller
         $adminUser->email = $request->email;
         $adminUser->phone = $request->phone;
         $adminUser->description = $request->description;
+        $adminUser->region = $request->region;
+        $adminUser->township = $request->township;
         $adminUser->address = $request->address;
         $adminUser->user_type = $request->user_type;
         $adminUser->profile_photo = $profile_img_name;
@@ -87,12 +118,14 @@ class AdminUserController extends Controller
     }
     public function edit($id){
         $adminUser = User::findOrFail($id);
-        return view('backend.admin-user.edit',compact('adminUser'));
+        $regions = Region::get(['name', 'id']);
+        return view('backend.admin-user.edit',compact('adminUser','regions'));
     }
 
     public function profile(){
+        $regions = Region::get(['name', 'id']);
         $adminUser = User::findOrFail(Auth()->user()->id);
-        return view('backend.admin-user.edit',compact('adminUser'));
+        return view('backend.admin-user.edit',compact('adminUser','regions'));
     }
 
     public function update($id, UpdateAdminUserRequest $request){
@@ -117,6 +150,8 @@ class AdminUserController extends Controller
         $adminUser->email = $request->email;
         $adminUser->phone = $request->phone;
         $adminUser->description = $request->description;
+        $adminUser->region = $request->region;
+        $adminUser->township = $request->township;
         $adminUser->address = $request->address;
         $adminUser->user_type = $request->user_type;
         $adminUser->password = $request->password ? Hash::make($request->password) : $adminUser->password;

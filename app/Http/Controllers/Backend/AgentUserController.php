@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\User;
+use App\Region;
 use App\AgentUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
@@ -18,17 +19,42 @@ class AgentUserController extends Controller
 {
     public function index()
     {
-        return view('backend.agent-user.index');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.agent-user.index',compact('regions'));
     }
-    public function ssd()
+    public function ssd(Request $request)
     {
-        $data = User::query()->where('user_type',4);// 4 = Agent User    
+        $data = User::query()->where('user_type',4)->with([
+            'region','township']);// 4 = Agent User
+            
+        if ($request->get('keywords')) {
+            $keywords = $request->get('keywords');
+            $data->where(function($query) use ($keywords){
+                $query->orWhere('company_name', 'LIKE' , '%'.$keywords.'%')
+                      ->orWhere('name', 'LIKE' , '%'.$keywords.'%')
+                      ->orWhere('email', 'LIKE' , '%'.$keywords.'%')
+                      ->orWhere('phone', 'LIKE' , '%'.$keywords.'%');
+            });
+        }
+        if ($request->get('region')) {
+            $data->where('region', $request->get('region'));
+        }
+        if ($request->get('township')) {
+            $data->where('township', $request->get('township'));
+        }
+        if ($request->get('agent_type')) {
+            $data->where('agent_type', $request->get('agent_type'));
+        }
         return Datatables::of($data)
         ->editColumn('profile_photo',function($each){
             return "<img src='$each->profile_photo' class='img-thumbnail' width='80'>" ?? '-';
         })
         ->editColumn('agent_type',function($each){
             return config('const.agent_type')[$each->agent_type] ?? '-';
+        })
+        ->editColumn('region', function ($each) {
+            $region = $each->region()->first('name');
+            return $region->name ?? '-';
         })
         ->editColumn('user_agent' ,function($each){
             if ($each->user_agent){
@@ -40,12 +66,13 @@ class AgentUserController extends Controller
 
                 return '<span class="badge badge-primary">'.$device.'</span></br>'.
                        '<span class="badge badge-success">'.$platform.'</span></br>'.
-                       '<span class="badge badge-info">'.$browser.'</span>';
+                       '<span class="badge badge-info">'.$browser.'</span>'.
+                       '<span class="badge badge-primary">'.$each->ip.'</span>';
             }
             return '-';
         })
         ->editColumn('login_at',function($each){
-            return Carbon::parse($each->login_at)->format('d-m-y H:i:s');
+            return Carbon::parse($each->login_at)->diffForHumans();
         })
         ->editColumn('created_at',function($each){
             return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -60,7 +87,8 @@ class AgentUserController extends Controller
         
     }
     public function create(){
-        return view('backend.agent-user.create');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.agent-user.create',compact('regions'));
     }
     public function store(CreateAgentUserRequest $request){
         $agentUser = new User();
@@ -80,6 +108,8 @@ class AgentUserController extends Controller
         $agentUser->email = $request->email;
         $agentUser->phone = $request->phone;
         $agentUser->agent_type = $request->agent_type;
+        $agentUser->region = $request->region;
+        $agentUser->township = $request->township;
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;
         $agentUser->profile_photo = $profile_img_name;
@@ -89,8 +119,9 @@ class AgentUserController extends Controller
         return redirect()->route('admin.agent-user.index')->with('create', 'Successfully Created');
     }
     public function edit($id){
+        $regions = Region::get(['name', 'id']);
         $agentUser = User::findOrFail($id);
-        return view('backend.agent-user.edit',compact('agentUser'));
+        return view('backend.agent-user.edit',compact('agentUser','regions'));
     }
     public function update($id, UpdateAgentUserRequest $request){
         $agentUser = User::findOrFail($id);
@@ -113,6 +144,8 @@ class AgentUserController extends Controller
         $agentUser->email = $request->email;
         $agentUser->phone = $request->phone;
         $agentUser->agent_type = $request->agent_type;
+        $agentUser->region = $request->region;
+        $agentUser->township = $request->township;
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;
         $agentUser->password = $request->password ? Hash::make($request->password) : $agentUser->password;

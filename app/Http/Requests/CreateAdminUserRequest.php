@@ -26,8 +26,10 @@ class CreateAdminUserRequest extends FormRequest
         return [
             'name' => 'required',
             'user_type' => 'required',
+            'region' => 'required',
+            'township' => 'required',
             'email' => 'required|unique:users|email|max:60',
-            'phone' => 'required|unique:users|max:11',
+            'phone' => 'required|min:6|max:11|unique:users,phone',
             'address' => 'required',
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',

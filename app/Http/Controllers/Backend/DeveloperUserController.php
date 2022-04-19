@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\User;
+use App\Region;
 use App\AgentUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
@@ -20,14 +21,38 @@ class DeveloperUserController extends Controller
 {
     public function index()
     {
-        return view('backend.developer-user.index');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.developer-user.index',compact('regions'));
     }
-    public function ssd()
+    public function ssd(Request $request)
     {
-        $data = User::query()->where('user_type',5);// 4 = Agent User    
+        $data = User::query()->where('user_type',5)
+                             ->with([
+                                 'region',
+                                 'township'
+                                 ]);// 5 = Developer User  
+        if ($request->get('keywords')) {
+        $keywords = $request->get('keywords');
+        $data->where(function($query) use ($keywords){
+            $query->orWhere('company_name', 'LIKE' , '%'.$keywords.'%')
+                    ->orWhere('name', 'LIKE' , '%'.$keywords.'%')
+                    ->orWhere('email', 'LIKE' , '%'.$keywords.'%')
+                    ->orWhere('phone', 'LIKE' , '%'.$keywords.'%');
+        });
+        }
+        if ($request->get('region')) {
+            $data->where('region', $request->get('region'));
+        }
+        if ($request->get('township')) {
+            $data->where('township', $request->get('township'));
+        }  
         return Datatables::of($data)
         ->editColumn('profile_photo',function($each){
             return "<img src='$each->profile_photo' class='img-thumbnail' width='80'>" ?? '-';
+        })
+        ->editColumn('region', function ($each) {
+            $region = $each->region()->first('name');
+            return $region->name ?? '-';
         })
         ->editColumn('user_agent' ,function($each){
             if ($each->user_agent){
@@ -39,12 +64,13 @@ class DeveloperUserController extends Controller
 
                 return '<span class="badge badge-primary">'.$device.'</span></br>'.
                        '<span class="badge badge-success">'.$platform.'</span></br>'.
-                       '<span class="badge badge-info">'.$browser.'</span>';
+                       '<span class="badge badge-info">'.$browser.'</span>'.
+                       '<span class="badge badge-primary">'.$each->ip.'</span>';
             }
             return '-';
         })
         ->editColumn('login_at',function($each){
-            return Carbon::parse($each->login_at)->format('d-m-y H:i:s');
+            return Carbon::parse($each->login_at)->diffForHumans();
         })
         ->editColumn('created_at',function($each){
             return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
@@ -59,7 +85,8 @@ class DeveloperUserController extends Controller
         
     }
     public function create(){
-        return view('backend.developer-user.create');
+        $regions = Region::get(['name', 'id']);
+        return view('backend.developer-user.create',compact('regions'));
     }
     public function store(CreateDeveloperUserRequest $request){
         $developerUser = new User();
@@ -78,6 +105,8 @@ class DeveloperUserController extends Controller
         $developerUser->name = $request->name;
         $developerUser->email = $request->email;
         $developerUser->phone = $request->phone;
+        $developerUser->region = $request->region;
+        $developerUser->township = $request->township;
         $developerUser->address = $request->address;
         $developerUser->description = $request->description;
         $developerUser->profile_photo = $profile_img_name;
@@ -87,8 +116,9 @@ class DeveloperUserController extends Controller
         return redirect()->route('admin.developer-user.index')->with('create', 'Successfully Created');
     }
     public function edit($id){
+        $regions = Region::get(['name', 'id']);
         $developerUser = User::findOrFail($id);
-        return view('backend.developer-user.edit',compact('developerUser'));
+        return view('backend.developer-user.edit',compact('developerUser','regions'));
     }
     public function update($id, UpdateDeveloperUserRequest $request){
         $developerUser = User::findOrFail($id);
@@ -110,6 +140,8 @@ class DeveloperUserController extends Controller
         $developerUser->name = $request->name;
         $developerUser->email = $request->email;
         $developerUser->phone = $request->phone;
+        $developerUser->region = $request->region;
+        $developerUser->township = $request->township;
         $developerUser->address = $request->address;
         $developerUser->description = $request->description;
         $developerUser->password = $request->password ? Hash::make($request->password) : $developerUser->password;

@@ -27,7 +27,7 @@
                             <label for="company_name">Company Name</label>
                             <input type="text" name="company_name" class="form-control">
                         </div>
-                        <div class="col-md-6 col form-group">
+                        <div class="col-md-6 col pl-0 form-group">
                             <label for="name">Name</label>
                             <input type="name" name="name" class="form-control">
                         </div>
@@ -37,17 +37,35 @@
                             <label for="email">Email</label>
                             <input type="email" name="email" class="form-control">
                         </div>
-                        <div class="col-md-4 col form-group">
+                        <div class="col-md-4 col pl-0 form-group">
                             <label for="phone">Phone</label>
                             <input type="number" name="phone" class="form-control">
                         </div>
-                        <div class="col-md-4 col form-group">
+                        <div class="col-md-4 col pl-0 form-group">
                             <label for="agent_type">Agent Type</label>
                             <select name="agent_type" class="form-control">
                                 <option value="">Select</option>
                                 @foreach (config('const.agent_type') as $key => $agent)
                                     <option value="{{$key}}">{{$agent}}</option>    
                                 @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group">
+                            <label for="region">Region</label>
+                            <select name="region" id="region" class="form-control">
+                                <option value="">Select Region</option>
+                                @foreach ($regions as $key => $region)
+                                    <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                        {{ $region->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col pl-0 form-group">
+                            <label for="township">Township</label>
+                            <select name="township" id="township" class="form-control">
+
                             </select>
                         </div>
                     </div>
@@ -113,6 +131,30 @@
                     `<img src="${URL.createObjectURL(event.target.files[index])}">`);
             }
         });
+
+        $('#township').html('<option value="">Choose First Region</option>');
+            $('#region').on('change', function() {
+                var region_id = this.value;
+                $("#township").html('');
+                $.ajax({
+                    url: "{{ url('/admin/township') }}",
+                    type: "POST",
+                    data: {
+                        region_id: region_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('#township').html('<option value="">Select Township</option>');
+                        $.each(result.township, function(key, value) {
+                            $("#township").append('<option value="' + value.id + '">' +
+                                value.name + '</option>');
+                        });
+
+                    }
+                });
+            });
+
     });
 </script>
 
