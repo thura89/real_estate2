@@ -116,11 +116,8 @@
                         name: 'action'
                     },
 
-                ],
-                columnDefs: [{
-                    target: 'no-sort',
-                    sortable: false,
-                }],
+                ]
+                // order:[[]]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);

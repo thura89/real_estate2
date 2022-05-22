@@ -22,7 +22,22 @@ class AgentPageController extends Controller
     public function profile(Request $request)
     {
         $agentUser = User::findOrFail(Auth()->user()->id);
-        return view('backend.agent.profile',compact('agentUser'));
+        if ($agentUser['company_images'] == null) {
+            $images = [];
+            $images = json_encode($images);
+        }else{
+            $decode_images = json_decode($agentUser['company_images']);
+            $images = [];
+            foreach ($decode_images as $key => $image) {
+                $images[] = [
+                    'id' => $image,
+                    'src' => asset(config('const.company_images')) . '/' . $image
+                ];
+            }
+            $images = json_encode($images);
+        }
+        
+        return view('backend.agent.profile',compact('agentUser','images'));
     }
     
     public function profile_update($id ,AgentProfileUpdateRequest $request){

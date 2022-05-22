@@ -1,6 +1,10 @@
 @extends('backend.layouts.app')
 @section('title', 'Edit Agent User')
 @section('agent-user-active', 'mm-active')
+@section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+@endsection
 @section('content')
     <div class="app-main__inner">
         <div class="app-page-title">
@@ -110,6 +114,13 @@
                                 @endif
                             </div>
                         </div>
+                        {{-- Image --}}
+                        <div class="form-group">
+                            <div class="input-field">
+                                <label class="active">Company Photos</label>
+                                <div class="input-images-{{ $img_func_data }}" style="padding-top: .5rem;"></div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" name="password" class="form-control">
@@ -126,6 +137,11 @@
 @endsection
 @section('script')
     {!! JsValidator::formRequest('App\Http\Requests\UpdateAgentUserRequest', '#update') !!}
+    @if ($img_func_data == 1)
+    @include('backend.common.create_multi_image_upload_script')
+    @else
+    @include('backend.agent-user.script')
+    @endif
     <script>
         $(document).ready(function() {
             $('#cover_photo').on('change', function() {

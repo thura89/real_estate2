@@ -1,6 +1,32 @@
 @extends('backend.layouts.app')
 @section('title', 'Create Agent User')
 @section('agent-user-active', 'mm-active')
+@section('extra-css')
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+    <style>
+        .remove-field i{
+            font-size:24px;
+            color:red;
+        }
+        .remove-field i:hover{
+            font-size:24px;
+            color:#000fff33;
+        }
+        .add-field i{
+            font-size: 24px;
+        }
+        .add-field i:hover{
+            font-size:24px;
+            color:#000fff33;
+        }
+        .multi-fields span{
+            display: contents !important;
+        }
+        p.add{
+            line-height: 37px;
+        }
+    </style>
+@endsection
 @section('content')
 <div class="app-main__inner">
     <div class="app-page-title">
@@ -25,28 +51,41 @@
                     <div class="row">
                         <div class="col-md-6 col form-group">
                             <label for="company_name">Company Name</label>
-                            <input type="text" name="company_name" class="form-control">
+                            <input type="text" name="company_name" class="form-control" value="{{ old('company_name')}}">
                         </div>
                         <div class="col-md-6 col pl-0 form-group">
                             <label for="name">Name</label>
-                            <input type="name" name="name" class="form-control">
+                            <input type="name" name="name" class="form-control"  value="{{ old('name')}}">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 col form-group">
                             <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control">
+                            <input type="email" name="email" class="form-control"  value="{{ old('email')}}">
                         </div>
+                        
                         <div class="col-md-4 col pl-0 form-group">
                             <label for="phone">Phone</label>
-                            <input type="number" name="phone" class="form-control">
+                            <div class="multi-field-wrapper">
+                                <div class="multi-fields">
+                                  <div class="multi-field d-flex">
+                                    <input type="number" name="phone[]" class="form-control" value="{{ old('phone')}}">
+                                    <button type="button" class="btn remove-field"><i class="pe-7s-less"></i></button>
+                                  </div>
+                                </div>
+                              <div class="d-flex">
+                                <button type="button" class="btn add-field"><i class="pe-7s-plus"></i></button>
+                                <p class="add">Add Extra Phone</p>
+                              </div>
+                            </div>
+                            {{-- <input type="number" name="phone" class="form-control"  value="{{ old('phone')}}"> --}}
                         </div>
                         <div class="col-md-4 col pl-0 form-group">
                             <label for="agent_type">Agent Type</label>
                             <select name="agent_type" class="form-control">
                                 <option value="">Select</option>
                                 @foreach (config('const.agent_type') as $key => $agent)
-                                    <option value="{{$key}}">{{$agent}}</option>    
+                                    <option value="{{$key}}" @if (old('agent_type') == $key) selected @endif>{{$agent}}</option>    
                                 @endforeach
                             </select>
                         </div>
@@ -57,7 +96,7 @@
                             <select name="region" id="region" class="form-control">
                                 <option value="">Select Region</option>
                                 @foreach ($regions as $key => $region)
-                                    <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                    <option value="{{ $region->id }}" @if (old('region') == $region->id) selected @endif>
                                         {{ $region->name }}</option>
                                 @endforeach
                             </select>
@@ -71,11 +110,11 @@
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <textarea name="address" class="form-control" cols="30" rows="10"></textarea>
+                        <textarea name="address" class="form-control" cols="30" rows="10">{{ old('address')}}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" class="form-control" id="" cols="30" rows="10"></textarea>
+                        <textarea name="description" class="form-control" id="" cols="30" rows="10">{{ old('description')}}</textarea>
                     </div>
                     <div class="form-group">
                         <div class="profile_photo">
@@ -95,6 +134,13 @@
                             
                         </div>
                     </div>
+                     {{-- Image --}}
+                     <div class="form-group">
+                        <div class="input-field">
+                            <label class="active">Company Photos</label>
+                            <div class="input-images-1" style="padding-top: .5rem;"></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password" class="form-control">
@@ -111,8 +157,19 @@
 @endsection
 @section('script')
 {!! JsValidator::formRequest('App\Http\Requests\CreateAgentUserRequest','#create') !!}
+@include('backend.common.create_multi_image_upload_script')
 <script>
     $(document).ready(function() {
+        $('.multi-field-wrapper').each(function() {
+            var $wrapper = $('.multi-fields', this);
+            $(".add-field", $(this)).click(function(e) {
+                $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').focus();
+            });
+            $('.multi-field .remove-field', $wrapper).click(function() {
+                if ($('.multi-field', $wrapper).length > 1)
+                    $(this).parent('.multi-field').remove();
+            });
+        });
         $('#cover_photo').on('change', function() {
             $('.preview_cover_photo').html('');
             var f_length = document.getElementById('cover_photo').files.length;
@@ -155,6 +212,10 @@
                 });
             });
 
+    
+    
+    
+    
     });
 </script>
 

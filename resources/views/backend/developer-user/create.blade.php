@@ -2,6 +2,10 @@
 @section('title', 'Create Developer User')
 @section('developer-user-active', 'mm-active')
 @section('content')
+@section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+@endsection
 <div class="app-main__inner">
     <div class="app-page-title">
         <div class="page-title-wrapper">
@@ -86,6 +90,13 @@
                             
                         </div>
                     </div>
+                    {{-- Image --}}
+                    <div class="form-group">
+                        <div class="input-field">
+                            <label class="active">Company Photos</label>
+                            <div class="input-images-1" style="padding-top: .5rem;"></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password" class="form-control">
@@ -102,6 +113,7 @@
 @endsection
 @section('script')
 {!! JsValidator::formRequest('App\Http\Requests\CreateDeveloperUserRequest','#create') !!}
+@include('backend.common.create_multi_image_upload_script')
 <script>
     $(document).ready(function() {
         $('#cover_photo').on('change', function() {

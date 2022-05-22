@@ -24,7 +24,7 @@ class AgentUserController extends Controller
     }
     public function ssd(Request $request)
     {
-        $data = User::query()->where('user_type',4)->with([
+        $data = User::query()->where('user_type',4)->orderBy('updated_at','desc')->with([
             'region','township']);// 4 = Agent User
             
         if ($request->get('keywords')) {
@@ -102,6 +102,17 @@ class AgentUserController extends Controller
             $cover_img_name = uniqid().'_'.time().'.'.$cover_img->extension();
             Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
         }
+        /* Company Image */
+        $company_images = [];
+        if ($request->hasfile('images')) {
+            $company_images = [];
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+
         $agentUser->user_type = config('const.Agent');
         $agentUser->company_name = $request->company_name;
         $agentUser->name = $request->name;
@@ -114,6 +125,7 @@ class AgentUserController extends Controller
         $agentUser->description = $request->description;
         $agentUser->profile_photo = $profile_img_name;
         $agentUser->cover_photo = $cover_img_name;
+        $agentUser->company_images = $company_images;
         $agentUser->password = Hash::make($request->password);
         $agentUser->save();
         return redirect()->route('admin.agent-user.index')->with('create', 'Successfully Created');
@@ -121,9 +133,26 @@ class AgentUserController extends Controller
     public function edit($id){
         $regions = Region::get(['name', 'id']);
         $agentUser = User::findOrFail($id);
-        return view('backend.agent-user.edit',compact('agentUser','regions'));
+        $images_data = $agentUser['company_images'];
+        
+        if (!$images_data) {
+            $images = [];
+            $img_func_data = 1;
+        }else{
+            $images = [];
+            foreach ($images_data as $key => $image) {
+                $images[] = [
+                    'id' => $image,
+                    'src' => asset(config('const.company_images')) . '/' . $image
+                ];
+            }
+            $images = json_encode($images);
+            $img_func_data = 2;
+        }
+        return view('backend.agent-user.edit',compact('agentUser','regions','images','img_func_data'));
     }
     public function update($id, UpdateAgentUserRequest $request){
+        // return $request->all();
         $agentUser = User::findOrFail($id);
         if ($request->hasFile('profile_photo')) {
             Storage::disk('public')->delete('/profile/'.$agentUser->profile_photo);
@@ -149,6 +178,57 @@ class AgentUserController extends Controller
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;
         $agentUser->password = $request->password ? Hash::make($request->password) : $agentUser->password;
+        
+
+        /* Property Image */
+        $company_images = [];
+        if ($request->hasfile('images')) {
+            $company_images = [];
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+        // Splice if not img 
+        if ($request->old || $request->photos) {
+            $old_data = $request->old ?? [];
+            $count = count($request->file('photos') ?? []);
+            $data = array_reverse($old_data);
+            $splice_data = array_splice($data, $count);
+
+            // Fetch Old Image
+            // $store_data = json_decode($agentUser['company_images']);
+
+            // Diff image
+            $collection = collect($agentUser['company_images']);
+            $diff_image = $collection->diff($splice_data);
+
+            // Delete image
+            if (!$diff_image->all() == []) {
+                foreach ($diff_image as $key => $diff) {
+                    Storage::disk('public')->delete('/company_images/' . $diff);
+                }
+            }
+
+            // Get Remain Data from coming form
+            foreach ($splice_data as $image) {
+                $data[] = $image;
+            }
+
+            // Upload New image
+            if ($request->hasfile('photos')) {
+                foreach ($request->file('photos') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                    $data[] = $file_name;
+                }
+            }
+            // Splice No Need Data
+            $company_images = array_splice($data, $count);
+           
+        }
+        $agentUser->company_images = $company_images;
         $agentUser->update();
         return redirect()->route('admin.agent-user.index')->with('update', 'Successfully Updated');
     }

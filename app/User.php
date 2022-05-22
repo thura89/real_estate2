@@ -43,6 +43,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'company_images' => 'array',
+        'phone' => 'array',
     ];
 
     public function properties()
@@ -95,7 +97,7 @@ class User extends Authenticatable
         if ($value) {
             return asset('/storage/cover/' . $value);
         } else {
-            return asset('https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=' . str_replace(' ', '+', $this->name));
+            return asset('/backend/images/timemyay_default_cover.png');
         }
     }
 

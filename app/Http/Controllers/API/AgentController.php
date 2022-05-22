@@ -23,12 +23,17 @@ class AgentController extends Controller
                  ->orWhere('email','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
         }
+        if ($request->get('region')) {
+            $data->where('region', $request->get('region'));
+        }
+        if ($request->get('township')) {
+            $data->where('township', $request->get('township'));
+        }
         if ($request->get('agent_type')) {
             $data->where('agent_type', $request->get('agent_type'));
         }
         
         $data =  $data->with('properties')->orderBy('created_at','DESC')->paginate(10);
-
         $data = AgentList::collection($data)->additional(['result'=>true,'message'=>'Success']);
 
         return $data;

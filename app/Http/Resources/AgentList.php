@@ -25,7 +25,7 @@ class AgentList extends JsonResource
         $data['phone'] =  $this->phone ?? null;
         $data['agent_type'] =  config('const.agent_type')[$this->agent_type] ?? null;
         $data['profile_photo'] =  $this->profile_photo ?? null;
-        $data['cover_photo'] =  $this->cover_photo ?? null;
+        $data['cover_photo'] =  $this->cover_photo ?? asset('backend/images/timemyay_default_cover.png');
         $data['post_count'] = $this->properties ? $this->properties->count() : null;
         if (Auth::guard('api')->check()) {
             $follower = Follow::where('user_id',Auth::guard('api')->user()->id)->where('following_id',$this->id)->first();

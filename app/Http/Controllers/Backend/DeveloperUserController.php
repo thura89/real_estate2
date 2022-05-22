@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\User;
 use App\Region;
-use App\AgentUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
@@ -12,8 +11,6 @@ use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\CreateAgentUserRequest;
-use App\Http\Requests\UpdateAgentUserRequest;
 use App\Http\Requests\CreateDeveloperUserRequest;
 use App\Http\Requests\UpdateDeveloperUserRequest;
 
@@ -27,6 +24,7 @@ class DeveloperUserController extends Controller
     public function ssd(Request $request)
     {
         $data = User::query()->where('user_type',5)
+                             ->orderBy('updated_at','desc')
                              ->with([
                                  'region',
                                  'township'
@@ -100,6 +98,17 @@ class DeveloperUserController extends Controller
             $cover_img_name = uniqid().'_'.time().'.'.$cover_img->extension();
             Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
         }
+        /* Company Image */
+        $company_images = [];
+        if ($request->hasfile('images')) {
+            $company_images = [];
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+
         $developerUser->user_type = config('const.Developer');
         $developerUser->company_name = $request->company_name;
         $developerUser->name = $request->name;
@@ -111,6 +120,7 @@ class DeveloperUserController extends Controller
         $developerUser->description = $request->description;
         $developerUser->profile_photo = $profile_img_name;
         $developerUser->cover_photo = $cover_img_name;
+        $developerUser->company_images = $company_images;
         $developerUser->password = Hash::make($request->password);
         $developerUser->save();
         return redirect()->route('admin.developer-user.index')->with('create', 'Successfully Created');
@@ -118,7 +128,23 @@ class DeveloperUserController extends Controller
     public function edit($id){
         $regions = Region::get(['name', 'id']);
         $developerUser = User::findOrFail($id);
-        return view('backend.developer-user.edit',compact('developerUser','regions'));
+        $images_data = $developerUser['company_images'];
+        
+        if (!$images_data) {
+            $images = [];
+            $img_func_data = 1;
+        }else{
+            $images = [];
+            foreach ($images_data as $key => $image) {
+                $images[] = [
+                    'id' => $image,
+                    'src' => asset(config('const.company_images')) . '/' . $image
+                ];
+            }
+            $images = json_encode($images);
+            $img_func_data = 2;
+        }
+        return view('backend.developer-user.edit',compact('developerUser','regions','images','img_func_data'));
     }
     public function update($id, UpdateDeveloperUserRequest $request){
         $developerUser = User::findOrFail($id);
@@ -145,6 +171,56 @@ class DeveloperUserController extends Controller
         $developerUser->address = $request->address;
         $developerUser->description = $request->description;
         $developerUser->password = $request->password ? Hash::make($request->password) : $developerUser->password;
+
+        /* Property Image */
+        $company_images = [];
+        if ($request->hasfile('images')) {
+            $company_images = [];
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+
+        // Splice if not img 
+        if ($request->old || $request->photos) {
+            $old_data = $request->old ?? [];
+            $count = count($request->file('photos') ?? []);
+            $data = array_reverse($old_data);
+            $splice_data = array_splice($data, $count);
+
+            // Fetch Old Image
+            // $store_data = json_decode($developerUser['company_images']);
+
+            // Diff image
+            $collection = collect($developerUser['company_images']);
+            $diff_image = $collection->diff($splice_data);
+
+            // Delete image
+            if (!$diff_image->all() == []) {
+                foreach ($diff_image as $key => $diff) {
+                    Storage::disk('public')->delete('/company_images/' . $diff);
+                }
+            }
+
+            // Get Remain Data from coming form
+            foreach ($splice_data as $image) {
+                $data[] = $image;
+            }
+
+            // Upload New image
+            if ($request->hasfile('photos')) {
+                foreach ($request->file('photos') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                    $data[] = $file_name;
+                }
+            }
+            // Splice No Need Data
+            $company_images = array_splice($data, $count);
+        }
+        $developerUser->company_images = $company_images;
         $developerUser->update();
         return redirect()->route('admin.developer-user.index')->with('update', 'Successfully Updated');
     }

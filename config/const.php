@@ -225,6 +225,7 @@ return array(
                 0 => 'Pending',
         ],
         'p_img_path' => 'storage/property_images/',
+        'company_images' => 'storage/company_images/',
         'news_img_path' => 'storage/news/',
         'new_project_img_path' => 'storage/new_project/',
         'sliders_img_path' => 'storage/slider/',

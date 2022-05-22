@@ -32,8 +32,9 @@ class CreateAgentUserRequest extends FormRequest
             'address' => 'required',
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            'images' => 'required',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|min:6|max:11|unique:users,phone',
+            'phone' => 'required|digits_between:9,11|unique:users,phone',
             'password' => 'required|min:6|max:20',
         ];
     }
