@@ -31,7 +31,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ]);
+        ])->where('status',1);//published Status
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
@@ -241,12 +241,12 @@ class PageController extends Controller
             });
         }
 
-        if ($request->get('carpark')) {
-            $carpark = $request->get('carpark');
-            $data->whereHas('partation', function ($query) use ($carpark) {
-                $query->where('carpark', $carpark);
-            });
-        }
+        // if ($request->get('carpark')) {
+        //     $carpark = $request->get('carpark');
+        //     $data->whereHas('partation', function ($query) use ($carpark) {
+        //         $query->where('carpark', $carpark);
+        //     });
+        // }
         
         if ($request->get('sort')) {
             $sort = $request->get('sort');
@@ -314,7 +314,7 @@ class PageController extends Controller
                 $query->where('region', $region);
             });
         }
-        $data = $data->where('status', 1)
+        $data = $data->where('recommended_feature', 1)
                     ->orderBy('updated_at', 'DESC')
                     ->paginate(10);
         
@@ -322,6 +322,38 @@ class PageController extends Controller
 
         return $data;
     }
+
+    public function hot_property(Request $request)
+    {
+        $data = Property::query()->with([
+            'address',
+            'partation',
+            'price',
+            'rentPrice',
+            'propertyImage',
+        ]);
+        if ($request->get('property_type')) {
+            $data->where('properties_type', $request->get('property_type'));
+        }
+        if ($request->get('category')) {
+            $data->where('category', $request->get('category'));
+        }
+        if ($request->get('region')) {
+            $region = $request->get('region');
+            $data->whereHas('address', function ($query) use ($region) {
+                $query->where('region', $region);
+            });
+        }
+        $data = $data->where('hot_feature', 1)
+                    ->orderBy('updated_at', 'DESC')
+                    ->paginate(10);
+        
+        $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
+
+        return $data;
+    }
+
+
     public function show(Request $request, $id)
     {
         

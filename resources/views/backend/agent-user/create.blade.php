@@ -2,6 +2,7 @@
 @section('title', 'Create Agent User')
 @section('agent-user-active', 'mm-active')
 @section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">  
     <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
     <style>
         .remove-field i{
@@ -63,24 +64,28 @@
                             <label for="email">Email</label>
                             <input type="email" name="email" class="form-control"  value="{{ old('email')}}">
                         </div>
-                        
                         <div class="col-md-4 col pl-0 form-group">
                             <label for="phone">Phone</label>
+                            <input id="phone" class="form-control" type="number" name="phone">
+                        </div>
+                        <div class="col-md-4 col pl-0 form-group">
+                            <label for="other_phone">Other Phone</label>
                             <div class="multi-field-wrapper">
                                 <div class="multi-fields">
                                   <div class="multi-field d-flex">
-                                    <input type="number" name="phone[]" class="form-control" value="{{ old('phone')}}">
+                                    <input type="number" name="other_phone[]" class="form-control" value="{{ old('other_phone')}}">
                                     <button type="button" class="btn remove-field"><i class="pe-7s-less"></i></button>
                                   </div>
                                 </div>
                               <div class="d-flex">
                                 <button type="button" class="btn add-field"><i class="pe-7s-plus"></i></button>
-                                <p class="add">Add Extra Phone</p>
+                                <p class="add">Add Phone</p>
                               </div>
                             </div>
-                            {{-- <input type="number" name="phone" class="form-control"  value="{{ old('phone')}}"> --}}
                         </div>
-                        <div class="col-md-4 col pl-0 form-group">
+                    </div>
+                    <div class="row">
+                        <div class="col form-group">
                             <label for="agent_type">Agent Type</label>
                             <select name="agent_type" class="form-control">
                                 <option value="">Select</option>
@@ -89,9 +94,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col form-group">
+                        <div class="col pl-0 form-group">
                             <label for="region">Region</label>
                             <select name="region" id="region" class="form-control">
                                 <option value="">Select Region</option>

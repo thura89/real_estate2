@@ -110,11 +110,11 @@
                                     <div class="row">
                                         <div class="col-md-6 form-group">
                                             <label for="area_width">Width</label>
-                                            <input type="text" value="{{ $data->area_width }}" name="area_width" class="form-control">
+                                            <input type="number" value="{{ $data->area_width }}" name="area_width" class="form-control">
                                         </div>
                                         <div class="col-md-6 form-group">
                                             <label for="area_length">Length</label>
-                                            <input type="text" value="{{ $data->area_length }}" name="area_length" class="form-control">
+                                            <input type="number" value="{{ $data->area_length }}" name="area_length" class="form-control">
                                         </div>
                                     </div>
                                 </div>

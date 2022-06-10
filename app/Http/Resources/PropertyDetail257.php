@@ -19,6 +19,21 @@ class PropertyDetail257 extends JsonResource
     {
         $data = [];
         
+        /** Area Size */
+        if ($this->areasize->area_option == 1) {
+            $data_area_size = [
+                'area_option' => $this->areasize? $this->areasize->area_option : null,
+                'width' => $this->areasize? $this->areasize->width : null,
+                'length' => $this->areasize? $this->areasize->length : null,
+            ];
+        } else {
+            $data_area_size = [
+                'area_option' => $this->areasize? $this->areasize->area_option : null,
+                'area_size' => $this->areasize? $this->areasize->area_size : null,
+                'area_unit' => $this->areasize? $this->areasize->area_unit : null,
+            ];
+        }
+
         /* Address */
         $region = $this->address ? $this->address->region()->first('name') : null;
         $township = $this->address ? $this->address->township()->first('name') : null;
@@ -37,10 +52,10 @@ class PropertyDetail257 extends JsonResource
         ];
         
         /* AreaSize */
-        $data['measurement'] = $this->areasize? config('const.area')[$this->areasize->measurement] : null;
-        $data['front_area'] = $this->areasize? $this->areasize->front_area : null;
-        $data['fence_width'] = $this->areasize? $this->areasize->fence_width : null;
-        $data['fence_length'] = $this->areasize? $this->areasize->fence_length : null;
+        $data['area_size'] = $data_area_size;
+        if ($this->category == 6) {
+            $data['floor_level'] = $this->areasize? $this->areasize->floor_level : null;
+        }
 
         /* Category 7 */
         if ($this->category == 7) {
@@ -53,7 +68,7 @@ class PropertyDetail257 extends JsonResource
             $data['partation_type'] = $this->partation ? config('const.partation_type')[$this->partation->type] : null;
             $data['bath_room'] = $this->partation ? $this->partation->bath_room : null;
             $data['bed_room'] = $this->partation ? $this->partation->bed_room : null;
-            $data['carpark'] = $this->partation ? $this->partation->carpark : null;
+            // $data['carpark'] = $this->partation ? $this->partation->carpark : null;
         }
 
         /* Supplyment */

@@ -59,6 +59,7 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: "/developer/want2buyrent/datatables/ssd",
                 columns: [{
                         data: 'title',

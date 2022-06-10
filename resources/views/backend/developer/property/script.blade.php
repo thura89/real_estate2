@@ -4,7 +4,7 @@
     $(function() {
 
         $('.input-images-1').imageUploader();
-        
+
         $("input[type='file']").on('change',function(){
             $( "div" ).remove( ".upimg" );
             var img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";

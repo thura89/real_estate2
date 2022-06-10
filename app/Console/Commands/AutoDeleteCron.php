@@ -38,6 +38,13 @@ class AutoDeleteCron extends Command
      */
     public function handle()
     {
-        Log::info("Cron is working fines!");
+        Log::info("Cron is working fine!");
+     
+        /*
+           Write your database logic we bellow:
+           Item::create(['name'=>'hello new']);
+        */
+      
+        $this->info('Demo:Cron Cummand Run successfully!');
     }
 }

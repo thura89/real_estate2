@@ -1,6 +1,10 @@
 @extends('backend.developer.layouts.app')
 @section('title', 'Edit new_project Management')
 @section('new_project-active', 'mm-active')
+@section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+@endsection
 @section('content')
     <div class="app-main__inner">
         <div class="app-page-title">
@@ -22,7 +26,7 @@
             <div class="card">
                 <div class="card-body">
                     @include('backend.developer.layouts.flash')
-                    <form action="{{ route('developer.new_project.update', $data->id) }}" id="update" method="POST">
+                    <form action="{{ route('developer.new_project.update', $data->id) }}" id="update" method="POST" enctype="multipart/form-data">
                         @method('PUT')
                         @csrf
                         {{-- address --}}
@@ -247,6 +251,15 @@
                                                 @if ($data->disposal == 1) checked @endif>Disposal</label></div>
 
                                 </div>
+                            </div>
+                        </div>
+                        {{-- Image --}}
+                        <div class="form-group">
+                            <h5>Images</h5>
+                            <hr>
+                            <div class="input-field">
+                                <label class="active">Photos</label>
+                                <div class="input-images-2" style="padding-top: .5rem;"></div>
                             </div>
                         </div>
                         {{-- Button --}}

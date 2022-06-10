@@ -23,8 +23,10 @@ class DeveloperList extends JsonResource
         $data['company_name'] =  $this->company_name ?? null;
         $data['email'] =  $this->email ?? null;
         $data['phone'] =  $this->phone ?? null;
+        $data['other_phone'] =  $this->other_phone ?? null;
         $data['profile_photo'] =  $this->profile_photo ?? null;
         $data['cover_photo'] =  $this->cover_photo ?? null;
+        $data['company_images'] =  $this->company_images ?? null;
         $data['post_count'] = $this->properties ? $this->properties->count() : null;
         if (Auth::guard('api')->check()) {
             $follower = Follow::where('user_id',Auth::guard('api')->user()->id)->where('following_id',$this->id)->first();

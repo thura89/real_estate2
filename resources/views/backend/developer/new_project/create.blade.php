@@ -2,6 +2,8 @@
 @section('title', 'New Project Management')
 @section('new_project-active', 'mm-active')
 @section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
 @endsection
 @section('content')
     <div class="app-main__inner">
@@ -234,6 +236,14 @@
                                                 class="form-check-input">Disposal</label></div>
 
                                 </div>
+                            </div>
+                        </div>
+                        {{-- Image --}}
+                        <div class="form-group">
+                            <h5>Images</h5>
+                            <hr>
+                            <div class="input-field">
+                                <div class="input-images-1" style="padding-top: .5rem;"></div>
                             </div>
                         </div>
                         {{-- Button --}}

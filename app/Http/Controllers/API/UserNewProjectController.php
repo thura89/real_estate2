@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NewProjectList;
-use App\Http\Resources\NewProjectDetail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\API\UserNewProjectResource;
 
@@ -106,6 +106,15 @@ class UserNewProjectController extends Controller
         $data->own_transformer = $request->own_transformer ? 1 : 0;
         $data->disposal = $request->disposal ? 1 : 0;
         
+        /* Property Image */
+        if ($request->hasfile('images')) {
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/new_project/' . $file_name, file_get_contents($image));
+                $data_img[] = $file_name;
+            }
+        }
+        $data->images = json_encode($data_img);
         $data->save();
 
         return ResponseHelper::success('Successfully Created',Null);
@@ -146,7 +155,7 @@ class UserNewProjectController extends Controller
         }
 
         $data = NewProject::findOrFail($id);
-        $data->user_id = Auth()->user()->id;
+        $data->user_id = 18; //Auth()->user()->id;
 
         /* Address */
         $data->region = $request->region ?? $data->region;
@@ -188,11 +197,51 @@ class UserNewProjectController extends Controller
         $data->own_transformer = $request->own_transformer ? 1 : 0;
         $data->disposal = $request->disposal ? 1 : 0;
 
+        /* Property Image */
+        if ($request->hasfile('images')) {
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/new_project/' . $file_name, file_get_contents($image));
+                $data_images[] = $file_name;
+            }
+            $decode_images = json_decode($data->images);
+            $result = array_merge($decode_images,$data_images);
+            $data->images = $result;
+        }
+        
         $data->update();
 
         return ResponseHelper::success('Successfully Updated',Null);
     }
+    public function DeleteNewProjectImage(Request $request)
+    {
+        $validate = Validator::make($request->all(),[
+            'id' => 'required',
+            'images' => 'required',
+        ]);
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail Request',$validate->errors());
+        }
+        
+        $data = NewProject::where('user_id',auth()->user()->id)
+                            ->where('id',$request->id)
+                            ->first();
+        if (!$data) {
+            return ResponseHelper::fail('Fail Request','Data not found');
+        }
+        $data_images = json_decode($data->images);
+        $images = explode(',',$request->images);
+        if ($data) {
+            foreach ($images as $key => $del) {
+                Storage::disk('public')->delete('/new_project/' . $del);
+                $rev = array_search($del, $data_images); 
+                unset($data_images[$rev]);
+            }
+            $data->images = array_values($data_images);
+            $data->update();
+        }
 
+    }
     public function show(Request $request,$id){
         $data = NewProject::query()->with([
             'region',
@@ -211,6 +260,12 @@ class UserNewProjectController extends Controller
     public function destroy(Request $request,$id)
     {
         $data = NewProject::findOrFail($id);
+        $data_images = json_decode($data->images);
+        if ($data) {
+            foreach ($data_images as $key => $del) {
+                Storage::disk('public')->delete('/new_project/' . $del);
+            } 
+        }              
         $data->delete();
         return ResponseHelper::success('Successfully Delete',Null);
     }

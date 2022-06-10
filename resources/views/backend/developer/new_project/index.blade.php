@@ -33,6 +33,7 @@
                 <div class="card-body">
                     <table class="table table-borderd DataTables">
                         <thead>
+                            <th>#</th>
                             <th>Region</th>
                             <th>Township</th>
                             <th>Sale Type</th>
@@ -58,8 +59,15 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: "/developer/new_project/datatables/ssd",
                 columns: [
+                    {
+                        data: 'images',
+                        name: 'images',
+                        sortable: false,
+                        searchable: false,
+                    },
                     {
                         data: 'region',
                         name: 'region'

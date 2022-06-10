@@ -33,12 +33,12 @@ class landHouseUpdateRequest extends FormRequest
             'building_name' => 'required_if:property_category,==,7',
             
             /* AreaSize */
-            'measurement' => 'required',
-            'front_area' => 'required',
-            'fence_width' => 'required',
-            'fence_length' => 'required',
-            'building_width' => 'required_if:property_category,==,7',
-            'building_length' => 'required_if:property_category,==,7',
+            'area_option' => 'required',
+            'floor_level' => 'required_if:property_category,==,6',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
             
             /* partation */
             'partation_type' => 'required_if:property_category,2|required_if:property_category,7',
@@ -79,6 +79,37 @@ class landHouseUpdateRequest extends FormRequest
             'sale_price_by_area' => 'required_if:property_type,==,1',
             'sale_area' => 'required_if:property_type,==,1',
 
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'width.required_if' => 'Width is required',
+            'length.required_if' => 'Length is required',
+            'area_size.required_if' => 'Area Size is required',
+            'area_unit.required_if' => 'Area Unit is required',
+            'building_name.required' => 'Building name is requred',
+            'floor_level.required_if' => 'Floor Level is required',
+            'bed_room.required_if' => 'Bed Room is required',
+            'bath_room.required_if' => 'Bath Room is required',
+            'type_of_building.required_if' => 'Type Of Building is required',
+            'shop_type.required_if' => 'Shop Type is required',
+            'installment.required_if' => 'Installment is required',
+            
+            /* Rent Price */
+            'price.required_if' => 'Price is required',
+            'currency_code.required_if' => 'Currency Code is required',
+            'price_by_area.required_if' => 'Price By Area is required',
+            'area.required_if' => 'Area is required',
+            'minimum_month.required_if' => 'Minimum month is required',
+            'rent_pay_type.required_if' => 'Rent Pay Type is required',
+            'rent_payby_daily.required_if' => 'Rent Pay by Daily is required',
+
+            /* Sale Price */
+            'sale_price.required_if' => 'Sale Price is required',
+            'sale_currency_code.required_if' => 'Sale Currency Code is required',
+            'sale_price_by_area.required_if' => 'Sale Price By Area is required',
+            'sale_area.required_if' => 'Sale Area is required',
         ];
     }
 }

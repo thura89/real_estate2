@@ -57,6 +57,7 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: {
                     url: "/admin/admin-user/datatables/ssd",
                     type: 'GET',
@@ -112,11 +113,7 @@
                         name: 'action'
                     },
 
-                ],
-                columnDefs: [{
-                    target: 'no-sort',
-                    sortable: false,
-                }],
+                ]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);

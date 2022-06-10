@@ -36,6 +36,10 @@ return array(
                 1 => 'Square Feet',
                 2 => 'Acre',
         ],
+        'area_option' => [
+                1 => 'Width x Length',
+                2 => 'Area',
+        ],
         'currency_code' => [
                 'mmk' => 'MMK',
                 'us' => 'US',
@@ -218,7 +222,16 @@ return array(
                 2 => 'Unavailable',
         ],
         'publish_status' => [
-                1 => 'Recommended',
+                1 => 'Publish',
+                0 => 'Pending',
+        ],
+        'recommend_status' => [
+                1 => 'Recommend',
+                0 => 'Normal',
+        ],
+        'hot_status' => [
+                1 => 'Hot',
+                0 => 'Normal',
         ],
         'slider_status' => [
                 1 => 'Published',

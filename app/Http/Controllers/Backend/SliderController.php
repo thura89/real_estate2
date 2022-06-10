@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\News;
-use App\Region;
 use App\Slider;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class SliderController extends Controller
@@ -33,7 +28,7 @@ class SliderController extends Controller
      */
     public function ssd()
     {
-        $data = Slider::query();
+        $data = Slider::query()->orderBy('updated_at','DESC');
         return Datatables::of($data)
             ->editColumn('title', function ($each) {
                 return $each->title;

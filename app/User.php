@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'facebook_id', 'google_id', 'apple_id'
+        'name', 'email', 'password', 'facebook_id', 'google_id', 'apple_id' ,'other_phone',
     ];
 
     /**
@@ -44,7 +44,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'company_images' => 'array',
-        'phone' => 'array',
+        'other_phone' => 'array',
     ];
 
     public function properties()
@@ -100,6 +100,19 @@ class User extends Authenticatable
             return asset('/backend/images/timemyay_default_cover.png');
         }
     }
+
+    // public function getCompanyImagesAttribute($value)
+    // {
+    //     if ($value) {
+    //         $data = [];
+    //         foreach ($value as $key => $val) {
+    //             $data = asset('/storage/company_images/' . $val);
+    //         }
+    //         return $data;
+    //     } else {
+    //         return asset('/backend/images/timemyay_default_cover.png');
+    //     }
+    // }
 
     /* User Follower */
     public function follow(User $user)

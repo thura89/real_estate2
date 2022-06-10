@@ -43,7 +43,7 @@ class PropertyRecommend extends JsonResource
             'category' => config('const.property_category')[$this->category],
             'bed_room' => $this->partation->bed_room ?? null,
             'bath_room' => $this->partation->bath_room ?? null,
-            'carpark' => $this->partation->carpark ?? null,
+            // 'carpark' => $this->partation->carpark ?? null,
             'recommended_feature' => $this->status,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
         ];

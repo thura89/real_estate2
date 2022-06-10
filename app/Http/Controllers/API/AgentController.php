@@ -10,7 +10,6 @@ use App\Helpers\ResponseHelper;
 use App\Http\Resources\AgentList;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AgentByProperties;
-use App\Http\Resources\PropertiesByAgent;
 
 class AgentController extends Controller
 {

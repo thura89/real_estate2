@@ -57,6 +57,7 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: "/admin/news/datatables/ssd",
                 columns: [
                     {

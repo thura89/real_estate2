@@ -28,19 +28,19 @@ class UpdateWant2BuyRentRequest extends FormRequest
             'properties_category' => 'required',
             'properties_type' => 'required',
             'title' => 'required',
-            'phone_no' => 'required',
+            'phone_no' => 'required|digits_between:9,11',
 
             /* AreaSize */
-            'area_unit' => 'required',
-            'area_width' => 'required',
-            'area_length' => 'required',
+            'area_unit' => 'required|numeric',
+            'area_width' => 'required|numeric',
+            'area_length' => 'required|numeric',
             'completion' => 'required',
             'floor_level' => 'required_if:properties_category,==,3',
             'furnished_status' => 'required_if:properties_category,==,3',
 
             /* Budget Price */
-            'budget_from' => 'required',
-            'budget_to' => 'required',
+            'budget_from' => 'required|numeric',
+            'budget_to' => 'required|numeric',
             'currency_code' => 'required',
 
             /* Description */

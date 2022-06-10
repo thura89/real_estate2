@@ -4,6 +4,29 @@
 @section('extra-css')
     <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+    <style>
+        .remove-field i{
+            font-size:24px;
+            color:red;
+        }
+        .remove-field i:hover{
+            font-size:24px;
+            color:#000fff33;
+        }
+        .add-field i{
+            font-size: 24px;
+        }
+        .add-field i:hover{
+            font-size:24px;
+            color:#000fff33;
+        }
+        .multi-fields span{
+            display: contents !important;
+        }
+        p.add{
+            line-height: 37px;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="app-main__inner">
@@ -39,13 +62,28 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 col form-group">
+                            <div class="col-md-4 col form-group">
                                 <label for="email">Email</label>
                                 <input type="email" name="email" class="form-control" value="{{ $developerUser->email }}">
                             </div>
-                            <div class="col-md-6 col form-group">
+                            <div class="col-md-4 col pl-0 form-group">
                                 <label for="phone">Phone</label>
                                 <input type="number" name="phone" class="form-control" value="{{ $developerUser->phone }}">
+                            </div>
+                            <div class="col-md-4 col pl-0 form-group">
+                                <label for="other_phone">Other Phone</label>
+                                <div class="multi-field-wrapper">
+                                    <div class="multi-fields">
+                                        <div class="multi-field d-flex">
+                                            <input type="number" name="other_phone[]" class="form-control" value="{{ old('other_phone')}}">
+                                            <button type="button" class="btn remove-field"><i class="pe-7s-less"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn add-field"><i class="pe-7s-plus"></i></button>
+                                        <p class="add">Add Phone</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -134,6 +172,23 @@
         @endif
     <script>
         $(document).ready(function() {
+            @if ($developerUser->other_phone)
+                var $wrapper = $('.multi-fields', this);
+                @foreach ($developerUser->other_phone as $phone)
+                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('{{ $phone }}');
+                @endforeach
+                $('.multi-fields').find('div').first().remove();
+            @endif
+            $('.multi-field-wrapper').each(function() {
+                var $wrapper = $('.multi-fields', this);
+                $(".add-field", $(this)).click(function(e) {
+                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').focus();
+                });
+                $('.multi-field .remove-field', $wrapper).click(function() {
+                    if ($('.multi-field', $wrapper).length > 1)
+                        $(this).parent('.multi-field').remove();
+                });
+            });
             $('#cover_photo').on('change', function() {
                 $('.preview_cover_photo').html('');
                 var f_length = document.getElementById('cover_photo').files.length;

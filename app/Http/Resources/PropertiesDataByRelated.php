@@ -50,7 +50,7 @@ class PropertiesDataByRelated extends JsonResource
         $data['category'] = config('const.property_category')[$this->category];
         $data['bed_room'] = $this->partation->bed_room ?? null;
         $data['bath_room'] = $this->partation->bath_room ?? null;
-        $data['carpark'] = $this->partation->carpark ?? null;
+        // $data['carpark'] = $this->partation->carpark ?? null;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
             if ($favorite) {

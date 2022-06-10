@@ -43,8 +43,8 @@
                                 <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     class="p-0 btn">
                                     @php
-                                        if(Auth::user()->images){
-                                            $profile_img =  asset('storage/developer/'.Auth::user()->images) ;
+                                        if(Auth::user()->profile_photo){
+                                            $profile_img = Auth::user()->profile_photo;
                                         }else{
                                             $profile_img = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=".Auth::user()->name;
                                         }

@@ -33,8 +33,8 @@
                 <div class="card-body">
                     <table class="table table-borderd DataTables">
                         <thead>
+                            <th>#</th>
                             <th>Title</th>
-                            <th>Image</th>
                             <th>Status</th>
                             <th>Created At</th>
                             <th class="no-sort">Action</th>
@@ -55,17 +55,18 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: "/admin/slider/datatables/ssd",
                 columns: [
-                    {
-                        data: 'title',
-                        name: 'title'
-                    },
                     {
                         data: 'images',
                         name: 'images',
                         sortable: false,
                         searchable: false,
+                    },
+                    {
+                        data: 'title',
+                        name: 'title'
                     },
                     {
                         data: 'status',

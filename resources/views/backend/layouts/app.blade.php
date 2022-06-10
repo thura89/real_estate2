@@ -68,6 +68,7 @@
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             })
+            
             @if(session('create'))
             Toast.fire({
                 icon: 'success',

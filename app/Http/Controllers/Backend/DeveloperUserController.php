@@ -46,7 +46,7 @@ class DeveloperUserController extends Controller
         }  
         return Datatables::of($data)
         ->editColumn('profile_photo',function($each){
-            return "<img src='$each->profile_photo' class='img-thumbnail' width='80'>" ?? '-';
+            return "<img src='$each->profile_photo' class='rounded-circle' width='50'>" ?? '-';
         })
         ->editColumn('region', function ($each) {
             $region = $each->region()->first('name');
@@ -114,6 +114,7 @@ class DeveloperUserController extends Controller
         $developerUser->name = $request->name;
         $developerUser->email = $request->email;
         $developerUser->phone = $request->phone;
+        $developerUser->other_phone = $request->other_phone ?? null;
         $developerUser->region = $request->region;
         $developerUser->township = $request->township;
         $developerUser->address = $request->address;
@@ -166,6 +167,7 @@ class DeveloperUserController extends Controller
         $developerUser->name = $request->name;
         $developerUser->email = $request->email;
         $developerUser->phone = $request->phone;
+        $developerUser->other_phone = $request->other_phone ?? null;
         $developerUser->region = $request->region;
         $developerUser->township = $request->township;
         $developerUser->address = $request->address;

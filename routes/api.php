@@ -34,6 +34,7 @@ Route::namespace('API')->group(function () {
     /* Property */
     Route::get('/property-lists', 'PageController@property_list');
     Route::get('/recommend_property', 'PageController@recommend_property');
+    Route::get('/hot_property', 'PageController@hot_property');
     Route::get('/property/{id}/show', 'PageController@show');
     
     /* New Project */
@@ -87,11 +88,13 @@ Route::namespace('API')->group(function () {
             Route::get('/user/newproject', 'UserNewProjectController@index');
             Route::post('/user/newproject/create', 'UserNewProjectController@store');
             Route::get('/user/newproject/{id}/show', 'UserNewProjectController@show');
+            Route::post('/user/newproject/delete_images', 'UserNewProjectController@DeleteNewProjectImage');
             Route::post('/user/newproject/{id}/update', 'UserNewProjectController@update');
             Route::post('/user/newproject/{id}/delete', 'UserNewProjectController@destroy');
         });
 
         /* Property Create - Update */
+        Route::post('user/property/delete_image' , 'PropertyController@DeletePropertyImage');
         /* House  */
         Route::post('user/property/create/house_shop' , 'PropertyController@house_shop_create');
         Route::post('user/property/update/house_shop' , 'PropertyController@house_shop_update');

@@ -8,12 +8,10 @@ use App\Helpers\SMS;
 use Illuminate\Http\Request;
 use App\Helpers\UUIDGenerate;
 use App\Helpers\ResponseHelper;
-use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -172,6 +170,8 @@ class AuthController extends Controller
             'address' => 'required',
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            'company_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            
         ]);
 
         if ($validate->fails()) {
@@ -189,6 +189,17 @@ class AuthController extends Controller
                 $cover_img_name = uniqid() . '_' . time() . '.' . $cover_img->extension();
                 Storage::disk('public')->put('/cover/' . $cover_img_name, file_get_contents($cover_img));
             }
+            /* Company Image */
+            $company_images = [];
+            if ($request->hasfile('company_images')) {
+                $company_images = [];
+                foreach ($request->file('company_images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                    $company_images[] = $file_name;
+                }
+            }
+            
             $user->user_type = $request->user_type;
             $user->company_name = $request->company_name;
             if ($request->user_type == 4) {
@@ -198,6 +209,7 @@ class AuthController extends Controller
             $user->description = $request->description;
             $user->profile_photo = $profile_img_name;
             $user->cover_photo = $cover_img_name;
+            $user->company_images = $company_images;
             $user->ip = $request->ip();
             $user->user_agent = $request->server('HTTP_USER_AGENT');
             $user->login_at = date('Y-m-d H:i:s');

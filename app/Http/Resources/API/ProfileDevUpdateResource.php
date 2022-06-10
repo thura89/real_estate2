@@ -14,6 +14,12 @@ class ProfileDevUpdateResource extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->company_images) {
+            $company_images = [];
+            foreach ($this->company_images as $key => $image) {
+                $company_images[] = asset(config('const.company_images')) . '/' .$image;
+            }
+        }
         return [
             'name' => $this->name,
             'company_name' => $this->company_name,
@@ -24,6 +30,7 @@ class ProfileDevUpdateResource extends JsonResource
             'description' => $this->description,
             'profile_photo' => $this->profile_photo,
             'cover_photo' => $this->cover_photo,
+            'company_images' => $company_images ?? [],
         ];
     }
 }

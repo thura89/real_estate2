@@ -11,7 +11,6 @@ use App\Property;
 use App\Partation;
 use App\RentPrice;
 use App\Situation;
-use Carbon\Carbon;
 use App\LotFeature;
 use App\Suppliment;
 use App\UnitAmenity;
@@ -20,7 +19,6 @@ use App\BuildingAmenity;
 use Illuminate\Http\Request;
 use App\Helpers\UUIDGenerate;
 use App\Helpers\ResponseHelper;
-use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyList;
@@ -30,10 +28,8 @@ use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
 use App\Http\Resources\PropertyDetail348;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\landHouseUpdateRequest;
 use App\Http\Requests\ApartCondoCreateRequest;
 use App\Http\Requests\ApartCondoUpdateRequest;
-use phpDocumentor\Reflection\Types\Null_;
 
 class PropertyController extends Controller
 {
@@ -52,21 +48,29 @@ class PropertyController extends Controller
             'propertyImage',
         ]);
         
-        if ($request->get('keywords')) {
-            $keyword = $request->get('keywords');
-            $data->where('title',  'LIKE', "%$keyword%")
-                 ->orWhereHas('suppliment', function ($query) use ($keyword) {
-                    $query->where('note',  'LIKE', "%$keyword%");
-                });
+        if ($request->get('status')) {
+            $data->where('status', $request->get('status'));
+        }
+        if ($request->get('recommended_feature')) {
+            $data->where('recommended_feature', $request->get('recommended_feature'));
+        }
+        if ($request->get('hot_feature')) {
+            $data->where('hot_feature', $request->get('hot_feature'));
+        }
+        if ($request->get('title')) {
+            $data->where('title', $request->get('title'));
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
         }
-        if ($request->get('property_type')) {
-            $data->where('properties_type', $request->get('property_type'));
+        if ($request->get('status')) {
+            $data->where('status', $request->get('status'));
         }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
+        }
+        if ($request->get('type')) {
+            $data->where('properties_type', $request->get('type'));
         }
         if ($request->get('region')) {
             $region = $request->get('region');
@@ -80,10 +84,10 @@ class PropertyController extends Controller
                 $query->where('township', $township);
             });
         }
-        if ($request->min_price || $request->max_price) {
-            $min = $request->min_price;
-            $max = $request->max_price;
-            if ($request->get('property_type') == 1) {
+        if ($request->get('min_price') || $request->get('max_price')) {
+            $min = $request->get('min_price');
+            $max = $request->get('max_price');
+            if ($request->get('type') == 1) {
                 $data->whereHas('price', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
@@ -109,7 +113,7 @@ class PropertyController extends Controller
 
         if ($request->get('purchase_type')) {
             $purchase_type = $request->get('purchase_type');
-            $data->with('payment')->whereHas('payment', function ($query) use ($purchase_type) {
+            $data->whereHas('payment', function ($query) use ($purchase_type) {
                 $query->where('purchase_type', $purchase_type);
             });
         }
@@ -117,12 +121,12 @@ class PropertyController extends Controller
         if ($request->get('installment')) {
             $installment = $request->get('installment');
             if ($installment === 'yes') {
-                $data->with('payment')->whereHas('payment', function ($query) use ($installment) {
+                $data->whereHas('payment', function ($query) use ($installment) {
                     $query->where('installment',1);
                 });
             }
             if ($installment === 'no') {
-                $data->with('payment')->whereHas('payment', function ($query) use ($installment) {
+                $data->whereHas('payment', function ($query) use ($installment) {
                     $query->where('installment',0);
                 });
             }
@@ -130,26 +134,26 @@ class PropertyController extends Controller
 
         if ($request->get('year_of_construction')) {
             $year_of_construction = $request->get('year_of_construction');
-            $data->with('situation')->whereHas('situation', function ($query) use ($year_of_construction) {
+            $data->whereHas('situation', function ($query) use ($year_of_construction) {
                 $query->where('year_of_construction', $year_of_construction);
             });
         }
         if ($request->get('building_repairing')) {
             $building_repairing = $request->get('building_repairing');
-            $data->with('situation')->whereHas('situation', function ($query) use ($building_repairing) {
+            $data->whereHas('situation', function ($query) use ($building_repairing) {
                 $query->where('building_repairing', $building_repairing);
             });
         }
         if ($request->get('building_condition')) {
             $building_condition = $request->get('building_condition');
-            $data->with('situation')->whereHas('situation', function ($query) use ($building_condition) {
+            $data->whereHas('situation', function ($query) use ($building_condition) {
                 $query->where('building_condition', $building_condition);
             });
         }
 
         if ($request->get('fence_condition')) {
             $fence_condition = $request->get('fence_condition');
-            $data->with('situation')->whereHas('situation', function ($query) use ($fence_condition) {
+            $data->whereHas('situation', function ($query) use ($fence_condition) {
                 $query->where('fence_condition', $fence_condition);
             });
         }
@@ -157,13 +161,13 @@ class PropertyController extends Controller
         if ($request->get('water_sys')) {
             $water_sys = $request->get('water_sys');
             if ($water_sys == 'yes') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
+                $data->whereHas('suppliment', function ($query) use ($water_sys) {
                     $query->where('water_sys', 1);
                 });
             }
 
             if ($water_sys == 'no') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
+                $data->whereHas('suppliment', function ($query) use ($water_sys) {
                     $query->where('water_sys', 0);
                 });
             }
@@ -173,12 +177,12 @@ class PropertyController extends Controller
         if ($request->get('electricity_sys')) {
             $electricity_sys = $request->get('electricity_sys');
             if ($electricity_sys == 'yes') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
+                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
                     $query->where('electricity_sys', 1);
                 });
             }
             if ($electricity_sys == 'no') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
+                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
                     $query->where('electricity_sys', 0);
                 });
             }
@@ -190,69 +194,54 @@ class PropertyController extends Controller
                 $query->where('type_of_street', $type_of_street);
             });
         }
-        if ($request->get('measurement')) {
-            $measurement = $request->get('measurement');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($measurement) {
-                $query->where('measurement', $measurement);
+        if ($request->get('area_option')) {
+            $area_option = $request->get('area_option');
+            $data->whereHas('areasize', function ($query) use ($area_option) {
+                $query->where('area_option', $area_option);
             });
         }
-        if ($request->get('front_area')) {
-            $front_area = $request->get('front_area');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($front_area) {
-                $query->where('front_area', $front_area);
+        if ($request->get('area_size')) {
+            $area_size = $request->get('area_size');
+            $data->whereHas('areasize', function ($query) use ($area_size) {
+                $query->where('area_size', $area_size);
             });
         }
-        if ($request->get('building_width')) {
-            $building_width = $request->get('building_width');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($building_width) {
-                $query->where('building_width', $building_width);
+        if ($request->get('width')) {
+            $width = $request->get('width');
+            $data->whereHas('areasize', function ($query) use ($width) {
+                $query->where('width', $width);
             });
         }
-        if ($request->get('building_length')) {
-            $building_length = $request->get('building_length');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($building_length) {
-                $query->where('building_length', $building_length);
+        if ($request->get('length_val')) {
+            $length_val = $request->get('length_val');
+            $data->whereHas('areasize', function ($query) use ($length_val) {
+                $query->where('length', $length_val);
             });
         }
-        if ($request->get('fence_width')) {
-            $fence_width = $request->get('fence_width');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($fence_width) {
-                $query->where('fence_width', $fence_width);
-            });
-        }
-        if ($request->get('fence_length')) {
-            $fence_length = $request->get('fence_length');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($fence_length) {
-                $query->where('fence_length', $fence_length);
+        if ($request->get('area_unit')) {
+            $area_unit = $request->get('area_unit');
+            $data->whereHas('areasize', function ($query) use ($area_unit) {
+                $query->where('area_unit', $area_unit);
             });
         }
         if ($request->get('floor_level')) {
             $floor_level = $request->get('floor_level');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($floor_level) {
+            $data->whereHas('areasize', function ($query) use ($floor_level) {
                 $query->where('floor_level', $floor_level);
             });
         }
-        if ($request->get('height')) {
-            $height = $request->get('height');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($height) {
-                $query->where('height', $height);
-            });
-        }
-        
         if ($request->get('partation_type')) {
             $partation_type = $request->get('partation_type');
             $data->whereHas('partation', function ($query) use ($partation_type) {
                 $query->where('type', $partation_type);
             });
         }
-
         if ($request->get('bed_room')) {
             $bed_room = $request->get('bed_room');
             $data->whereHas('partation', function ($query) use ($bed_room) {
                 $query->where('bed_room', $bed_room);
             });
         }
-
         if ($request->get('bath_room')) {
             $bath_room = $request->get('bath_room');
             $data->whereHas('partation', function ($query) use ($bath_room) {
@@ -260,12 +249,12 @@ class PropertyController extends Controller
             });
         }
 
-        if ($request->get('carpark')) {
-            $carpark = $request->get('carpark');
-            $data->whereHas('partation', function ($query) use ($carpark) {
-                $query->where('carpark', $carpark);
-            });
-        }
+        // if ($request->get('carpark')) {
+        //     $carpark = $request->get('carpark');
+        //     $data->whereHas('partation', function ($query) use ($carpark) {
+        //         $query->where('carpark', $carpark);
+        //     });
+        // }
         
         if ($request->get('sort')) {
             $sort = $request->get('sort');
@@ -302,6 +291,7 @@ class PropertyController extends Controller
         }else{
             $data->orderBy('updated_at', 'DESC');
         }
+
         $data = $data->paginate(10);
         $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
@@ -375,13 +365,12 @@ class PropertyController extends Controller
             'building_name' => 'required_if:property_category,==,6',
 
             /* Area Size */
-            'measurement' => 'required|in:1,2',
-            'front_area' => 'required',
-            'building_width' => 'required',
-            'building_length' => 'required',
-            'fence_width' => 'required_if:property_category,==,1',
-            'fence_length' => 'required_if:property_category,==,1',
+            'area_option' => 'required|in:1,2',
             'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
 
             /* Partation */
             'partation_type' => 'required|in:1,2',
@@ -459,13 +448,16 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->front_area = $request->front_area;
-            $area_size->building_width = $request->building_width;
-            $area_size->building_length = $request->building_length;
-            if ($request->property_category == 1) {
-                $area_size->fence_width = $request->fence_width;
-                $area_size->fence_length = $request->fence_length;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -477,7 +469,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark ? 1 : 0;
+            // $partation->carpark = $request->carpark ? 1 : 0;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -588,14 +580,13 @@ class PropertyController extends Controller
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
-            /* AreaSize */
-            'measurement' => 'required|in:1,2',
-            'front_area' => 'required',
-            'building_width' => 'required',
-            'building_length' => 'required',
-            'fence_width' => 'required_if:property_category,==,1',
-            'fence_length' => 'required_if:property_category,==,1',
+            /* Area Size */
+            'area_option' => 'required|in:1,2',
             'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
 
             /* partation */
             'partation_type' => 'required|in:1,2',
@@ -664,14 +655,18 @@ class PropertyController extends Controller
             }
 
             /* Area Size Store */
-            $property->areasize->measurement = $request->measurement;
-            $property->areasize->front_area = $request->front_area;
-            $property->areasize->building_width = $request->building_width;
-            $property->areasize->building_length = $request->building_length;
-            if ($request->property_category == 1) {
-                $property->areasize->fence_width = $request->fence_width;
-                $property->areasize->fence_length = $request->fence_length;
-            } else {
+            $property->areasize->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $property->areasize->width = $request->width;
+                $property->areasize->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $property->areasize->area_size = $request->area_size;    
+                $property->areasize->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
                 $property->areasize->level = $request->floor_level;
             }
 
@@ -679,7 +674,7 @@ class PropertyController extends Controller
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark ? 1 : 0;
+            // $property->partation->carpark = $request->carpark ? 1 : 0;
 
             // Payment Store
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -762,45 +757,57 @@ class PropertyController extends Controller
                     }
                 }    
             }
-            // Splice if not img 
-            if ($request->old || $request->photos) {
-                $old_data = $request->old ?? [];
-                $count = count($request->file('photos') ?? []);
-                $data = array_reverse($old_data);
-                $splice_data = array_splice($data, $count);
-
-                // Fetch Old Image
-                $store_data = $property->propertyImage->first('images');
-                $store_data = json_decode($store_data['images']);
-
-                // Diff image
-                $collection = collect($store_data);
-                $diff_image = $collection->diff($splice_data);
-
-                // Delete image
-                if (!$diff_image->all() == []) {
-                    foreach ($diff_image as $key => $diff) {
-                        Storage::disk('public')->delete('property_images/' . $diff);
-                    }
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data_images[] = $file_name;
                 }
-
-                // Get Remain Data from coming form
-                foreach ($splice_data as $image) {
-                    $data[] = $image;
-                }
-
-                // Upload New image
-                if ($request->hasfile('photos')) {
-                    foreach ($request->file('photos') as $image) {
-                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                        $data[] = $file_name;
-                    }
-                }
-                // Splice No Need Data
-                $filtered = array_splice($data, $count);
-                $property->propertyImage->images = json_encode($filtered);
+                $decode_images = json_decode($property->propertyImage->first('images'));
+                $result = array_merge($decode_images,$data_images);
+                $property->propertyImage->images = $result;
+                
             }
+            // Splice if not img 
+            // if ($request->old || $request->photos) {
+            //     $old_data = $request->old ?? [];
+            //     $count = count($request->file('photos') ?? []);
+            //     $data = array_reverse($old_data);
+            //     $splice_data = array_splice($data, $count);
+
+            //     // Fetch Old Image
+            //     $store_data = $property->propertyImage->first('images');
+            //     $store_data = json_decode($store_data['images']);
+
+            //     // Diff image
+            //     $collection = collect($store_data);
+            //     $diff_image = $collection->diff($splice_data);
+
+            //     // Delete image
+            //     if (!$diff_image->all() == []) {
+            //         foreach ($diff_image as $key => $diff) {
+            //             Storage::disk('public')->delete('property_images/' . $diff);
+            //         }
+            //     }
+
+            //     // Get Remain Data from coming form
+            //     foreach ($splice_data as $image) {
+            //         $data[] = $image;
+            //     }
+
+            //     // Upload New image
+            //     if ($request->hasfile('photos')) {
+            //         foreach ($request->file('photos') as $image) {
+            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+            //             $data[] = $file_name;
+            //         }
+            //     }
+            //     // Splice No Need Data
+            //     $filtered = array_splice($data, $count);
+            //     $property->propertyImage->images = json_encode($filtered);
+            // }
 
             $property->push();
 
@@ -826,13 +833,13 @@ class PropertyController extends Controller
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
-            /* AreaSize */
-            'measurement' => 'required|in:1,2',
-            'front_area' => 'required',
-            'fence_width' => 'required',
-            'fence_length' => 'required',
-            'building_width' => 'required_if:property_category,==,7',
-            'building_length' => 'required_if:property_category,==,7',
+            /* Area Size */
+            'area_option' => 'required|in:1,2',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
 
             /* partation */
             'partation_type' => 'required_if:property_category,2|required_if:property_category,7|in:1,2',
@@ -909,10 +916,22 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->front_area = $request->front_area;
-            $area_size->fence_width = $request->fence_width;
-            $area_size->fence_length = $request->fence_length;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $area_size->level = $request->floor_level;
+            }
+            $property->areasize()->save($area_size);
+
             /* For Industrial */
             if ($property->category == 7) {
                 $area_size->building_width = $request->building_width;
@@ -926,7 +945,7 @@ class PropertyController extends Controller
                 $partation->type = $request->partation_type;
                 $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $partation->carpark = $request->carpark ? 1 : 0;
+                // $partation->carpark = $request->carpark ? 1 : 0;
                 $property->partation()->save($partation);
             }
 
@@ -1020,13 +1039,13 @@ class PropertyController extends Controller
             'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
-            /* AreaSize */
-            'measurement' => 'required|in:1,2',
-            'front_area' => 'required',
-            'fence_width' => 'required',
-            'fence_length' => 'required',
-            'building_width' => 'required_if:property_category,==,7',
-            'building_length' => 'required_if:property_category,==,7',
+            /* Area Size */
+            'area_option' => 'required|in:1,2',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
 
             /* partation */
             'partation_type' => 'required_if:property_category,2|required_if:property_category,7|in:1,2',
@@ -1093,13 +1112,19 @@ class PropertyController extends Controller
             }
 
             /* Area Size Store */
-            $property->areasize->measurement = $request->measurement;
-            $property->areasize->front_area = $request->front_area;
-            $property->areasize->fence_width = $request->fence_width;
-            $property->areasize->fence_length = $request->fence_length;
-            if ($property->category == 7) {
-                $property->areasize->building_width = $request->building_width;
-                $property->areasize->building_length = $request->building_length;
+            $property->areasize->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $property->areasize->width = $request->width;
+                $property->areasize->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $property->areasize->area_size = $request->area_size;    
+                $property->areasize->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $property->areasize->level = $request->floor_level;
             }
 
             /* Partation Store For Land House And Industrial */
@@ -1107,7 +1132,7 @@ class PropertyController extends Controller
                 $property->partation->type = $request->partation_type;
                 $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $property->partation->carpark = $request->carpark ? 1 : 0;
+                // $property->partation->carpark = $request->carpark ? 1 : 0;
             }
 
             /* Payment Store */
@@ -1154,45 +1179,57 @@ class PropertyController extends Controller
             $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
             $property->suppliment->note = $request->note ?? null;
 
-            /* Splice if not image  */
-            if ($request->old || $request->photos) {
-                $old_data = $request->old ?? [];
-                $count = count($request->file('photos') ?? []);
-                $data = array_reverse($old_data);
-                $splice_data = array_splice($data, $count);
-
-                /* Fetch Old Image */
-                $store_data = $property->propertyImage->first('images');
-                $store_data = json_decode($store_data['images']);
-
-                /* Diff image */
-                $collection = collect($store_data);
-                $diff_image = $collection->diff($splice_data);
-
-                /* Delete image */
-                if (!$diff_image->all() == []) {
-                    foreach ($diff_image as $key => $diff) {
-                        Storage::disk('public')->delete('property_images/' . $diff);
-                    }
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data_images[] = $file_name;
                 }
-
-                /* Get Remain Data from coming form */
-                foreach ($splice_data as $image) {
-                    $data[] = $image;
-                }
-
-                /* Upload New image */
-                if ($request->hasfile('photos')) {
-                    foreach ($request->file('photos') as $image) {
-                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                        $data[] = $file_name;
-                    }
-                }
-                /* Splice No Need Data */
-                $filtered = array_splice($data, $count);
-                $property->propertyImage->images = json_encode($filtered);
+                $decode_images = json_decode($property->propertyImage->first('images'));
+                $result = array_merge($decode_images,$data_images);
+                $property->propertyImage->images = $result;
+                
             }
+            /* Splice if not image  */
+            // if ($request->old || $request->photos) {
+            //     $old_data = $request->old ?? [];
+            //     $count = count($request->file('photos') ?? []);
+            //     $data = array_reverse($old_data);
+            //     $splice_data = array_splice($data, $count);
+
+            //     /* Fetch Old Image */
+            //     $store_data = $property->propertyImage->first('images');
+            //     $store_data = json_decode($store_data['images']);
+
+            //     /* Diff image */
+            //     $collection = collect($store_data);
+            //     $diff_image = $collection->diff($splice_data);
+
+            //     /* Delete image */
+            //     if (!$diff_image->all() == []) {
+            //         foreach ($diff_image as $key => $diff) {
+            //             Storage::disk('public')->delete('property_images/' . $diff);
+            //         }
+            //     }
+
+            //     /* Get Remain Data from coming form */
+            //     foreach ($splice_data as $image) {
+            //         $data[] = $image;
+            //     }
+
+            //     /* Upload New image */
+            //     if ($request->hasfile('photos')) {
+            //         foreach ($request->file('photos') as $image) {
+            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+            //             $data[] = $file_name;
+            //         }
+            //     }
+            //     /* Splice No Need Data */
+            //     $filtered = array_splice($data, $count);
+            //     $property->propertyImage->images = json_encode($filtered);
+            // }
 
             $property->push();
 
@@ -1217,11 +1254,14 @@ class PropertyController extends Controller
             'ward' => 'required',
             'building_name' => 'required',
 
-            /* AreaSize */
-            'measurement' => 'required|in:1,2',
-            'building_width' => 'required',
-            'building_length' => 'required',
-            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            /* Area Size */
+            'area_option' => 'required|in:1,2',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+
             /* Partation */
             'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
@@ -1291,10 +1331,20 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->building_width = $request->building_width;
-            $area_size->building_length = $request->building_length;
-            $area_size->level = $request->floor_level;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $area_size->level = $request->floor_level;
+            }
             $property->areasize()->save($area_size);
 
             /* Partation Store */
@@ -1302,7 +1352,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark;
+            // $partation->carpark = $request->carpark;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -1415,11 +1465,14 @@ class PropertyController extends Controller
             'ward' => 'required',
             'building_name' => 'required',
 
-            /* AreaSize */
-            'measurement' => 'required|in:1,2',
-            'building_width' => 'required',
-            'building_length' => 'required',
-            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            /* Area Size */
+            'area_option' => 'required|in:1,2',
+            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+            
             /* Partation */
             'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
@@ -1478,16 +1531,26 @@ class PropertyController extends Controller
             $property->address->building_name = $request->building_name;
 
             /* Area Size Store */
-            $property->areasize->measurement = $request->measurement;
-            $property->areasize->building_width = $request->building_width;
-            $property->areasize->building_length = $request->building_length;
-            $property->areasize->level = $request->floor_level;
+            $property->areasize->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $property->areasize->width = $request->width;
+                $property->areasize->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $property->areasize->area_size = $request->area_size;    
+                $property->areasize->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $property->areasize->level = $request->floor_level;
+            }
 
             /* Partation Store */
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark;
+            // $property->partation->carpark = $request->carpark;
 
             /* Payment Store */
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -1576,46 +1639,57 @@ class PropertyController extends Controller
                     }
                 }
             }
-            
-            /* Splice if not img  */
-            if ($request->old || $request->photos) {
-                $old_data = $request->old ?? [];
-                $count = count($request->file('photos') ?? []);
-                $data = array_reverse($old_data);
-                $splice_data = array_splice($data, $count);
-
-                /* Fetch Old Image */
-                $store_data = $property->propertyImage->first('images');
-                $store_data = json_decode($store_data['images']);
-
-                /* Diff image */
-                $collection = collect($store_data);
-                $diff_image = $collection->diff($splice_data);
-
-                /* Delete image */
-                if (!$diff_image->all() == []) {
-                    foreach ($diff_image as $key => $diff) {
-                        Storage::disk('public')->delete('property_images/' . $diff);
-                    }
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data_images[] = $file_name;
                 }
-
-                /* Get Remain Data from coming form */
-                foreach ($splice_data as $image) {
-                    $data[] = $image;
-                }
-
-                /* Upload New image */
-                if ($request->hasfile('photos')) {
-                    foreach ($request->file('photos') as $image) {
-                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                        $data[] = $file_name;
-                    }
-                }
-                /* Splice No Need Data */
-                $filtered = array_splice($data, $count);
-                $property->propertyImage->images = json_encode($filtered);
+                $decode_images = json_decode($property->propertyImage->first('images'));
+                $result = array_merge($decode_images,$data_images);
+                $property->propertyImage->images = $result;
+                
             }
+            // /* Splice if not img  */
+            // if ($request->old || $request->photos) {
+            //     $old_data = $request->old ?? [];
+            //     $count = count($request->file('photos') ?? []);
+            //     $data = array_reverse($old_data);
+            //     $splice_data = array_splice($data, $count);
+
+            //     /* Fetch Old Image */
+            //     $store_data = $property->propertyImage->first('images');
+            //     $store_data = json_decode($store_data['images']);
+
+            //     /* Diff image */
+            //     $collection = collect($store_data);
+            //     $diff_image = $collection->diff($splice_data);
+
+            //     /* Delete image */
+            //     if (!$diff_image->all() == []) {
+            //         foreach ($diff_image as $key => $diff) {
+            //             Storage::disk('public')->delete('property_images/' . $diff);
+            //         }
+            //     }
+
+            //     /* Get Remain Data from coming form */
+            //     foreach ($splice_data as $image) {
+            //         $data[] = $image;
+            //     }
+
+            //     /* Upload New image */
+            //     if ($request->hasfile('photos')) {
+            //         foreach ($request->file('photos') as $image) {
+            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+            //             $data[] = $file_name;
+            //         }
+            //     }
+            //     /* Splice No Need Data */
+            //     $filtered = array_splice($data, $count);
+            //     $property->propertyImage->images = json_encode($filtered);
+            // }
 
             $property->push();
 
@@ -1625,5 +1699,35 @@ class PropertyController extends Controller
             DB::rollBack();
             return ResponseHelper::fail('Something Wrong', $e);
         }
+    }
+
+    public function DeletePropertyImage(Request $request)
+    {
+        $validate = Validator::make($request->all(),[
+            'id' => 'required',
+            'images' => 'required',
+        ]);
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail Request',$validate->errors());
+        }
+        
+        $data = Property::where('user_id',auth()->user()->id)
+                            ->where('id',$request->id)
+                            ->first();
+        if (!$data) {
+            return ResponseHelper::fail('Fail Request','Data not found');
+        }
+        $data_images = json_decode($data->propertyImage->first('images'));
+        $images = explode(',',$request->images);
+        if ($data) {
+            foreach ($images as $key => $del) {
+                Storage::disk('public')->delete('/new_project/' . $del);
+                $rev = array_search($del, $data_images); 
+                unset($data_images[$rev]);
+            }
+            $data->propertyImage->images = array_values($data_images);
+            $data->update();
+        }
+
     }
 }

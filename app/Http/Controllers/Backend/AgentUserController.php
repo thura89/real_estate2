@@ -47,7 +47,7 @@ class AgentUserController extends Controller
         }
         return Datatables::of($data)
         ->editColumn('profile_photo',function($each){
-            return "<img src='$each->profile_photo' class='img-thumbnail' width='80'>" ?? '-';
+            return "<img src='$each->profile_photo' class='rounded-circle' width='50'>" ?? '-';
         })
         ->editColumn('agent_type',function($each){
             return config('const.agent_type')[$each->agent_type] ?? '-';
@@ -118,6 +118,7 @@ class AgentUserController extends Controller
         $agentUser->name = $request->name;
         $agentUser->email = $request->email;
         $agentUser->phone = $request->phone;
+        $agentUser->other_phone = $request->other_phone ?? null;
         $agentUser->agent_type = $request->agent_type;
         $agentUser->region = $request->region;
         $agentUser->township = $request->township;
@@ -172,6 +173,7 @@ class AgentUserController extends Controller
         $agentUser->name = $request->name;
         $agentUser->email = $request->email;
         $agentUser->phone = $request->phone;
+        $agentUser->other_phone = $request->other_phone ?? null;
         $agentUser->agent_type = $request->agent_type;
         $agentUser->region = $request->region;
         $agentUser->township = $request->township;

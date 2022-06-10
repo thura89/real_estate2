@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Property;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +26,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('autodelete:cron')->everyMinute();
+        // $schedule->command('autodelete:cron')->everyMinute();
+        $schedule->call(function () {
+            $data = Property::where('created_at', '<', Carbon::now()->subYear())->update(['status'=>1]);
+        })->everyMinute();
     }
 
     /**

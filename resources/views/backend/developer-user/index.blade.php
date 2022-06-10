@@ -56,6 +56,7 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: {
                     url: "/admin/developer-user/datatables/ssd",
                     type: 'GET',
@@ -68,7 +69,10 @@
                 columns: [
                     {
                         data: 'profile_photo',
-                        name: 'profile_photo'
+                        name: 'profile_photo',
+                        sortable: false,
+                        orderable: false,
+                        searchable: false,
                     },
                     {
                         data: 'company_name',
@@ -104,7 +108,10 @@
                     },
                     {
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
+                        sortable: false,
+                        orderable: false,
+                        searchable: false,
                     },
 
                 ],

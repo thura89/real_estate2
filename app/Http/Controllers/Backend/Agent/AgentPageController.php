@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UpdateAgentUserRequest;
 use App\Http\Requests\AgentProfileUpdateRequest;
 
 class AgentPageController extends Controller
@@ -26,7 +25,7 @@ class AgentPageController extends Controller
             $images = [];
             $images = json_encode($images);
         }else{
-            $decode_images = json_decode($agentUser['company_images']);
+            $decode_images = $agentUser['company_images'];
             $images = [];
             foreach ($decode_images as $key => $image) {
                 $images[] = [
@@ -56,10 +55,60 @@ class AgentPageController extends Controller
             Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
             $agentUser->cover_photo = $cover_img_name;
         }
+        /* Property Image */
+        $company_images = [];
+        if ($request->hasfile('images')) {
+            $company_images = [];
+            foreach ($request->file('images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+        // Splice if not img 
+        if ($request->old || $request->photos) {
+            $old_data = $request->old ?? [];
+            $count = count($request->file('photos') ?? []);
+            $data = array_reverse($old_data);
+            $splice_data = array_splice($data, $count);
+
+            // Fetch Old Image
+            // $store_data = json_decode($agentUser['company_images']);
+
+            // Diff image
+            $collection = collect($agentUser['company_images']);
+            $diff_image = $collection->diff($splice_data);
+
+            // Delete image
+            if (!$diff_image->all() == []) {
+                foreach ($diff_image as $key => $diff) {
+                    Storage::disk('public')->delete('/company_images/' . $diff);
+                }
+            }
+
+            // Get Remain Data from coming form
+            foreach ($splice_data as $image) {
+                $data[] = $image;
+            }
+
+            // Upload New image
+            if ($request->hasfile('photos')) {
+                foreach ($request->file('photos') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                    $data[] = $file_name;
+                }
+            }
+            // Splice No Need Data
+            $company_images = array_splice($data, $count);
+           
+        }
+        $agentUser->company_images = $company_images;
         $agentUser->company_name = $request->company_name;
         $agentUser->name = $request->name;
         $agentUser->email = $request->email;
         $agentUser->phone = $request->phone;
+        $agentUser->other_phone = $request->other_phone ?? null;
         $agentUser->agent_type = $request->agent_type;
         $agentUser->address = $request->address;
         $agentUser->description = $request->description;

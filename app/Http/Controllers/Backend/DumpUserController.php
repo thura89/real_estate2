@@ -27,7 +27,7 @@ class DumpUserController extends Controller
         $data = User::query()->where('user_type',6)->orWhere('user_type',null);// 4 = Agent User    
         return Datatables::of($data)
         ->editColumn('profile_photo',function($each){
-            return "<img src='$each->profile_photo' class='img-thumbnail' width='80'>" ?? '-';
+            return "<img src='$each->profile_photo' class='rounded-circle' width='50'>" ?? '-';
         })
         ->editColumn('user_agent' ,function($each){
             if ($each->user_agent){

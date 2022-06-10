@@ -61,8 +61,9 @@
                             <th>Price</th>
                             <th>Type</th>
                             <th>Category</th>
-                            <th class="no-sort">Recommended</th>
-                            <th>Created At</th>
+                            <th class="no-sort">Recommend</th>
+                            <th>Expired</th>
+                            <th>Created</th>
                             <th class="no-sort">Action</th>
                         </thead>
                         <tbody>
@@ -81,10 +82,16 @@
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
+                aaSorting: [],
                 ajax: {
                     url: "/admin/property/datatables/ssd",
                     type: 'GET',
                     data: function(d) {
+                        d.area_option = $('#area_option').val();
+                        d.width = $('#width').val();
+                        d.length_val = $('#length_val').val();
+                        d.area_size = $('#area_size').val();
+                        d.area_unit = $('#area_unit').val();
                         d.status = $('#status').val();
                         d.type = $('#type').val();
                         d.title = $('#title').val();
@@ -104,18 +111,9 @@
                         d.water_sys = $('#water_sys').val();
                         d.electricity_sys = $('#electricity_sys').val();
                         d.type_of_street = $('#type_of_street').val();
-                        d.measurement = $('#measurement').val();
-                        d.front_area = $('#front_area').val();
-                        d.building_width = $('#building_width').val();
-                        d.building_length = $('#building_length').val();
-                        d.fence_width = $('#fence_width').val();
-                        d.fence_length = $('#fence_length').val();
-                        d.floor_level = $('#floor_level').val();
-                        d.height = $('#height').val();
                         d.partation_type = $('#partation_type').val();
                         d.bed_room = $('#bed_room').val();
                         d.bath_room = $('#bath_room').val();
-                        d.carpark = $('#carpark').val();
                         d.sort = $('#sort').val();
                     }
                 },
@@ -123,6 +121,7 @@
                         data: 'images',
                         name: 'images',
                         sortable: false,
+                        orderable: false,
                         searchable: false,
                     },
                     {
@@ -172,6 +171,13 @@
                         sortable: false,
                         searchable: false,
                     },
+
+                    {
+                        data: 'expired_at',
+                        name: 'expired_at',
+                        sortable: false,
+                        searchable: false,
+                    },
                     {
                         data: 'created_at',
                         name: 'created_at'
@@ -182,14 +188,7 @@
                         sortable: false,
                         searchable: false,
                     },
-
-                ],
-                columnDefs: [{
-                    orderable: false,
-                    targets: 0,
-                    // visible:false
-
-                }]
+                ]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);
@@ -221,10 +220,22 @@
                     }
                 })
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
+            /* Area Size*/
+            $('.area').hide();
+            $('.area_widthxlenght').hide();
+            $('.area_option').on('change', function() {
+                $('.area').hide();
+                $('.area_widthxlenght').hide();
+                var type = this.value;
+                if (type == 1) {
+                    $('.area').hide();
+                    $('.area_widthxlenght').show();
+                }
+                if (type == 2) {
+                    $('.area').show();
+                    $('.area_widthxlenght').hide();
+                }
+            });
             /* Type change Installment change */
             $('#installment').hide();
             $('#type').on('change', function() {
@@ -248,68 +259,46 @@
                     $('#bed_room').hide();
                 }
             });
-            
-            
-            $('#floor_level').hide('fast');
-            $('#fence_length').hide('fast');
-            $('#fence_width').hide('fast');
-            $('#building_length').hide('fast');
-            $('#building_width').hide('fast');
-            $('#front_area').hide('fast');
-            $('#fence_condition').hide('fast');
+            $('#floor_level_wrap').hide('fast');
             $('#building_condition').hide('fast');
             $('#building_repairing').hide('fast');
             $('#year_of_construction').hide('fast');
             $('#partation_type').hide('fast');
             $('#land_type').hide('fast');
             $('#repairing').hide('fast');
-            $('#carpark').hide('fast');
             $('.measurement_wrap').hide('fast');
             $('.situation_wrap').hide('fast');
             $('.partation_wrap').hide('fast');
             
-            
             $('#category').on('change', function() {
-                $('#floor_level').hide('fast');
-                $('#fence_length').hide('fast');
-                $('#fence_width').hide('fast');
-                $('#building_length').hide('fast');
-                $('#building_width').hide('fast');
-                $('#front_area').hide('fast');
-                $('#fence_condition').hide('fast');
+                $('#floor_level_wrap').hide('fast');    
                 $('#building_condition').hide('fast');
                 $('#building_repairing').hide('fast');
                 $('#year_of_construction').hide('fast');
                 $('#partation_type').hide('fast');
-                $('#carpark').hide('fast');
                 $('#bath_room').hide();
                 $('#bed_room').hide();
                 $('#land_type').hide('fast');
                 $('.measurement_wrap').hide('fast');
                 $('.situation_wrap').hide('fast');
                 $('.partation_wrap').hide('fast');
+                $('#repairing').hide('fast');
+                $('#fence_condition').hide('fast');
                 
                 /* House */
                 if ($('#category').val() == '1') {
-                    $('#fence_length').show('fast');
-                    $('#fence_width').show('fast');
-                    $('#building_length').show('fast');
-                    $('#building_width').show('fast');
-                    $('#front_area').show('fast');
                     $('#building_condition').show('fast');
                     $('#building_repairing').show('fast');
                     $('#year_of_construction').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
-                    $( "#fence_width" ).addClass( "mt-2");
-                    $( "#fence_width" ).removeClass( "pl-0");
-                    $( "#fence_length" ).addClass( "mt-2");
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
                     $('.partation_wrap').show('fast');
                     $('#bed_room').addClass('pl-0');
+                    $( "#fence_condition" ).addClass( "pl-0");
+                    $('#repairing').addClass('mt-2');
+                    $('#building_repairing').addClass('pl-0');
                     $('#partation_type').on('change', function() {
-                        console.log($('#partation_type').val());
                         if ($('#partation_type').val() == '2') {
                             console.log($('#partation_type').val());
                             $('#bath_room').show('fast');
@@ -319,16 +308,9 @@
                 }
                 /* Land for House */
                 if ($('#category').val() == '2') {
-                    $('#fence_length').show('fast');
-                    $('#fence_width').show('fast');
-                    $('#front_area').show('fast');
                     $('#fence_condition').show('fast');
                     $('#building_repairing').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
-                    $( "#fence_width" ).removeClass( "mt-2");
-                    $( "#fence_width" ).addClass( "pl-0");
-                    $( "#fence_length" ).removeClass( "mt-2");
                     $( "#building_repairing" ).removeClass( "pl-0");
                     $( "#fence_condition" ).addClass( "pl-0");
                     $('.measurement_wrap').show('fast');
@@ -339,93 +321,69 @@
                 }
                 /* Apartment and office */
                 if ($('#category').val() == '3' || $('#category').val() == '4') {
-                    $('#floor_level').show('fast');
-                    $('#building_length').show('fast');
-                    $('#building_width').show('fast');
+                    $('#floor_level_wrap').show('fast');
                     $('#building_condition').show('fast');
                     $('#building_repairing').show('fast');
                     $('#year_of_construction').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
                     $('.partation_wrap').show('fast');
                     $( "#building_repairing" ).addClass( "pl-0");
                     $('#repairing').addClass('pl-0');
-                    $('#bed_room').removeClass('pl-0');
-                    $('#bed_room').addClass('mt-2');
-                    
-                    
                 }
+
                 /* Land */
                 if ($('#category').val() == '5') {
-                    $('#front_area').show('fast');
-                    $('#fence_length').show('fast');
-                    $('#fence_width').show('fast');
                     $('#land_type').show('fast');
                     $('#repairing').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
-                    $('.partation_wrap').show('fast');
-                    $('#repairing').removeClass('pl-0');
-                    $('#fence_width').removeClass('mt-2');
-                    $('#fence_length').removeClass('mt-2');
-                    $('#fence_width').addClass('pl-0');
+                    $('#fence_condition').removeClass('pl-0');
+                    $('#repairing').removeClass('mt-2 pl-0');
+                    
                 }
+
                 /* Shop */
                 if ($('#category').val() == '6') {
-                    $('#front_area').show('fast');
-                    $('#building_length').show('fast');
-                    $('#building_width').show('fast');
-                    $('#floor_level').show('fast');
+                    $('#floor_level_wrap').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
                     $('#year_of_construction').show('fast');
                     $('#building_repairing').show('fast');
                     $('#building_condition').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
                     $('.partation_wrap').show('fast');
-                    $('#repairing').addClass('pl-0');
-                    $('#bed_room').removeClass('pl-0');
-                    $('#bed_room').addClass('mt-2');
+                    $('#fence_condition').addClass('pl-0');
+                    // $('#repairing').addClass('pl-0');
+                    // $('#bed_room').addClass('mt-2');
                 }
+
                 /* Industrial Zone */
                 if ($('#category').val() == '7') {
-                    $('#front_area').show('fast');
-                    $('#fence_length').show('fast');
-                    $('#fence_width').show('fast');
-                    $('#building_length').show('fast');
-                    $('#building_width').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
                     $('#repairing').show('fast');
                     $('#year_of_construction').show('fast');
                     $('#building_condition').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
                     $('.partation_wrap').show('fast');
-                    $( "#fence_width" ).addClass( "mt-2");
-                    $( "#fence_width" ).removeClass( "pl-0");
-                    $( "#fence_length" ).addClass( "mt-2");
                     $('#repairing').addClass('pl-0');
                     $('#bed_room').addClass('pl-0');
                 }
+
                 /* Condo */
                 if ($('#category').val() == '8') {
-                    $('#building_length').show('fast');
-                    $('#building_width').show('fast');
-                    $('#floor_level').show('fast');
+                    $('#floor_level_wrap').show('fast');
                     $('#partation_type').show('fast');
-                    $('#carpark').show('fast');
                     $('#year_of_construction').show('fast');
                     $('#building_condition').show('fast');
                     $('#building_repairing').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
                     $('.partation_wrap').show('fast');
-                    $('#bed_room').removeClass('pl-0');
-                    $('#bed_room').addClass('mt-2');
+                    // $('#bed_room').removeClass('pl-0');
+                    // $('#bed_room').addClass('mt-2');
                 }
             });
             
@@ -447,10 +405,9 @@
                             $("#township").append('<option value="' + value.id + '">' +
                                 value.name + '</option>');
                         });
-
                     }
                 });
-            });     
+            }); 
         });
     </script>
 
@@ -560,7 +517,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 pl-0" id='installment'>
+                        <div class="col-md-3 mt-2" id='installment'>
                             <select id='installment' class="form-control">
                                 <option value="">Installment</option>
                                 @foreach (config('const.installment') as $key => $installment)
@@ -593,33 +550,61 @@
                         </div>
                     </div>
                 </div>
-                {{-- Measurement --}}
-                <div class="form-group measurement_wrap">
-                    <h5>Measurement</h5>
+                {{-- Area Size --}}
+                <div class="form-group">
+                    <h5>Area Size</h5>
                     <hr>
                     <div class="row">
-                        <div class="col-md-3" id='measurement'>
-                            <select id='measurement' class="form-control">
-                                <option value="">Measurement</option>
-                                @foreach (config('const.area') as $key => $measurement)
-                                    <option value="{{ $key }}">{{ $measurement }}</option>
-                                @endforeach
-                            </select>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="area_option">Area Option</label>
+                                <select name="area_option" id="area_option" class="area_option form-control">
+                                    <option value="">Select</option>
+                                    @foreach (config('const.area_option') as $key => $area_opt)
+                                        <option value="{{ $key }}">{{ $area_opt }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-3 pl-0" id="front_area">
-                            <input type="number" class="form-control" name="front_area" id="front_area" placeholder="Front Area">
+                        <div class="col-md-4 area_widthxlenght">
+                            <div class="row area_widthxlenght">
+                                <div class="col pl-0 form-group">
+                                    <label for="width">Width</label>
+                                    <input type="number" name="width" id="width_val" class="form-control">
+                                </div>
+                                <div class="col pl-0 form-group">
+                                    <label for="length_val">Length</label>
+                                    <input type="number" name="length_val" id="length_val" class="form-control">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3 pl-0" id="building_width">
-                            <input type="number" class="form-control" name="building_width" id="building_width" placeholder="Building Width">
+                        <div class="col-md-4 area">
+                            <div class="row area">
+                                <div class="col pl-0 form-group">
+                                    <label for="area_size">Area Size</label>
+                                    <input type="number" name="area_size" id="area_size" class="form-control">
+                                </div>
+                                <div class="col pl-0 form-group">
+                                    <label for="area_unit">Area Unit</label>
+                                    <select name="area_unit" id="area_unit" class="area form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.area') as $key => $val)
+                                            <option value="{{ $key }}">{{ $val }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3 pl-0" id="building_length">
-                            <input type="number" class="form-control" name="building_length" id="building_length" placeholder="Building Length">
-                        </div>
-                        <div class="col-md-3 mt-2" id="fence_width">
-                            <input type="number" class="form-control" name="fence_width" id="fence_width" placeholder="Fence Width">
-                        </div>
-                        <div class="col-md-3 pl-0 mt-2" id="fence_length">
-                            <input type="number" class="form-control" name="fence_length" id="fence_length" placeholder="Fence Length">
+                        <div class="col-md-4 pl-0" id="floor_level_wrap">
+                            <div class="form-group">
+                                <label for="fence_width">Floor Level</label>
+                                <select name="floor_level" id="floor_level" class="form-control">
+                                    <option value="">Please Select</option>
+                                    @foreach (config('const.floor_level') as $key => $level)
+                                        <option value="{{ $key }}">{{ $level }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -685,22 +670,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 pl-0" id='carpark'>
-                            <select id='carpark' class="form-control">
-                                <option value="">CarPark</option>
-                                @foreach (config('const.carpark') as $key => $carpark)
-                                    <option value="{{ $key }}">{{ $carpark }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3 pl-0" id='floor_level'>
-                            <select id='floor_level' class="form-control">
-                                <option value="">Floor Level</option>
-                                @foreach (config('const.floor_level') as $key => $floor_level)
-                                    <option value="{{ $key }}">{{ $floor_level }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                         <div class="col-md-3 pl-0" id='bath_room'>
                             <select id='bath_room' class="form-control">
                                 <option value="">Bath Room</option>

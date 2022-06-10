@@ -19,6 +19,21 @@ class PropertyDetail348 extends JsonResource
     {
         $data = [];
         
+        /** Area Size */
+        if ($this->areasize->area_option == 1) {
+            $data_area_size = [
+                'area_option' => $this->areasize? $this->areasize->area_option : null,
+                'width' => $this->areasize? $this->areasize->width : null,
+                'length' => $this->areasize? $this->areasize->length : null,
+            ];
+        } else {
+            $data_area_size = [
+                'area_option' => $this->areasize? $this->areasize->area_option : null,
+                'area_size' => $this->areasize? $this->areasize->area_size : null,
+                'area_unit' => $this->areasize? $this->areasize->area_unit : null,
+            ];
+        }
+
         /* Address */
         $region = $this->address ? $this->address->region()->first('name') : null;
         $township = $this->address ? $this->address->township()->first('name') : null;
@@ -37,16 +52,16 @@ class PropertyDetail348 extends JsonResource
         ];
 
         /* AreaSize */
-        $data['measurement'] = $this->areasize? config('const.area')[$this->areasize->measurement] : null;
-        $data['building_width'] = $this->areasize? $this->areasize->building_width : null;
-        $data['building_length'] = $this->areasize? $this->areasize->building_length : null;
-        $data['floor_level'] = $this->areasize? $this->areasize->floor_level : null;
+        $data['area_size'] = $data_area_size;
+        if ($this->category == 6) {
+            $data['floor_level'] = $this->areasize? $this->areasize->floor_level : null;
+        }
 
         /* partation */
         $data['partation_type'] = $this->partation ? config('const.partation_type')[$this->partation->type] : null;
         $data['bath_room'] = $this->partation ? $this->partation->bath_room : null;
         $data['bed_room'] = $this->partation ? $this->partation->bed_room : null;
-        $data['carpark'] = $this->partation ? $this->partation->carpark : null;
+        // $data['carpark'] = $this->partation ? $this->partation->carpark : null;
 
         /* Payment */
         $data['purchase_type'] = $this->payment ? config('const.purchase_type')[$this->payment->purchase_type] : null;

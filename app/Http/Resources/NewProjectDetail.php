@@ -21,7 +21,7 @@ class NewProjectDetail extends JsonResource
         $decode_images = json_decode($this->images);
         $images = [];
         foreach ($decode_images as $key => $image) {
-            $images[] = asset(config('const.p_img_path')) . '/' . $image;
+            $images[] = asset(config('const.new_project_img_path')) . '/' . $image;
         }
         $images = $images ?? null; 
 

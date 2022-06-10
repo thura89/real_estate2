@@ -30,7 +30,22 @@
                         enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="property_category" value="{{ $category }}">
-                        <input type="hidden" name="property_type" value="{{ $type }}">
+                        {{-- Property Type --}}
+                        <div class="form-group">
+                            <h5>Property Type</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-md-4 form-group">
+                                    <label for="price">Property Type</label>
+                                    <select name="property_type" class="property_type form-control">
+                                        <option value="">Select Type</option>
+                                        @foreach (config('const.property_type') as $key => $area)
+                                            <option value="{{ $key }}">{{ $area }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         {{-- address --}}
                         <div class="form-group">
                             <h5>Address</h5>
@@ -92,27 +107,46 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="front_area">Measurement</label>
-                                        <select name="measurement" class="form-control">
+                                        <label for="area_option">Area Option</label>
+                                        <select name="area_option" class="area_option form-control">
                                             <option value="">Select</option>
-                                            @foreach (config('const.area') as $key => $area)
-                                                <option value="{{ $key }}">{{ $area }}</option>
+                                            @foreach (config('const.area_option') as $key => $area_opt)
+                                                <option value="{{ $key }}">{{ $area_opt }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label for="building_width">Building Width</label>
-                                            <input type="text" name="building_width" class="form-control">
+                                <div class="col-md-4 area_widthxlenght">
+                                    <div class="row area_widthxlenght">
+                                        <div class="col form-group">
+                                            <label for="width">Width</label>
+                                            <input type="number" name="width" class="form-control">
                                         </div>
-                                        <div class="col-md-6 form-group">
-                                            <label for="building_length">Building Length</label>
-                                            <input type="text" name="building_length" class="form-control">
+                                        <div class="col form-group">
+                                            <label for="length">Length</label>
+                                            <input type="number" name="length" class="form-control">
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4 area">
+                                    <div class="row area">
+                                        <div class="col form-group">
+                                            <label for="area_size">Area Size</label>
+                                            <input type="number" name="area_size" class="form-control">
+                                        </div>
+                                        <div class="col form-group">
+                                            <label for="area_unit">Area Unit</label>
+                                            <select name="area_unit" class="area form-control">
+                                                <option value="">Select</option>
+                                                @foreach (config('const.area') as $key => $val)
+                                                    <option value="{{ $key }}">{{ $val }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="fence_width">Floor Level</label>
@@ -159,7 +193,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-6 col-md-4 form-group">
                                     <label for="carpark">CarPark</label>
                                     <select name="carpark" class="form-control">
@@ -169,23 +203,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        {{-- Property Type --}}
-                        <div class="form-group">
-                            <h5>Property Type</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col-6 col-md-4 form-group">
-                                    <label for="price">Property Type</label>
-                                    <select name="property_type" class="property_type form-control">
-                                        <option value="">Select Type</option>
-                                        @foreach (config('const.property_type') as $key => $area)
-                                            <option value="{{ $key }}">{{ $area }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            </div> --}}
                         </div>
                         {{-- Price --}}
                         <div class="price_sale_hider form-group">
@@ -477,9 +495,9 @@
                                                 class="form-check-input">Garden</label></div>
                                 </div>
                                 <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
+                                    {{-- <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="carpark" value="1"
-                                                class="form-check-input">Carpark</label></div>
+                                                class="form-check-input">Carpark</label></div> --}}
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="own_transformer" value="1"
                                                 class="form-check-input">Own Transformer</label></div>
@@ -581,6 +599,22 @@
             if (type == 2) {
                 $('.price_sale_hider').hide();
                 $('.price_rent_hider').show();
+            }
+        });
+
+        $('.area').hide();
+        $('.area_widthxlenght').hide();
+        $('.area_option').on('change', function() {
+            $('.area').hide();
+            $('.area_widthxlenght').hide();
+            var type = this.value;
+            if (type == 1) {
+                $('.area').hide();
+                $('.area_widthxlenght').show();
+            }
+            if (type == 2) {
+                $('.area').show();
+                $('.area_widthxlenght').hide();
             }
         });
     </script>

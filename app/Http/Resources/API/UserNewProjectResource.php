@@ -17,7 +17,13 @@ class UserNewProjectResource extends JsonResource
     {
         $region = $this->region ?? null;
         $township = $this->township ?? null;
-
+        /* Get Image */
+        $decode_images = json_decode($this->images);
+        $images = [];
+        foreach ($decode_images as $key => $image) {
+            $images[] = asset(config('const.new_project_img_path')) . '/' . $image;
+        }
+        $images = $images ?? null; 
         return [
             'user' => [
                 'name' => $this->user ? $this->user->name : null,
@@ -47,11 +53,11 @@ class UserNewProjectResource extends JsonResource
             'spa_hot_tub' => $this->spa_hot_tub,
             'playground' => $this->playground,
             'garden' => $this->garden,
-            'carpark' => $this->carpark,
             'own_transformer' => $this->own_transformer,
             'disposal' => $this->disposal,
+            'images' => $images,
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
     }
-}
+}   

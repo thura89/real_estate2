@@ -32,6 +32,23 @@
                         <input type="hidden" name="property_category" value="{{ $category }}">
                         <input type="hidden" name="property_type" value="{{ $property->properties_type }}">
                         <input type="hidden" name="id" value="{{ $id }}">
+                        {{-- Property Type --}}
+                        <div class="form-group">
+                            <h5>Property Type</h5>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6 col-md-4 form-group">
+                                    <label for="price">Property Type</label>
+                                    <select name="property_type" class="property_type form-control" disabled>
+                                        <option value="">Select Type</option>
+                                        @foreach (config('const.property_type') as $key => $property_type)
+                                            <option value="{{ $key }}" @if ($property->properties_type == $key) selected @endif>
+                                                {{ $property_type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         {{-- address --}}
                         <div class="form-group">
                             <h5>Address</h5>
@@ -99,64 +116,59 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label for="front_area">Measurement</label>
-                                            <select name="measurement" class="form-control">
-                                                <option value="">Select</option>
-                                                @foreach (config('const.area') as $key => $area)
-                                                    <option value="{{ $key }}" @if ($property->areasize->measurement == $key) selected @endif>
-                                                        {{ $area }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label for="front_area">Front Area</label>
-                                            <input value="{{ $property->areasize->front_area }}" type="text"
-                                                name="front_area" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <label for="building_width">Building Width</label>
-                                            <input value="{{ $property->areasize->building_width }}" type="text"
-                                                name="building_width" class="form-control">
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label for="building_length">Building Length</label>
-                                            <input value="{{ $property->areasize->building_length }}" type="text"
-                                                name="building_length" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                @if ($category == 1)
-                                    <div class="col-md-4">
-                                        <div class="row">
-                                            <div class="col-md-6 form-group">
-                                                <label for="fence_width">Fence Width</label>
-                                                <input value="{{ $property->areasize->fence_width }}" type="text"
-                                                    name="fence_width" class="form-control">
-                                            </div>
-                                            <div class="col-md-6 form-group">
-                                                <label for="fence_length">Fence Length</label>
-                                                <input value="{{ $property->areasize->fence_length }}" type="text"
-                                                    name="fence_length" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="col-md-4 form-group">
-                                        <label for="floor_level">Floor Level</label>
-                                        <select name="floor_level" class="form-control">
+                                    <div class="form-group">
+                                        <label for="area_option">Area Option</label>
+                                        <select name="area_option" class="area_option form-control">
                                             <option value="">Select</option>
-                                            @foreach (config('const.floor_level') as $key => $level)
-                                                <option value="{{ $key }}" @if ($property->areasize->level == $key) selected @endif>
-                                                    {{ $level }}</option>
+                                            @foreach (config('const.area_option') as $key => $area_opt)
+                                                <option value="{{ $key }}" @if ($property->areasize->area_option == $key) selected @endif>{{ $area_opt }}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>
+                                <div class="col-md-4 area_widthxlenght">
+                                    <div class="row area_widthxlenght">
+                                        <div class="col form-group">
+                                            <label for="width">Width</label>
+                                            <input type="number" name="width" class="form-control" value="{{ $property->areasize->width }}">
+                                        </div>
+                                        <div class="col form-group">
+                                            <label for="length">Length</label>
+                                            <input type="number" name="length" class="form-control" value="{{ $property->areasize->length }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 area">
+                                    <div class="row area">
+                                        <div class="col form-group">
+                                            <label for="area_size">Area Size</label>
+                                            <input type="number" name="area_size" class="form-control" value="{{ $property->areasize->area_size }}">
+                                        </div>
+                                        <div class="col form-group">
+                                            <label for="area_unit">Area Unit</label>
+                                            <select name="area_unit" class="area form-control">
+                                                <option value="">Select</option>
+                                                @foreach (config('const.area') as $key => $val)
+                                                    <option value="{{ $key }}" @if ($property->areasize->area_unit == $key) selected @endif>{{ $val }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ($category == 6)
+                                    <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="fence_width">Floor Level</label>
+                                        <select name="floor_level" class="form-control">
+                                            <option value="">Please Select</option>
+                                            @foreach (config('const.floor_level') as $key => $level)
+                                                <option value="{{ $key }}" @if ($property->areasize->level == $key) selected @endif>{{ $level }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                                 @endif
                             </div>
                         </div>
@@ -199,7 +211,7 @@
                                 </div>
                                 
                             </div>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-6 col-md-4 form-group">
                                     <label for="carpark">Car Park</label>
                                     <select name="carpark" class="form-control">
@@ -210,24 +222,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        {{-- Property Type --}}
-                        <div class="form-group">
-                            <h5>Property Type</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col-6 col-md-4 form-group">
-                                    <label for="price">Property Type</label>
-                                    <select name="property_type" class="property_type form-control" disabled>
-                                        <option value="">Select Type</option>
-                                        @foreach (config('const.property_type') as $key => $property_type)
-                                            <option value="{{ $key }}" @if ($property->properties_type == $key) selected @endif>
-                                                {{ $property_type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            </div> --}}
                         </div>
                         {{-- For Property sale --}}
                         @if ($property->properties_type == 1)
@@ -635,9 +630,9 @@
                                                     @if ($property->buildingAmenity->garden == 1) checked @endif>Garden</label></div>
                                     </div>
                                     <div class="col form-group">
-                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                        {{-- <div class="position-relative form-check"><label class="form-check-label"><input
                                                     type="checkbox" name="carpark" value="1" class="form-check-input"
-                                                    @if ($property->buildingAmenity->carpark == 1) checked @endif>Carpark</label></div>
+                                                    @if ($property->buildingAmenity->carpark == 1) checked @endif>Carpark</label></div> --}}
                                         <div class="position-relative form-check"><label class="form-check-label"><input
                                                     type="checkbox" name="own_transformer" value="1"
                                                     class="form-check-input" @if ($property->buildingAmenity->own_transformer == 1) checked @endif>Own
@@ -687,4 +682,32 @@
 @section('script')
     {!! JsValidator::formRequest('App\Http\Requests\UpdateHouseRequest', '#update') !!}
     @include('backend.agent.property.rent_script')
+    <script>
+        $(document).ready(function() {
+            $('.area').hide();
+            $('.area_widthxlenght').hide();
+            var type = $('.area_option').val();
+            if (type == 1) {
+                    $('.area').hide();
+                    $('.area_widthxlenght').show();
+                }
+            if (type == 2) {
+                $('.area').show();
+                $('.area_widthxlenght').hide();
+            }
+            $('.area_option').on('change', function() {
+                $('.area').hide();
+                $('.area_widthxlenght').hide();
+                var type = this.value;
+                if (type == 1) {
+                    $('.area').hide();
+                    $('.area_widthxlenght').show();
+                }
+                if (type == 2) {
+                    $('.area').show();
+                    $('.area_widthxlenght').hide();
+                }
+            });
+        });
+    </script>
 @endsection

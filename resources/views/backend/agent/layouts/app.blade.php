@@ -31,9 +31,9 @@
                 @yield('content')
                 @include('backend.agent.layouts.footer')
             </div>
-            <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
         </div>
     </div>
+    @yield('modal')
     
     <script type="text/javascript" src="{{ asset('backend/js/main.js') }}"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -87,6 +87,13 @@
             Toast.fire({
                 icon: 'success',
                 title: '{{session('delete')}}'
+            })
+            @endif
+
+            @if(session('fail'))
+            Toast.fire({
+                icon: 'fail',
+                title: '{{session('fail')}}'
             })
             @endif
 

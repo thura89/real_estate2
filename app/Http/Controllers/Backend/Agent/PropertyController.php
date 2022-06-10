@@ -51,7 +51,16 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
             
-        ])->where('user_id',Auth()->user()->id)->latest('updated_at');
+        ])->where('user_id',Auth()->user()->id);
+        if ($request->get('status')) {
+            $data->where('status', $request->get('status'));
+        }
+        if ($request->get('recommended_feature')) {
+            $data->where('recommended_feature', $request->get('recommended_feature'));
+        }
+        if ($request->get('hot_feature')) {
+            $data->where('hot_feature', $request->get('hot_feature'));
+        }
         if ($request->get('title')) {
             $data->where('title', $request->get('title'));
         }
@@ -189,52 +198,40 @@ class PropertyController extends Controller
                 $query->where('type_of_street', $type_of_street);
             });
         }
-        if ($request->get('measurement')) {
-            $measurement = $request->get('measurement');
-            $data->whereHas('areasize', function ($query) use ($measurement) {
-                $query->where('measurement', $measurement);
+        if ($request->get('area_option')) {
+            $area_option = $request->get('area_option');
+            $data->whereHas('areasize', function ($query) use ($area_option) {
+                $query->where('area_option', $area_option);
             });
         }
-        if ($request->get('front_area')) {
-            $front_area = $request->get('front_area');
-            $data->whereHas('areasize', function ($query) use ($front_area) {
-                $query->where('front_area', $front_area);
+        if ($request->get('area_size')) {
+            $area_size = $request->get('area_size');
+            $data->whereHas('areasize', function ($query) use ($area_size) {
+                $query->where('area_size', $area_size);
             });
         }
-        if ($request->get('building_width')) {
-            $building_width = $request->get('building_width');
-            $data->whereHas('areasize', function ($query) use ($building_width) {
-                $query->where('building_width', $building_width);
+        if ($request->get('width')) {
+            $width = $request->get('width');
+            $data->whereHas('areasize', function ($query) use ($width) {
+                $query->where('width', $width);
             });
         }
-        if ($request->get('building_length')) {
-            $building_length = $request->get('building_length');
-            $data->whereHas('areasize', function ($query) use ($building_length) {
-                $query->where('building_length', $building_length);
+        if ($request->get('length_val')) {
+            $length_val = $request->get('length_val');
+            $data->whereHas('areasize', function ($query) use ($length_val) {
+                $query->where('length', $length_val);
             });
         }
-        if ($request->get('fence_width')) {
-            $fence_width = $request->get('fence_width');
-            $data->whereHas('areasize', function ($query) use ($fence_width) {
-                $query->where('fence_width', $fence_width);
-            });
-        }
-        if ($request->get('fence_length')) {
-            $fence_length = $request->get('fence_length');
-            $data->whereHas('areasize', function ($query) use ($fence_length) {
-                $query->where('fence_length', $fence_length);
+        if ($request->get('area_unit')) {
+            $area_unit = $request->get('area_unit');
+            $data->whereHas('areasize', function ($query) use ($area_unit) {
+                $query->where('area_unit', $area_unit);
             });
         }
         if ($request->get('floor_level')) {
             $floor_level = $request->get('floor_level');
             $data->whereHas('areasize', function ($query) use ($floor_level) {
                 $query->where('floor_level', $floor_level);
-            });
-        }
-        if ($request->get('height')) {
-            $height = $request->get('height');
-            $data->whereHas('areasize', function ($query) use ($height) {
-                $query->where('height', $height);
             });
         }
         
@@ -259,12 +256,12 @@ class PropertyController extends Controller
             });
         }
 
-        if ($request->get('carpark')) {
-            $carpark = $request->get('carpark');
-            $data->whereHas('partation', function ($query) use ($carpark) {
-                $query->where('carpark', $carpark);
-            });
-        }
+        // if ($request->get('carpark')) {
+        //     $carpark = $request->get('carpark');
+        //     $data->whereHas('partation', function ($query) use ($carpark) {
+        //         $query->where('carpark', $carpark);
+        //     });
+        // }
         
         if ($request->get('sort')) {
             $sort = $request->get('sort');
@@ -421,13 +418,16 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->front_area = $request->front_area;
-            $area_size->building_width = $request->building_width;
-            $area_size->building_length = $request->building_length;
-            if ($request->property_category == 1) {
-                $area_size->fence_width = $request->fence_width;
-                $area_size->fence_length = $request->fence_length;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -439,7 +439,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark;
+            // $partation->carpark = $request->carpark;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -524,7 +524,7 @@ class PropertyController extends Controller
                 $buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
                 $buildingAmenity->playground = $request->playground ? 1 : 0;
                 $buildingAmenity->garden = $request->garden ? 1 : 0;
-                $buildingAmenity->carpark = $request->carpark ? 1 : 0;
+                // $buildingAmenity->carpark = $request->carpark ? 1 : 0;
                 $buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
                 $buildingAmenity->disposal = $request->disposal ? 1 : 0;
                 $property->buildingAmenity()->save($buildingAmenity);
@@ -592,7 +592,7 @@ class PropertyController extends Controller
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark;
+            // $property->partation->carpark = $request->carpark;
 
             // Payment Store
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -663,7 +663,7 @@ class PropertyController extends Controller
                 $property->buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
                 $property->buildingAmenity->playground = $request->playground ? 1 : 0;
                 $property->buildingAmenity->garden = $request->garden ? 1 : 0;
-                $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
+                // $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
                 $property->buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
                 $property->buildingAmenity->disposal = $request->disposal ? 1 : 0;
             }
@@ -751,14 +751,19 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->front_area = $request->front_area;
-            $area_size->fence_width = $request->fence_width;
-            $area_size->fence_length = $request->fence_length;
-            /* For Industrial */
-            if ($property->category == 7) {
-                $area_size->building_width = $request->building_width;
-                $area_size->building_length = $request->building_length;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $area_size->level = $request->floor_level;
             }
             $property->areasize()->save($area_size);
 
@@ -768,7 +773,7 @@ class PropertyController extends Controller
                 $partation->type = $request->partation_type;
                 $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $partation->carpark = $request->carpark;
+                // $partation->carpark = $request->carpark;
                 $property->partation()->save($partation);
             }
 
@@ -886,7 +891,7 @@ class PropertyController extends Controller
                 $property->partation->type = $request->partation_type;
                 $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
                 $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                $property->partation->carpark = $request->carpark;
+                // $property->partation->carpark = $request->carpark;
             }
 
             /* Payment Store */
@@ -1013,10 +1018,20 @@ class PropertyController extends Controller
 
             /* Area Size Store */
             $area_size = new AreaSize();
-            $area_size->measurement = $request->measurement;
-            $area_size->building_width = $request->building_width;
-            $area_size->building_length = $request->building_length;
-            $area_size->level = $request->floor_level;
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;    
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;    
+                $area_size->area_unit = $request->area_unit;    
+            }
+            if ($request->property_category == 6) {
+                $area_size->level = $request->floor_level;
+            }
             $property->areasize()->save($area_size);
 
             /* Partation Store */
@@ -1024,7 +1039,7 @@ class PropertyController extends Controller
             $partation->type = $request->partation_type;
             $partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $partation->carpark = $request->carpark;
+            // $partation->carpark = $request->carpark;
             $property->partation()->save($partation);
 
             /* Payment Store */
@@ -1100,7 +1115,7 @@ class PropertyController extends Controller
             $buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
             $buildingAmenity->playground = $request->playground ? 1 : 0;
             $buildingAmenity->garden = $request->garden ? 1 : 0;
-            $buildingAmenity->carpark = $request->carpark ? 1 : 0;
+            // $buildingAmenity->carpark = $request->carpark ? 1 : 0;
             $buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
             $buildingAmenity->disposal = $request->disposal ? 1 : 0;
             $property->buildingAmenity()->save($buildingAmenity);
@@ -1170,7 +1185,7 @@ class PropertyController extends Controller
             $property->partation->type = $request->partation_type;
             $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
             $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            $property->partation->carpark = $request->carpark;
+            // $property->partation->carpark = $request->carpark;
 
             // Payment Store
             $property->payment->installment = ($request->installment) ? 1 : 0;
@@ -1232,7 +1247,7 @@ class PropertyController extends Controller
             $property->buildingAmenity->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
             $property->buildingAmenity->playground = $request->playground ? 1 : 0;
             $property->buildingAmenity->garden = $request->garden ? 1 : 0;
-            $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
+            // $property->buildingAmenity->carpark = $request->carpark ? 1 : 0;
             $property->buildingAmenity->own_transformer = $request->own_transformer ? 1 : 0;
             $property->buildingAmenity->disposal = $request->disposal ? 1 : 0;
 

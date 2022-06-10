@@ -33,7 +33,7 @@ class NewsController extends Controller
     {
         $data = News::query()->with([
             'user'
-        ]);
+        ])->orderBy('updated_at','DESC');
         return Datatables::of($data)
             ->editColumn('category', function ($each) {
                 return config('const.news_category')[$each->category] ?? '-';

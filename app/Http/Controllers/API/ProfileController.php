@@ -73,12 +73,29 @@ class ProfileController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
+        $user->other_phone = $request->other_phone;
         $user->user_type = $request->user_type;
         if($request->user_type == 4){
             $user->agent_type = $request->agent_type;
         }
         $user->address = $request->address;
         $user->description = $request->description;
+
+        /* Company Image */
+        $company_images = $user->company_images;
+        if ($request->hasfile('company_images')) {
+            foreach ($company_images as $key => $del) {
+                Storage::disk('public')->delete('company_images/' . $del);
+            }
+            $company_images = [];
+            foreach ($request->file('company_images') as $image) {
+                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
+                $company_images[] = $file_name;
+            }
+        }
+        
+        $user->company_images = $company_images;
         $user->update();
 
         if($user){

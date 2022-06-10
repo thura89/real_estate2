@@ -5,14 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Region;
 use Carbon\Carbon;
 use App\NewProject;
-use App\WantToBuyRent;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
-use function PHPUnit\Framework\isEmpty;
 
 class NewProjectController extends Controller
 {
