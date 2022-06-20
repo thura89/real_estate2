@@ -25,10 +25,7 @@ class UserNewProjectResource extends JsonResource
         }
         $images = $images ?? null; 
         return [
-            'user' => [
-                'name' => $this->user ? $this->user->name : null,
-                'profile_photo' => $this->user ? $this->user->profile_photo : null,
-            ],
+            
             'region' => $region->name ?? null,
             'township' => $township->name ?? null,
             'price' => number_format($this->min_price) .' to '. number_format($this->max_price) .' '. config('const.currency_code')[$this->currency_code] ?? null,
@@ -56,6 +53,10 @@ class UserNewProjectResource extends JsonResource
             'own_transformer' => $this->own_transformer,
             'disposal' => $this->disposal,
             'images' => $images,
+            'user' => [
+                'name' => $this->user ? $this->user->name : null,
+                'profile_photo' => $this->user ? $this->user->profile_photo : null,
+            ],
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];

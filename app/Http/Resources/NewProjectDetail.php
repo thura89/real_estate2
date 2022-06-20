@@ -27,13 +27,11 @@ class NewProjectDetail extends JsonResource
 
 
         return [
-            "user" => [
-                'name' => $this->user ? $this->user->name : null,
-                'profile_photo' => $this->user ? $this->user->profile_photo : null,
-            ],
             'region' => $region->name ?? null,
             'township' => $township->name ?? null,
-            'price' => number_format($this->min_price) .' to '. number_format($this->max_price) .' '. config('const.currency_code')[$this->currency_code] ?? null,
+            'min_price' => number_format($this->min_price) ?? null,
+            'max_price' => number_format($this->max_price) ?? null,
+            'currency_code' => config('const.currency_code')[$this->currency_code] ?? null,
             'project_start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? '-',
             'project_end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? '-',
             'townsandvillages' => $this->townsandvillages,
@@ -59,6 +57,12 @@ class NewProjectDetail extends JsonResource
             'own_transformer' => $this->own_transformer,
             'disposal' => $this->disposal,
             'images' => $images,
+            'user' => [
+                'name' => $this->user->name ?? null,
+                'company_name' => $this->user->company_name ?? null,
+                'profile_photo' => $this->user->profile_photo ?? null,
+                'phone' => $this->user->phone ?? null,
+            ],
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];

@@ -60,7 +60,8 @@ class PropertyController extends Controller
             $data->where('hot_feature', $request->get('hot_feature'));
         }
         if ($request->get('title')) {
-            $data->where('title', $request->get('title'));
+            $title = $request->get('title');
+            $data->where('title', 'LIKE', "%$title%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));

@@ -35,19 +35,35 @@ class PropertyList extends JsonResource
         }
         /* township */
         $township = $this->address ? $this->address->township()->first('name') : null;
+        /** Region */
+        $region = $this->address ? $this->address->region()->first('name') : null;
+
+        /* AreaSize */
+        if ($this->areasize) {
+            if ($this->areasize->area_option != NULL) {
+                if ($this->areasize->area_option == 1) {
+                    $area_size =  $this->areasize->width .' x '. $this->areasize->length;
+                } 
+                if ($this->areasize->area_option == 2) {
+                    $area_size =  $this->areasize->area_size .' '. config('const.area_short')[$this->areasize->area_unit];
+                }
+            }
+        }else{
+            $area_size = NULL;
+        }
         
         $data['id'] = $this->id;
         $data['image'] = $image ?? '/backend/images/no-image.jpeg';
         $data['title'] = $this->title;
-        $data['p_code'] = $this->p_code;
         $data['price'] = $price;
-        $data['street_name'] = $this->address->street_name ?? null;
         $data['township'] = $township['name'] ?? null;
+        $data['region'] = $region['name'] ?? null;
         $data['property_type'] = config('const.property_type')[$this->properties_type];
         $data['category'] = config('const.property_category')[$this->category];
         $data['bed_room'] = $this->partation->bed_room ?? null;
         $data['bath_room'] = $this->partation->bath_room ?? null;
-        // $data['carpark'] = $this->partation->carpark ?? null;
+        $data['note'] = $this->suppliment->note ?? null;
+        $data['area_size'] = $area_size ?? null;
         $data['recommended_feature'] = $this->status;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
@@ -57,6 +73,10 @@ class PropertyList extends JsonResource
                 $data['favorite_status'] = 0;
             }
         }
+        $data['user'] = [
+            'profile_photo' => $this->user->profile_photo ?? null,
+            'company_name' => $this->user->company_name ?? null
+        ];
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;
         

@@ -36,6 +36,11 @@ return array(
                 1 => 'Square Feet',
                 2 => 'Acre',
         ],
+        'area_short' => [
+                1 => 'SQ',
+                2 => 'AC',
+        ],
+
         'area_option' => [
                 1 => 'Width x Length',
                 2 => 'Area',

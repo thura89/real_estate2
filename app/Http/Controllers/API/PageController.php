@@ -31,13 +31,22 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
+            'areasize',
+            'user',
+            'suppliment'
         ])->where('status',1);//published Status
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            $data->where('title','LIKE', "%$keyword%")
+            $data->where('title','LIKE', "{%$keyword%}")
                  ->orWhereHas('suppliment', function ($query) use ($keyword) {
-                $query->where('note',  'LIKE', "%$keyword%");
+                    $query->where('note',  'LIKE', "{%$keyword%}");
+                });
+        }
+        if ($request->get('title')) {
+            $title = $request->get('title');
+            $data->whereHas('suppliment', function ($query) use ($title) {
+                $query->where('note', 'like', '%'.$title.'%');
             });
         }
         if ($request->get('p_code')) {
@@ -74,7 +83,6 @@ class PageController extends Controller
                 });
             }
         }
-
         if ($request->get('currency_code')) {
             $currency_code = $request->get('currency_code');
             if ($request->get('property_type') == 1) {
@@ -87,14 +95,12 @@ class PageController extends Controller
                 });
             }
         }
-
         if ($request->get('purchase_type')) {
             $purchase_type = $request->get('purchase_type');
             $data->with('payment')->whereHas('payment', function ($query) use ($purchase_type) {
                 $query->where('purchase_type', $purchase_type);
             });
         }
-
         if ($request->get('installment')) {
             $installment = $request->get('installment');
             if ($installment === 'yes') {
@@ -108,7 +114,6 @@ class PageController extends Controller
                 });
             }
         }
-
         if ($request->get('year_of_construction')) {
             $year_of_construction = $request->get('year_of_construction');
             $data->with('situation')->whereHas('situation', function ($query) use ($year_of_construction) {
@@ -127,14 +132,12 @@ class PageController extends Controller
                 $query->where('building_condition', $building_condition);
             });
         }
-
         if ($request->get('fence_condition')) {
             $fence_condition = $request->get('fence_condition');
             $data->with('situation')->whereHas('situation', function ($query) use ($fence_condition) {
                 $query->where('fence_condition', $fence_condition);
             });
         }
-
         if ($request->get('water_sys')) {
             $water_sys = $request->get('water_sys');
             if ($water_sys == 'yes') {
@@ -150,7 +153,6 @@ class PageController extends Controller
             }
             
         }
-
         if ($request->get('electricity_sys')) {
             $electricity_sys = $request->get('electricity_sys');
             if ($electricity_sys == 'yes') {
@@ -164,7 +166,6 @@ class PageController extends Controller
                 });
             }
         }
-
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
             $data->whereHas('address', function ($query) use ($type_of_street) {
@@ -218,22 +219,19 @@ class PageController extends Controller
             $data->with('areasize')->whereHas('areasize', function ($query) use ($height) {
                 $query->where('height', $height);
             });
-        }
-        
+        }       
         if ($request->get('partation_type')) {
             $partation_type = $request->get('partation_type');
             $data->whereHas('partation', function ($query) use ($partation_type) {
                 $query->where('type', $partation_type);
             });
         }
-
         if ($request->get('bed_room')) {
             $bed_room = $request->get('bed_room');
             $data->whereHas('partation', function ($query) use ($bed_room) {
                 $query->where('bed_room', $bed_room);
             });
         }
-
         if ($request->get('bath_room')) {
             $bath_room = $request->get('bath_room');
             $data->whereHas('partation', function ($query) use ($bath_room) {

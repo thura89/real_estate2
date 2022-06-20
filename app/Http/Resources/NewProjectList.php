@@ -26,10 +26,16 @@ class NewProjectList extends JsonResource
             'sale_type' => config('const.developer_sale_type')[$this->new_project_sale_type],
             'region' => $region->name ?? '-',
             'township' => $township->name ?? '-',
-            'price' => number_format($this->min_price) .' to '. number_format($this->max_price) .' '. config('const.currency_code')[$this->currency_code] ?? '-',
+            'min_price' => number_format($this->min_price) ?? null,
+            'max_price' => number_format($this->max_price) ?? null,
+            'currency_code' => config('const.currency_code')[$this->currency_code] ?? null,
             'start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? '-',
             'end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? '-',
             'images' => $image ?? '/backend/images/no-image.jpeg',
+            'user' => [
+                'profile_photo' => $this->user->profile_photo,
+                'company_name' => $this->user->company_name
+            ],
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
     }

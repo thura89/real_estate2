@@ -46,6 +46,8 @@ class PropertyController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
+            'areasize',
+            'user'
         ]);
         
         if ($request->get('status')) {
@@ -58,7 +60,7 @@ class PropertyController extends Controller
             $data->where('hot_feature', $request->get('hot_feature'));
         }
         if ($request->get('title')) {
-            $data->where('title', $request->get('title'));
+            $data->where('title',  'LIKE', "%$request->get('title')%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
@@ -97,7 +99,6 @@ class PropertyController extends Controller
                 });
             }
         }
-
         if ($request->get('currency_code')) {
             $currency_code = $request->get('currency_code');
             if ($request->get('property_type') == 1) {
@@ -110,14 +111,12 @@ class PropertyController extends Controller
                 });
             }
         }
-
         if ($request->get('purchase_type')) {
             $purchase_type = $request->get('purchase_type');
             $data->whereHas('payment', function ($query) use ($purchase_type) {
                 $query->where('purchase_type', $purchase_type);
             });
         }
-
         if ($request->get('installment')) {
             $installment = $request->get('installment');
             if ($installment === 'yes') {
@@ -131,7 +130,6 @@ class PropertyController extends Controller
                 });
             }
         }
-
         if ($request->get('year_of_construction')) {
             $year_of_construction = $request->get('year_of_construction');
             $data->whereHas('situation', function ($query) use ($year_of_construction) {
@@ -150,14 +148,12 @@ class PropertyController extends Controller
                 $query->where('building_condition', $building_condition);
             });
         }
-
         if ($request->get('fence_condition')) {
             $fence_condition = $request->get('fence_condition');
             $data->whereHas('situation', function ($query) use ($fence_condition) {
                 $query->where('fence_condition', $fence_condition);
             });
         }
-
         if ($request->get('water_sys')) {
             $water_sys = $request->get('water_sys');
             if ($water_sys == 'yes') {
@@ -173,7 +169,6 @@ class PropertyController extends Controller
             }
             
         }
-
         if ($request->get('electricity_sys')) {
             $electricity_sys = $request->get('electricity_sys');
             if ($electricity_sys == 'yes') {
@@ -187,7 +182,6 @@ class PropertyController extends Controller
                 });
             }
         }
-
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
             $data->whereHas('address', function ($query) use ($type_of_street) {
@@ -248,7 +242,6 @@ class PropertyController extends Controller
                 $query->where('bath_room', $bath_room);
             });
         }
-
         // if ($request->get('carpark')) {
         //     $carpark = $request->get('carpark');
         //     $data->whereHas('partation', function ($query) use ($carpark) {

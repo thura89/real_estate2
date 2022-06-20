@@ -16,6 +16,7 @@ class NewProjectController extends Controller
         $data = NewProject::query()->with([
             'region',
             'township',
+            'user'
         ])->orderBy('created_at','DESC')->paginate(10);
         $data = NewProjectList::collection($data)->additional(['result'=>true,'message'=>'Success']);
         if($data){
