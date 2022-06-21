@@ -253,33 +253,29 @@ class PageController extends Controller
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */
-            // if ($sort == 'max') {
-            //     if ($request->get('property_type') == 1) {
-                    
-            //         $data->whereHas('price', function ($query) {
-            //             $query->sort('price');
-            //         });
-
-            //         return $data->get();
-                    
-            //     } else{
-            //         $data->whereHas('rentprice', function ($query) {
-            //             $query->orderBy('price', 'DESC');
-            //         });
-            //     }
-            // }
-            // /* Sort By Min Price */
-            // if ($sort == 'min') {
-            //     if ($request->get('property_type') == 1) {
-            //         $data->whereHas('price', function ($query) {
-            //             $query->orderBy('price');
-            //         });
-            //     } else{
-            //         $data->whereHas('rentprice', function ($query) {
-            //             $query->orderBy('price', 'ASC');
-            //         });
-            //     }
-            // }
+            if ($sort == 'max') {
+                if ($request->get('property_type') == 1) {
+                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                         ->select('properties.*', 'prices.price as price_order')
+                         ->orderBy('price_order', 'DESC');
+                } else{
+                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
+                         ->select('properties.*', 'rent_prices.price as price_order')
+                         ->orderBy('price_order', 'DESC');
+                }
+            }
+            /* Sort By Min Price */
+            if ($sort == 'min') {
+                if ($request->get('property_type') == 1) {
+                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                         ->select('properties.*', 'prices.price as price_order')
+                         ->orderBy('price_order', 'ASC');
+                } else{
+                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
+                         ->select('properties.*', 'rent_prices.price as price_order')
+                         ->orderBy('price_order', 'ASC');
+                }
+            }
             if ($sort == 'new') {
                 $data->orderBy('updated_at', 'DESC');
             }
