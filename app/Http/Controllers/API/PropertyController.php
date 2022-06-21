@@ -49,7 +49,16 @@ class PropertyController extends Controller
             'areasize',
             'user'
         ]);
-        
+        if ($request->get('keywords')) {
+            $keyword = $request->get('keywords');
+            // $data->whereHas('suppliment', function ($query) use ($keyword) {
+            //         $query->where('note',  'LIKE', "{%$keyword%}");
+            //     })->whereLike('title',$keyword);
+            $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
+                ->select('properties.*', 'suppliments.note')
+                ->where('title', 'like', '%' . $keyword . '%')
+                ->orWhere('suppliments.note', 'like', '%' . $keyword . '%');
+        }
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }
@@ -60,7 +69,8 @@ class PropertyController extends Controller
             $data->where('hot_feature', $request->get('hot_feature'));
         }
         if ($request->get('title')) {
-            $data->where('title',  'LIKE', "%$request->get('title')%");
+            $title = $request->get('title');
+            $data->where('title',  'LIKE', "%$title%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));

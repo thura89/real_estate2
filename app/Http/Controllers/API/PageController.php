@@ -38,13 +38,17 @@ class PageController extends Controller
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            $data->where('title','LIKE', "{%$keyword%}")
-                 ->orWhereHas('suppliment', function ($query) use ($keyword) {
-                    $query->where('note',  'LIKE', "{%$keyword%}");
-                });
+            // $data->whereHas('suppliment', function ($query) use ($keyword) {
+            //         $query->where('note',  'LIKE', "{%$keyword%}");
+            //     })->whereLike('title',$keyword);
+            $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
+                ->select('properties.*', 'suppliments.note')
+                ->where('title', 'like', '%' . $keyword . '%')
+                ->orWhere('suppliments.note', 'like', '%' . $keyword . '%');
         }
         if ($request->get('title')) {
             $title = $request->get('title');
+            // return $title;
             $data->whereHas('suppliment', function ($query) use ($title) {
                 $query->where('note', 'like', '%'.$title.'%');
             });
