@@ -63,7 +63,8 @@ textarea {
 .login-wrap .icon {
     width: 80px;
     height: 80px;
-    background: #1089ff;
+    background-image: url('../images/timemyay_logo.png');
+    background-size: 86px;
     border-radius: 50%;
     font-size: 30px;
     margin: 0 auto;

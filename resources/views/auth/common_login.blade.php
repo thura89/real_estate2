@@ -23,9 +23,10 @@
                     <div class="login-wrap p-4 p-md-5">
                         @include('backend.developer.layouts.flash')
                         <div class="icon d-flex align-items-center justify-content-center">
-                            <span class="fa fa-user-o"></span>
+                            {{-- <img src="{{ asset('backend/images/timemyay_logo.png') }}" alt=""> --}}
+                            {{-- <span class="fa fa-user-o"></span> --}}
                         </div>
-                        <h3 class="text-center mb-4">Common Login</h3>
+                        <h3 class="text-center mb-4">TIMEMYAY</h3>
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">
