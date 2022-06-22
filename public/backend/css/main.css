@@ -10300,8 +10300,18 @@ button,
     height: 44px;
     width: 160px;
     background-position: 0rem;
-    background: url(../images/real_estate_logo.png)
+    /* background: url(../images/timemyay_logo.png); */
+    background-position: 0% 0%;
 }
+
+.logo-src img{
+    width:45px;
+}
+.logo-src span{
+    font-size: 22px;
+    padding: 0px 5px 0px 5px;
+}
+
 
 .app-header__menu,
 .app-header__mobile-menu {

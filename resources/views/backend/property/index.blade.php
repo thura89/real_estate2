@@ -114,7 +114,7 @@
                         d.partation_type = $('#partation_type').val();
                         d.bed_room = $('#bed_room').val();
                         d.bath_room = $('#bath_room').val();
-                        d.sort = $('#sort').val();
+                        d.sorter = $('#sorter').val();
                     }
                 },
                 columns: [{
@@ -237,13 +237,13 @@
                 }
             });
             /* Type change Installment change */
-            $('#installment').hide();
+            $('#installment_holder').hide();
             $('#type').on('change', function() {
                 if ($('#type').val() == '1') {
-                    $('#installment').show('fast');
+                    $('#installment_holder').show('fast');
                 }
                 if ($('#type').val() == '2' || $('#type').val() == '') {
-                    $('#installment').hide("fast");
+                    $('#installment_holder').hide("fast");
                 }
             });
 
@@ -264,7 +264,7 @@
             $('#building_repairing').hide('fast');
             $('#year_of_construction').hide('fast');
             $('#partation_type').hide('fast');
-            $('#land_type').hide('fast');
+            $('#land_type_holder').hide('fast');
             $('#repairing').hide('fast');
             $('.measurement_wrap').hide('fast');
             $('.situation_wrap').hide('fast');
@@ -278,13 +278,12 @@
                 $('#partation_type').hide('fast');
                 $('#bath_room').hide();
                 $('#bed_room').hide();
-                $('#land_type').hide('fast');
+                $('#land_type_holder').hide('fast');
                 $('.measurement_wrap').hide('fast');
                 $('.situation_wrap').hide('fast');
                 $('.partation_wrap').hide('fast');
                 $('#repairing').hide('fast');
-                $('#fence_condition').hide('fast');
-                
+                $('#fence_condition').hide('fast');    
                 /* House */
                 if ($('#category').val() == '1') {
                     $('#building_condition').show('fast');
@@ -332,10 +331,9 @@
                     $( "#building_repairing" ).addClass( "pl-0");
                     $('#repairing').addClass('pl-0');
                 }
-
                 /* Land */
                 if ($('#category').val() == '5') {
-                    $('#land_type').show('fast');
+                    $('#land_type_holder').show('fast');
                     $('#repairing').show('fast');
                     $('.measurement_wrap').show('fast');
                     $('.situation_wrap').show('fast');
@@ -343,7 +341,6 @@
                     $('#repairing').removeClass('mt-2 pl-0');
                     
                 }
-
                 /* Shop */
                 if ($('#category').val() == '6') {
                     $('#floor_level_wrap').show('fast');
@@ -358,7 +355,6 @@
                     // $('#repairing').addClass('pl-0');
                     // $('#bed_room').addClass('mt-2');
                 }
-
                 /* Industrial Zone */
                 if ($('#category').val() == '7') {
                     $('#partation_type').show('fast');
@@ -371,7 +367,6 @@
                     $('#repairing').addClass('pl-0');
                     $('#bed_room').addClass('pl-0');
                 }
-
                 /* Condo */
                 if ($('#category').val() == '8') {
                     $('#floor_level_wrap').show('fast');
@@ -453,7 +448,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 mt-2" id='land_type'>
+                        <div class="col-md-3 mt-2" id='land_type_holder'>
                             <select id='land_type' class="form-control">
                                 <option value="">Land Type</option>
                                 @foreach (config('const.land_type') as $key => $land_type)
@@ -480,7 +475,7 @@
                             <select id='township' class="form-control">
                             </select>
                         </div>
-                        <div class="col-md-3 pl-0" id='type_of_street'>
+                        <div class="col-md-3 pl-0" id='type_of_street_holder'>
                             <select id='type_of_street' class="form-control">
                                 <option value="">Type Of Street</option>
                                 @foreach (config('const.type_of_street') as $key => $type_of_street)
@@ -509,7 +504,7 @@
                         <div class="col-md-3 pl-0">
                             <input type="number" class="form-control" name="max_price" id="max_price" placeholder="Max Price">
                         </div>
-                        <div class="col-md-3 pl-0" id='purchase_type'>
+                        <div class="col-md-3 pl-0" id='purchase_type_holder'>
                             <select id='purchase_type' class="form-control">
                                 <option value="">Purchase Type</option>
                                 @foreach (config('const.purchase_type') as $key => $purchase_type)
@@ -517,7 +512,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 mt-2" id='installment'>
+                        <div class="col-md-3 mt-2" id='installment_holder'>
                             <select id='installment' class="form-control">
                                 <option value="">Installment</option>
                                 @foreach (config('const.installment') as $key => $installment)
@@ -532,7 +527,7 @@
                     <h5>ELECTRIC & WATER SUPPLIMENT</h5>
                     <hr>
                     <div class="row">
-                        <div class="col-md-3" id='water_sys'>
+                        <div class="col-md-3" id='water_sys_holder'>
                             <select id='water_sys' class="form-control">
                                 <option value="">Water System</option>
                                 @foreach (config('const.water_sys') as $key => $water_sys)
@@ -540,7 +535,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3 pl-0" id='electricity_sys'>
+                        <div class="col-md-3 pl-0" id='electricity_sys_holder'>
                             <select id='electricity_sys' class="form-control">
                                 <option value="">Electricity System</option>
                                 @foreach (config('const.electricity_sys') as $key => $electricity_sys)
@@ -701,8 +696,8 @@
                     <h5>Sort</h5>
                     <hr>
                     <div class="row">
-                        <div class="col-md-3" id='sort'>
-                            <select id='sort' class="form-control">
+                        <div class="col-md-3">
+                            <select id="sorter" name="sorter" class="form-control">
                                 <option value="">Sort</option>
                                 @foreach (config('const.sort') as $key => $sort)
                                     <option value="{{ $sort }}">{{ $sort }}</option>
@@ -719,21 +714,12 @@
                         </div>
                     </div>
                 </div>
-                {{-- Filter Button --}}
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-3">
-                            {{-- <button type="text" id="btnFiterSubmitSearch" class="mt-2 btn btn-primary" data-dismiss="modal">
-                                <i class="pe-7s-filter"></i> Advance Search</button> --}}
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="modal-footer">
                 {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
                 <input type="reset" value="Clear" class="btn btn-secondary">
                 <button type="text" id="btnFiterSubmitSearch" class="btn btn-primary" data-dismiss="modal">
-                    <i class="pe-7s-filter"></i> Advance Filter</button>
+                <i class="pe-7s-filter"></i> Advance Filter</button>
             </div>
             </form>
         </div>

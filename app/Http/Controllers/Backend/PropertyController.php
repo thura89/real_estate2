@@ -262,11 +262,12 @@ class PropertyController extends Controller
         //     });
         // }
         
-        if ($request->get('sort')) {
-            $sort = $request->get('sort');
+        if ($request->get('sorter')) {
+            $sort = $request->get('sorter');
+            $type = $request->get('type');
             /* Sort By Max Price */
             if ($sort == 'max') {
-                if ($request->get('property_type') == 1) {
+                if ($type == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
                          ->select('properties.*', 'prices.price as price_order')
                          ->orderBy('price_order', 'DESC');
@@ -278,7 +279,7 @@ class PropertyController extends Controller
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
-                if ($request->get('property_type') == 1) {
+                if ($type == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
                          ->select('properties.*', 'prices.price as price_order')
                          ->orderBy('price_order', 'ASC');
@@ -297,7 +298,6 @@ class PropertyController extends Controller
         }else{
             $data->orderBy('updated_at', 'DESC');
         }
-
         return Datatables::of($data)
             ->filterColumn('region', function ($query, $keyword) {
                 $query->whereHas('address', function ($qa) use ($keyword) {
