@@ -30,7 +30,7 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">
-                                <input id="phone" placeholder="phone" type="phone"
+                                <input id="phone" placeholder="phone" type="number"
                                     class="form-control rounded-left @error('phone') is-invalid @enderror" name="phone"
                                     value="{{ old('phone') }}" autocomplete="phone" autofocus>
 
