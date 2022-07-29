@@ -102,7 +102,7 @@ class AuthController extends Controller
             $user->save();
 
             DB::commit();
-            SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
+            SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from TimeMyay RealEstate. Please continue...');
 
             return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
         } catch (\Throwable $e) {
@@ -266,17 +266,25 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|exists:users|max:11',
+        // $request->validate([
+        //     'phone' => 'required|exists:users|max:11',
+        //     'password' => 'required',
+        // ]);
+        $validate = Validator::make($request->all(),[
+            'phone' => 'required|exists:users|min:9|max:11',
             'password' => 'required',
         ]);
+
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail to request', $validate->errors());
+        }
 
         if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             $user = auth()->user();
             $token = $user->createToken('Real Estate')->accessToken;
             return ResponseHelper::success('Successfully Login', $token);
         }
-        return ResponseHelper::fail('Fail Login', null);
+        return ResponseHelper::fail('Fail Login', $user ?? null);
     }
 
     public function loginWithSocial(Request $request)
@@ -347,5 +355,7 @@ class AuthController extends Controller
             auth()->user()->token()->revoke();
             return ResponseHelper::success('Successfully Logout', null);
         }
+        
     }
+
 }

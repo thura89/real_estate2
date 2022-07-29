@@ -382,7 +382,7 @@ class PropertyController extends Controller
             return view('backend.agent.property.create.land_house_land', compact('regions', 'category', 'type'));
         }
         /* Apartment Condo , Office */
-        if ($category == 3 || $category == 4 || $category == 4 ) {
+        if ($category == 3 || $category == 4 || $category == 8 ) {
             return view('backend.agent.property.create.apartment_condo_office', compact('regions', 'category', 'type'));
         }
         return back();

@@ -409,7 +409,6 @@ class PageController extends Controller
     public function const(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'const_name' => 'required',
             'language' => 'required|in:mm,en',
         ]);
 
@@ -419,10 +418,10 @@ class PageController extends Controller
 
         $const_name = $request->const_name;
         if ($request->language == 'en') {
-            $data = config('const.' . $const_name . '');
+            $data = config('const');
         }
         if ($request->language == 'mm') {
-            $data = config('const_mm.' . $const_name . '');
+            $data = config('const_mm');
         }
 
         if ($data) {

@@ -665,11 +665,18 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- Submit --}}
+                        {{-- Terms & Condition --}}
+                        <div class="row">
+                            <div class="col-6 col-md-5 form-group">
+                                <input name="agreecheck" type="checkbox" id="agreecheck">
+                                <label for="agreecheck">By posting this content, I agree to be contacted by affiliates</label>
+                            </div>
+                        </div>
+                        {{-- Submit Button --}}
                         <div class="row">
                             <div class="col form-group">
                                 <button class="btn btn-secondary back-btn">Back</button>
-                                <button type="submit" class="btn btn-primary">Create</button>
+                                <button type="submit" class="btn btn-primary" id="agreebtn">Create</button>
                             </div>
                         </div>
                     </form>

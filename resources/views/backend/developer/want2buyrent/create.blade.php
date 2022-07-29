@@ -210,16 +210,18 @@
                         <div class="form-group">
                             <h5>Terms And Condition</h5>
                             <hr>
+                            {{-- Terms & Condition --}}
                             <div class="row">
-                                <div class="col-6 col-md-4 form-group">
-                                    <input name="terms_condition" type="checkbox">
-                                    <label for="terms_condition">Terms & Condition</label>
+                                <div class="col-6 col-md-5 form-group">
+                                    <input name="terms_condition" type="checkbox" id="agreecheck">
+                                    <label for="agreecheck">By posting this content, I agree to be contacted by affiliates</label>
                                 </div>
                             </div>
+                            {{-- Submit Button --}}
                             <div class="row">
                                 <div class="col form-group">
                                     <button class="btn btn-secondary back-btn">Back</button>
-                                    <button type="submit" class="btn btn-primary">Create</button>
+                                    <button type="submit" class="btn btn-primary" id="agreebtn">Create</button>
                                 </div>
                             </div>
                         </div>

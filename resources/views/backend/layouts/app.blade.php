@@ -97,6 +97,16 @@
             })
             @endif
 
+            //agree check
+            $('#agreebtn').prop('disabled', true);
+
+            $('#agreecheck').on('click', function() {
+                if ( $(this).prop('checked') == false ) {
+                    $('#agreebtn').prop('disabled', true);
+                } else {
+                    $('#agreebtn').prop('disabled', false);
+                }
+            });
         });
     </script>
     @yield('script')
