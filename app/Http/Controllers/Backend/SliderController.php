@@ -78,8 +78,7 @@ class SliderController extends Controller
             'title' => 'required',
             'images' => 'required|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
         ]);
-
-
+        
         $data = new Slider();
         $data->title = $request->title;
         if ($request->hasFile('images')) {
