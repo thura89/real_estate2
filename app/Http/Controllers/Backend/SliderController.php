@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
+// use Image;
 use App\Slider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class SliderController extends Controller
 {
@@ -72,12 +74,20 @@ class SliderController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'title' => 'required',
+            'images' => 'required|image|mimes:jpg,jpeg,png,svg,gif|max:2048',
+        ]);
+
+
         $data = new Slider();
         $data->title = $request->title;
         if ($request->hasFile('images')) {
             $profile_img = $request->file('images');
             $slider_img = uniqid().'_'.time().'.'.$profile_img->extension();
-            Storage::disk('public')->put('/slider/'.$slider_img, file_get_contents($profile_img));
+            $img = Image::make($profile_img->path());
+            $img->crop(375,175);
+            $img->save(storage_path('app/public/slider/'.$slider_img));
         }
         $data->images = $slider_img;
         $data->status = $request->status ?? 0 ;
