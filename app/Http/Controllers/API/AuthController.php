@@ -168,9 +168,9 @@ class AuthController extends Controller
             'agent_type' => 'required_if:user_type,==,4',
             'company_name' => 'required_if:user_type,!=,6',
             'address' => 'required',
-            'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg',
-            'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg',
-            'company_photo' => 'required|mimes:jpeg,bmp,png,jpg',
+            'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
+            'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
+            'company_images.*' => 'required|image|mimes:jpg,jpeg,png,gif',
             
         ]);
 
