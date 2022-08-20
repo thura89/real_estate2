@@ -26,7 +26,7 @@
                             {{-- <img src="{{ asset('backend/images/timemyay_logo.png') }}" alt=""> --}}
                             {{-- <span class="fa fa-user-o"></span> --}}
                         </div>
-                        <h3 class="text-center mb-4">TIMEMYAY</h3>
+                        <h3 class="text-center mb-4">TINEMYAY</h3>
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">
