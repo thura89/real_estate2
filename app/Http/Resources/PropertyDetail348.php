@@ -35,8 +35,8 @@ class PropertyDetail348 extends JsonResource
         }
 
         /* Address */
-        $region = $this->address ? $this->address->region()->first('name') : null;
-        $township = $this->address ? $this->address->township()->first('name') : null;
+        $region = $this->address ? $this->address->region : null;
+        $township = $this->address ? $this->address->township : null;
         
         $data['category'] = $this->category; 
         $data['properties_type'] = $this->properties_type; 
@@ -44,10 +44,10 @@ class PropertyDetail348 extends JsonResource
         $data['title'] = $this->title; 
         $data['address'] = [
             'street_name' => $this->address ? $this->address->street_name : null,
-            'type_of_street' => $this->address ? config('const.type_of_street')[$this->address->type_of_street] : null,
+            'type_of_street' => $this->address ? $this->address->type_of_street : null,
             'ward' => $this->address ? $this->address->ward : null,
-            'township' => $township['name'] ?? null,
-            'region' => $region['name'] ?? null,
+            'township' => $township ?? null,
+            'region' => $region ?? null,
             'building_name' => $this->address ? $this->address->building_name : null,
         ];
 
@@ -58,28 +58,28 @@ class PropertyDetail348 extends JsonResource
         }
 
         /* partation */
-        $data['partation_type'] = $this->partation ? config('const.partation_type')[$this->partation->type] : null;
+        $data['partation_type'] = $this->partation ? $this->partation->type : null;
         $data['bath_room'] = $this->partation ? $this->partation->bath_room : null;
         $data['bed_room'] = $this->partation ? $this->partation->bed_room : null;
         // $data['carpark'] = $this->partation ? $this->partation->carpark : null;
 
         /* Payment */
-        $data['purchase_type'] = $this->payment ? config('const.purchase_type')[$this->payment->purchase_type] : null;
-        $data['installment'] = $this->payment ? config('const.installment')[$this->payment->installment] : null;
+        $data['purchase_type'] = $this->payment ? $this->payment->purchase_type : null;
+        $data['installment'] = $this->payment ? $this->payment->installment : null;
         
         if ($this->properties_type == 1) {
             /* Sale Price */
             $data['price'] = $this->price ? $this->price->price : null;
             $data['currency_code'] = $this->price ? $this->price->currency_code : null;
             $data['price_by_area'] = $this->price ? $this->price->price_by_area : null;
-            $data['area'] = $this->price ? config('const.area')[$this->price->area] : null;
+            $data['area'] = $this->price ? $this->price->area : null;
         }
         if ($this->properties_type == 2) {
             /* Rent Price */
             $data['price'] = $this->rentprice ? $this->rentprice->price : null ;
             $data['currency_code'] = $this->rentprice ? $this->rentprice->currency_code : null ;
             $data['price_by_area'] = $this->rentprice ? $this->rentprice->price_by_area : null ;
-            $data['area'] = $this->rentprice ? config('const.area')[$this->rentprice->area] : null ;
+            $data['area'] = $this->rentprice ? $this->rentprice->area : null ;
             $data['minimum_month'] = $this->rentprice ? $this->rentprice->minimum_month : null ;
             $data['rent_pay_type'] = $this->rentprice ? $this->rentprice->rent_pay_type : null ;
             $data['rent_payby_daily'] = $this->rentprice ? $this->rentprice->rent_payby_daily : null ;
@@ -87,8 +87,8 @@ class PropertyDetail348 extends JsonResource
 
         /* Situation */
         $data['year_of_construction'] = $this->situation ? $this->situation->year_of_construction : null;
-        $data['building_repairing'] = $this->situation ? config('const.building_repairing')[$this->situation->building_repairing] : null;
-        $data['building_condition'] = $this->situation ? config('const.building_condition')[$this->situation->building_condition] : null;
+        $data['building_repairing'] = $this->situation ? $this->situation->building_repairing : null;
+        $data['building_condition'] = $this->situation ? $this->situation->building_condition : null;
 
         /* Supplyment */
         $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
@@ -149,7 +149,7 @@ class PropertyDetail348 extends JsonResource
             'name' => $this->user->name ?? null,
             'phone' => $this->user->phone ?? null,
             'company_name' => $this->user->company_name ?? null,
-            'user_type' => config('const.user_type')[$this->user->user_type] ?? null,
+            'user_type' => $this->user->user_type ?? null,
             'profile_photo' => $this->user->profile_photo ?? null,
             'cover_photo' => $this->user->cover_photo ?? null,
         ];

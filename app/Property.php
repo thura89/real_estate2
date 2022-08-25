@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
@@ -83,5 +84,11 @@ class Property extends Model
     public function wishlist()
     {
         return $this->hasMany(WishList::class);
+    }
+
+
+    public function scopeCreated_at($query)
+    {
+        return $query->where(Carbon::now()->diffInDays('created_at') >= 365);
     }
 }

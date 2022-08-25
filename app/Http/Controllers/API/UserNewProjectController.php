@@ -155,7 +155,7 @@ class UserNewProjectController extends Controller
         }
 
         $data = NewProject::findOrFail($id);
-        $data->user_id = 18; //Auth()->user()->id;
+        $data->user_id = Auth()->user()->id;
 
         /* Address */
         $data->region = $request->region ?? $data->region;
@@ -238,7 +238,7 @@ class UserNewProjectController extends Controller
                 unset($data_images[$rev]);
             }
             $data->images = array_values($data_images);
-            $data->update();
+            $data->push();
         }
 
     }

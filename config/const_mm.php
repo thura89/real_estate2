@@ -36,6 +36,14 @@ return array(
                 1 => 'စတုရန်းပေ',
                 2 => 'ဧက',
         ],
+        'area_short' => [
+                1 => 'SQ',
+                2 => 'AC',
+        ],
+        'area_option' => [
+                1 => 'Width x Length',
+                2 => 'Area',
+        ],
         'currency_code' => [
                 'mmk' => 'ကျပ်',
                 'us' => 'အမေရိကန်',
@@ -204,10 +212,10 @@ return array(
                 2 => 'အငှား',
         ],
         'minimum_month' => [
-                1 => '၁လ',
-                2 => '၃လ',
-                3 => '၆လ',
-                4 => '၁၂လ',
+                1 => '၁ လ',
+                2 => '၃ လ',
+                3 => '၆ လ',
+                4 => '၁၂ လ',
         ],
         'rent_pay_type' => [
                 1 => 'လစဉ်ပေးချေခြင်း',
@@ -218,25 +226,25 @@ return array(
                 2 => 'မရနိင်ပါ',
         ],
         'publish_status' => [
-                1 => 'အကြ့ပြုထားသောစာရင်း',
-                
+                1 => 'Publish',
+                0 => 'Pending',
+        ],
+        'recommend_status' => [
+                1 => 'Recommend',
+                0 => 'Normal',
+        ],
+        'hot_status' => [
+                1 => 'Hot',
+                0 => 'Normal',
+        ],
+        'slider_status' => [
+                1 => 'Published',
+                0 => 'Pending',
         ],
         'p_img_path' => 'storage/property_images/',
         'news_img_path' => 'storage/news/',
         'new_project_img_path' => 'storage/new_project/',
         'sliders_img_path' => 'storage/slider/',
-        'carpark' => [
-                1 => '၁',
-                2 => '၂',
-                3 => '၃',
-                4 => '၄',
-                5 => '၅',
-                6 => '၆',
-                7 => '၇',
-                8 => '၈',
-                9 => '၉',
-                10 => '၁၀',
-        ],
         'bath_room' => [
                 1 => '၁',
                 2 => '၂',

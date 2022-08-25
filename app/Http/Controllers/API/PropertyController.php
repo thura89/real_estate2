@@ -11,6 +11,7 @@ use App\Property;
 use App\Partation;
 use App\RentPrice;
 use App\Situation;
+use Carbon\Carbon;
 use App\LotFeature;
 use App\Suppliment;
 use App\UnitAmenity;
@@ -40,6 +41,7 @@ class PropertyController extends Controller
 
     public function property_list(Request $request)
     {
+        $date = Carbon::today()->subMonths(12);
         $data = Property::query()->with([
             'address',
             'partation',
@@ -48,12 +50,12 @@ class PropertyController extends Controller
             'propertyImage',
             'areasize',
             'user'
-        ]);
+        ])->whereDate('created_at', '>=', $date)
+          ->where('user_id',Auth::user()->id);
+          
+
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            // $data->whereHas('suppliment', function ($query) use ($keyword) {
-            //         $query->where('note',  'LIKE', "{%$keyword%}");
-            //     })->whereLike('title',$keyword);
             $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
                 ->select('properties.*', 'suppliments.note')
                 ->where('title', 'like', '%' . $keyword . '%')
@@ -252,12 +254,6 @@ class PropertyController extends Controller
                 $query->where('bath_room', $bath_room);
             });
         }
-        // if ($request->get('carpark')) {
-        //     $carpark = $request->get('carpark');
-        //     $data->whereHas('partation', function ($query) use ($carpark) {
-        //         $query->where('carpark', $carpark);
-        //     });
-        // }
         
         if ($request->get('sort')) {
             $sort = $request->get('sort');
@@ -316,10 +312,9 @@ class PropertyController extends Controller
             'unitAmenity',
             'user',
             'wishlist'
-        ])->where('id', $id)->first();
-        $category = $property->category;
-
+        ])->where('user_id',Auth::user()->id)->find($id);
         if ($property) {
+            $category = $property->category;
             /* Redirect to Edit Page By Relative */
             /* House , Shoop */
             if ($category == 1 || $category == 6) {
@@ -576,6 +571,7 @@ class PropertyController extends Controller
         
         $validate = Validator::make($request->all(), [
             /* Address */
+            'id' => 'required',
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'title' => 'required',
             'street_name' => 'required',
@@ -634,193 +630,198 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
+        $property = Property::where('user_id',auth()->id())->find($request->id);
+        
+        if ($property) {
+            DB::beginTransaction();
+            try {
+                /* Call Id */
+                $property = Property::findOrFail($request->id);
 
-        DB::beginTransaction();
-        try {
-            /* Call Id */
-            $property = Property::findOrFail($request->id);
+                /* Property Store */
+                $property->title = $request->title;
+                $property->user_id = Auth()->user()->id;
+                $property->lat = '112344533'; // Sample lag
+                $property->long = '112344533'; // Sample long
+                $property->status = $request->status ? 1 : 0; //Publish Status
 
-            /* Property Store */
-            $property->title = $request->title;
-            $property->user_id = Auth()->user()->id;
-            $property->lat = '112344533'; // Sample lag
-            $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+                // Address Store
+                $property->address->region = $request->region ?? $property->address->region;
+                $property->address->township = $request->township ?? $property->address->township;
+                $property->address->street_name = $request->street_name;
+                $property->address->ward = $request->ward;
+                $property->address->type_of_street = $request->type_of_street;
+                if ($request->property_category == 6) {
+                    $property->address->building_name = $request->building_name;
+                }
 
-            // Address Store
-            $property->address->region = $request->region ?? $property->address->region;
-            $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
-            if ($request->property_category == 6) {
-                $property->address->building_name = $request->building_name;
-            }
+                /* Area Size Store */
+                $property->areasize->area_option = $request->area_option;
+                /* Width x length */
+                if ($request->area_option == 1) {
+                    $property->areasize->width = $request->width;
+                    $property->areasize->length = $request->length;    
+                }
+                /** Area */
+                if ($request->area_option == 2) {
+                    $property->areasize->area_size = $request->area_size;    
+                    $property->areasize->area_unit = $request->area_unit;    
+                }
+                if ($request->property_category == 6) {
+                    $property->areasize->level = $request->floor_level;
+                }
 
-            /* Area Size Store */
-            $property->areasize->area_option = $request->area_option;
-            /* Width x length */
-            if ($request->area_option == 1) {
-                $property->areasize->width = $request->width;
-                $property->areasize->length = $request->length;    
-            }
-            /** Area */
-            if ($request->area_option == 2) {
-                $property->areasize->area_size = $request->area_size;    
-                $property->areasize->area_unit = $request->area_unit;    
-            }
-            if ($request->property_category == 6) {
-                $property->areasize->level = $request->floor_level;
-            }
+                /* Partation Store */
+                $property->partation->type = $request->partation_type;
+                $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
+                $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
+                // $property->partation->carpark = $request->carpark ? 1 : 0;
 
-            /* Partation Store */
-            $property->partation->type = $request->partation_type;
-            $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
-            $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            // $property->partation->carpark = $request->carpark ? 1 : 0;
+                // Payment Store
+                $property->payment->installment = ($request->installment) ? 1 : 0;
+                $property->payment->purchase_type = $request->purchase_type;
 
-            // Payment Store
-            $property->payment->installment = ($request->installment) ? 1 : 0;
-            $property->payment->purchase_type = $request->purchase_type;
+                // Sale Price Data Store
+                if ($property->properties_type == 1) {
+                    // Price Store
+                    $property->price->price = $request->sale_price;
+                    $property->price->area = $request->sale_area;
+                    $property->price->price_by_area = $request->sale_price_by_area ?? null;
+                    $property->price->currency_code = $request->sale_currency_code;
+                }
+                // Rent Price Data Store
+                if ($property->properties_type == 2) {
+                    // Price Store
+                    $property->rentprice->price = $request->price;
+                    $property->rentprice->area = $request->area;
+                    $property->rentprice->price_by_area = $request->price_by_area ?? null;
+                    $property->rentprice->currency_code = $request->currency_code;
+                    $property->rentprice->minimum_month = $request->minimum_month;
+                    $property->rentprice->rent_pay_type = $request->rent_pay_type;
+                    $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
+                }
 
-            // Sale Price Data Store
-            if ($property->properties_type == 1) {
-                // Price Store
-                $property->price->price = $request->sale_price;
-                $property->price->area = $request->sale_area;
-                $property->price->price_by_area = $request->sale_price_by_area ?? null;
-                $property->price->currency_code = $request->sale_currency_code;
-            }
-            // Rent Price Data Store
-            if ($property->properties_type == 2) {
-                // Price Store
-                $property->rentprice->price = $request->price;
-                $property->rentprice->area = $request->area;
-                $property->rentprice->price_by_area = $request->price_by_area ?? null;
-                $property->rentprice->currency_code = $request->currency_code;
-                $property->rentprice->minimum_month = $request->minimum_month;
-                $property->rentprice->rent_pay_type = $request->rent_pay_type;
-                $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
-            }
+                /* Situation Store */
+                $property->situation->year_of_construction = $request->year_of_construction;
+                $property->situation->building_repairing = $request->building_repairing;
+                $property->situation->building_condition = $request->building_condition;
+                if ($request->property_category == 1) {
+                    $property->situation->type_of_building = $request->type_of_building;
+                }
+                if ($request->property_category == 6) {
+                    $property->situation->shop_type = $request->shop_type;
+                }
 
-            /* Situation Store */
-            $property->situation->year_of_construction = $request->year_of_construction;
-            $property->situation->building_repairing = $request->building_repairing;
-            $property->situation->building_condition = $request->building_condition;
-            if ($request->property_category == 1) {
-                $property->situation->type_of_building = $request->type_of_building;
-            }
-            if ($request->property_category == 6) {
-                $property->situation->shop_type = $request->shop_type;
-            }
+                /* Electri & water Store */
+                $property->suppliment->water_sys = $request->water ? 1 : 0;
+                $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+                $property->suppliment->note = $request->note ?? null;
 
-            /* Electri & water Store */
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
-            $property->suppliment->note = $request->note ?? null;
-
-            /* Unit Aminity */
-            if ($request->unit_amenity) {
-                if ($property->category == 1) {
-                    $splice_amenity = $request->unit_amenity;
-                    $splice_amenity = explode('|', $splice_amenity);
-                    $unit_amenity = config('const.unit_amenity');
-                    $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
-                    $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
-                    if ($unit_amenity_diff) {
-                        foreach ($unit_amenity_diff as $key => $diff) {
-                            $property->unitAmenity->$diff = 0;
+                /* Unit Aminity */
+                if ($request->unit_amenity) {
+                    if ($property->category == 1) {
+                        $splice_amenity = $request->unit_amenity;
+                        $splice_amenity = explode('|', $splice_amenity);
+                        $unit_amenity = config('const.unit_amenity');
+                        $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
+                        $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                        if ($unit_amenity_diff) {
+                            foreach ($unit_amenity_diff as $key => $diff) {
+                                $property->unitAmenity->$diff = 0;
+                            }
                         }
-                    }
-                    if ($unit_amenity_intersect) {
-                        foreach ($unit_amenity_intersect as $key => $interset) {
-                            $property->unitAmenity->$interset = 1;
+                        if ($unit_amenity_intersect) {
+                            foreach ($unit_amenity_intersect as $key => $interset) {
+                                $property->unitAmenity->$interset = 1;
+                            }
                         }
                     }
                 }
-            }
 
-            /* Building Aminity */
-            if ($request->building_amenity) {
-                if ($property->category == 6) {
-                    $splice_building_amenity = $request->building_amenity;
-                    $splice_building_amenity = explode('|', $splice_building_amenity);
-                    $building_amenity = config('const.building_amenity');
-                    $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
-                    $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
-                    if ($building_amenity_diff) {
-                        foreach ($building_amenity_diff as $key => $diff) {
-                            $property->buildingAmenity->$diff = 0;
+                /* Building Aminity */
+                if ($request->building_amenity) {
+                    if ($property->category == 6) {
+                        $splice_building_amenity = $request->building_amenity;
+                        $splice_building_amenity = explode('|', $splice_building_amenity);
+                        $building_amenity = config('const.building_amenity');
+                        $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
+                        $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                        if ($building_amenity_diff) {
+                            foreach ($building_amenity_diff as $key => $diff) {
+                                $property->buildingAmenity->$diff = 0;
+                            }
                         }
-                    }
-                    if ($building_amenity_intersect) {
-                        foreach ($building_amenity_intersect as $key => $interset) {
-                            $property->buildingAmenity->$interset = 1;
+                        if ($building_amenity_intersect) {
+                            foreach ($building_amenity_intersect as $key => $interset) {
+                                $property->buildingAmenity->$interset = 1;
+                            }
                         }
-                    }
-                }    
-            }
-            /* Property Image */
-            if ($request->hasfile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                    $data_images[] = $file_name;
+                    }    
                 }
-                $decode_images = json_decode($property->propertyImage->first('images'));
-                $result = array_merge($decode_images,$data_images);
-                $property->propertyImage->images = $result;
+                /* Property Image */
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                        $data_images[] = $file_name;
+                    }
+                    $decode_images = json_decode($property->propertyImage->images);
+                    $result = array_merge($decode_images,$data_images);
+                    $property->propertyImage->images = $result;
+                    
+                }
+                // Splice if not img 
+                // if ($request->old || $request->photos) {
+                //     $old_data = $request->old ?? [];
+                //     $count = count($request->file('photos') ?? []);
+                //     $data = array_reverse($old_data);
+                //     $splice_data = array_splice($data, $count);
+
+                //     // Fetch Old Image
+                //     $store_data = $property->propertyImage->first('images');
+                //     $store_data = json_decode($store_data['images']);
+
+                //     // Diff image
+                //     $collection = collect($store_data);
+                //     $diff_image = $collection->diff($splice_data);
+
+                //     // Delete image
+                //     if (!$diff_image->all() == []) {
+                //         foreach ($diff_image as $key => $diff) {
+                //             Storage::disk('public')->delete('property_images/' . $diff);
+                //         }
+                //     }
+
+                //     // Get Remain Data from coming form
+                //     foreach ($splice_data as $image) {
+                //         $data[] = $image;
+                //     }
+
+                //     // Upload New image
+                //     if ($request->hasfile('photos')) {
+                //         foreach ($request->file('photos') as $image) {
+                //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                //             $data[] = $file_name;
+                //         }
+                //     }
+                //     // Splice No Need Data
+                //     $filtered = array_splice($data, $count);
+                //     $property->propertyImage->images = json_encode($filtered);
+                // }
                 
+                $property->push();
+                
+
+                DB::commit();
+
+                return ResponseHelper::success('Successfully Updated', Null);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return ResponseHelper::fail('Something Wrong', $e);
             }
-            // Splice if not img 
-            // if ($request->old || $request->photos) {
-            //     $old_data = $request->old ?? [];
-            //     $count = count($request->file('photos') ?? []);
-            //     $data = array_reverse($old_data);
-            //     $splice_data = array_splice($data, $count);
-
-            //     // Fetch Old Image
-            //     $store_data = $property->propertyImage->first('images');
-            //     $store_data = json_decode($store_data['images']);
-
-            //     // Diff image
-            //     $collection = collect($store_data);
-            //     $diff_image = $collection->diff($splice_data);
-
-            //     // Delete image
-            //     if (!$diff_image->all() == []) {
-            //         foreach ($diff_image as $key => $diff) {
-            //             Storage::disk('public')->delete('property_images/' . $diff);
-            //         }
-            //     }
-
-            //     // Get Remain Data from coming form
-            //     foreach ($splice_data as $image) {
-            //         $data[] = $image;
-            //     }
-
-            //     // Upload New image
-            //     if ($request->hasfile('photos')) {
-            //         foreach ($request->file('photos') as $image) {
-            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-            //             $data[] = $file_name;
-            //         }
-            //     }
-            //     // Splice No Need Data
-            //     $filtered = array_splice($data, $count);
-            //     $property->propertyImage->images = json_encode($filtered);
-            // }
-
-            $property->push();
-
-            DB::commit();
-
-            return ResponseHelper::success('Successfully Updated', Null);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', $e);
         }
+        return ResponseHelper::fail('Fail Request', 'you are not own this');
     }
     /* Create Land, House Land , Industrial */
     public function land_house_land_create(Request $request)
@@ -1094,155 +1095,159 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        DB::beginTransaction();
-        try {
-            $property = Property::findOrFail($request->id);
-            /* Property Store */
-            $property->title = $request->title;
-            $property->user_id = Auth()->user()->id;
-            $property->lat = '112344533'; // Sample lag
-            $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+        $property = Property::where('user_id',auth()->id())->find($request->id);
+        
+        if ($property) {
+            DB::beginTransaction();
+            try {
+                /* Property Store */
+                $property->title = $request->title;
+                $property->user_id = Auth()->user()->id;
+                $property->lat = '112344533'; // Sample lag
+                $property->long = '112344533'; // Sample long
+                $property->status = $request->status ? 1 : 0; //Publish Status
 
-            /* Address Store */
-            $property->address->region = $request->region ?? $property->address->region;
-            $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
-            if ($property->category == 7) {
-                $property->address->building_name = $request->building_name;
-            }
-
-            /* Area Size Store */
-            $property->areasize->area_option = $request->area_option;
-            /* Width x length */
-            if ($request->area_option == 1) {
-                $property->areasize->width = $request->width;
-                $property->areasize->length = $request->length;    
-            }
-            /** Area */
-            if ($request->area_option == 2) {
-                $property->areasize->area_size = $request->area_size;    
-                $property->areasize->area_unit = $request->area_unit;    
-            }
-            if ($request->property_category == 6) {
-                $property->areasize->level = $request->floor_level;
-            }
-
-            /* Partation Store For Land House And Industrial */
-            if ($property->category == 2 || $property->category == 7) {
-                $property->partation->type = $request->partation_type;
-                $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
-                $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-                // $property->partation->carpark = $request->carpark ? 1 : 0;
-            }
-
-            /* Payment Store */
-            $property->payment->installment = ($request->installment) ? 1 : 0;
-            $property->payment->purchase_type = $request->purchase_type;
-
-            /* Sale Price Data Store */
-            if ($property->properties_type == 1) {
-                /* Price Store */
-                $property->price->price = $request->sale_price;
-                $property->price->area = $request->sale_area;
-                $property->price->price_by_area = $request->sale_price_by_area ?? null;
-                $property->price->currency_code = $request->sale_currency_code;
-            }
-
-            /* Rent Price Data Store */
-            if ($property->properties_type == 2) {
-                /* Rent Price Store */
-                $property->rentprice->price = $request->price;
-                $property->rentprice->area = $request->area;
-                $property->rentprice->price_by_area = $request->price_by_area ?? null;
-                $property->rentprice->currency_code = $request->currency_code;
-                $property->rentprice->minimum_month = $request->minimum_month;
-                $property->rentprice->rent_pay_type = $request->rent_pay_type;
-                $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
-            }
-
-            /* Situation Store */
-            $property->situation->building_repairing = $request->building_repairing;
-            if ($property->category == 2) {
-                $property->situation->fence_condition = $request->fence_condition;
-            }
-            if ($property->category == 5) {
-                $property->situation->land_type = $request->land_type;
-            }
-            if ($property->category == 7) {
-                $property->situation->year_of_construction = $request->year_of_construction;
-                $property->situation->industrial_type = $request->industrial_type;
-                $property->situation->building_condition = $request->building_condition;
-            }
-
-            /* Electri & water Store */
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
-            $property->suppliment->note = $request->note ?? null;
-
-            /* Property Image */
-            if ($request->hasfile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                    $data_images[] = $file_name;
+                /* Address Store */
+                $property->address->region = $request->region ?? $property->address->region;
+                $property->address->township = $request->township ?? $property->address->township;
+                $property->address->street_name = $request->street_name;
+                $property->address->ward = $request->ward;
+                $property->address->type_of_street = $request->type_of_street;
+                if ($property->category == 7) {
+                    $property->address->building_name = $request->building_name;
                 }
-                $decode_images = json_decode($property->propertyImage->first('images'));
-                $result = array_merge($decode_images,$data_images);
-                $property->propertyImage->images = $result;
-                
+
+                /* Area Size Store */
+                $property->areasize->area_option = $request->area_option;
+                /* Width x length */
+                if ($request->area_option == 1) {
+                    $property->areasize->width = $request->width;
+                    $property->areasize->length = $request->length;    
+                }
+                /** Area */
+                if ($request->area_option == 2) {
+                    $property->areasize->area_size = $request->area_size;    
+                    $property->areasize->area_unit = $request->area_unit;    
+                }
+                if ($request->property_category == 6) {
+                    $property->areasize->level = $request->floor_level;
+                }
+
+                /* Partation Store For Land House And Industrial */
+                if ($property->category == 2 || $property->category == 7) {
+                    $property->partation->type = $request->partation_type;
+                    $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
+                    $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
+                    // $property->partation->carpark = $request->carpark ? 1 : 0;
+                }
+
+                /* Payment Store */
+                $property->payment->installment = ($request->installment) ? 1 : 0;
+                $property->payment->purchase_type = $request->purchase_type;
+
+                /* Sale Price Data Store */
+                if ($property->properties_type == 1) {
+                    /* Price Store */
+                    $property->price->price = $request->sale_price;
+                    $property->price->area = $request->sale_area;
+                    $property->price->price_by_area = $request->sale_price_by_area ?? null;
+                    $property->price->currency_code = $request->sale_currency_code;
+                }
+
+                /* Rent Price Data Store */
+                if ($property->properties_type == 2) {
+                    /* Rent Price Store */
+                    $property->rentprice->price = $request->price;
+                    $property->rentprice->area = $request->area;
+                    $property->rentprice->price_by_area = $request->price_by_area ?? null;
+                    $property->rentprice->currency_code = $request->currency_code;
+                    $property->rentprice->minimum_month = $request->minimum_month;
+                    $property->rentprice->rent_pay_type = $request->rent_pay_type;
+                    $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
+                }
+
+                /* Situation Store */
+                $property->situation->building_repairing = $request->building_repairing;
+                if ($property->category == 2) {
+                    $property->situation->fence_condition = $request->fence_condition;
+                }
+                if ($property->category == 5) {
+                    $property->situation->land_type = $request->land_type;
+                }
+                if ($property->category == 7) {
+                    $property->situation->year_of_construction = $request->year_of_construction;
+                    $property->situation->industrial_type = $request->industrial_type;
+                    $property->situation->building_condition = $request->building_condition;
+                }
+
+                /* Electri & water Store */
+                $property->suppliment->water_sys = $request->water ? 1 : 0;
+                $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+                $property->suppliment->note = $request->note ?? null;
+
+                /* Property Image */
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                        $data_images[] = $file_name;
+                    }
+                    $decode_images = json_decode($property->propertyImage->images);
+                    $result = array_merge($decode_images,$data_images);
+                    $property->propertyImage->images = $result;
+                    
+                }
+                /* Splice if not image  */
+                // if ($request->old || $request->photos) {
+                //     $old_data = $request->old ?? [];
+                //     $count = count($request->file('photos') ?? []);
+                //     $data = array_reverse($old_data);
+                //     $splice_data = array_splice($data, $count);
+
+                //     /* Fetch Old Image */
+                //     $store_data = $property->propertyImage->first('images');
+                //     $store_data = json_decode($store_data['images']);
+
+                //     /* Diff image */
+                //     $collection = collect($store_data);
+                //     $diff_image = $collection->diff($splice_data);
+
+                //     /* Delete image */
+                //     if (!$diff_image->all() == []) {
+                //         foreach ($diff_image as $key => $diff) {
+                //             Storage::disk('public')->delete('property_images/' . $diff);
+                //         }
+                //     }
+
+                //     /* Get Remain Data from coming form */
+                //     foreach ($splice_data as $image) {
+                //         $data[] = $image;
+                //     }
+
+                //     /* Upload New image */
+                //     if ($request->hasfile('photos')) {
+                //         foreach ($request->file('photos') as $image) {
+                //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                //             $data[] = $file_name;
+                //         }
+                //     }
+                //     /* Splice No Need Data */
+                //     $filtered = array_splice($data, $count);
+                //     $property->propertyImage->images = json_encode($filtered);
+                // }
+
+                $property->push();
+
+                DB::commit();
+
+                return ResponseHelper::success('Successfully Updated', Null);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return ResponseHelper::fail('Something Wrong', $e);
             }
-            /* Splice if not image  */
-            // if ($request->old || $request->photos) {
-            //     $old_data = $request->old ?? [];
-            //     $count = count($request->file('photos') ?? []);
-            //     $data = array_reverse($old_data);
-            //     $splice_data = array_splice($data, $count);
-
-            //     /* Fetch Old Image */
-            //     $store_data = $property->propertyImage->first('images');
-            //     $store_data = json_decode($store_data['images']);
-
-            //     /* Diff image */
-            //     $collection = collect($store_data);
-            //     $diff_image = $collection->diff($splice_data);
-
-            //     /* Delete image */
-            //     if (!$diff_image->all() == []) {
-            //         foreach ($diff_image as $key => $diff) {
-            //             Storage::disk('public')->delete('property_images/' . $diff);
-            //         }
-            //     }
-
-            //     /* Get Remain Data from coming form */
-            //     foreach ($splice_data as $image) {
-            //         $data[] = $image;
-            //     }
-
-            //     /* Upload New image */
-            //     if ($request->hasfile('photos')) {
-            //         foreach ($request->file('photos') as $image) {
-            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-            //             $data[] = $file_name;
-            //         }
-            //     }
-            //     /* Splice No Need Data */
-            //     $filtered = array_splice($data, $count);
-            //     $property->propertyImage->images = json_encode($filtered);
-            // }
-
-            $property->push();
-
-            DB::commit();
-
-            return ResponseHelper::success('Successfully Updated', Null);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', $e);
         }
+        return ResponseHelper::fail('Fail Request', 'you are not own this');
     }
     /* Create Aparment Condo , Office */
     public function apart_condo_office_create(ApartCondoCreateRequest $request)
@@ -1515,193 +1520,197 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        DB::beginTransaction();
-        try {
-            $property = Property::findOrFail($request->id);
-            /* Property Store */
-            $property->title = $request->title;
-            $property->user_id = Auth()->user()->id;
-            $property->lat = '112344533'; // Sample lag
-            $property->long = '112344533'; // Sample long
-            $property->status = $request->status ? 1 : 0; //Publish Status
+        $property = Property::where('user_id',auth()->id())->find($request->id);
+        
+        if ($property) {
+            DB::beginTransaction();
+            try {
+                /* Property Store */
+                $property->title = $request->title;
+                $property->user_id = Auth()->user()->id;
+                $property->lat = '112344533'; // Sample lag
+                $property->long = '112344533'; // Sample long
+                $property->status = $request->status ? 1 : 0; //Publish Status
 
-            /* Address Store */
-            $property->address->region = $request->region ?? $property->address->region;
-            $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
-            $property->address->building_name = $request->building_name;
+                /* Address Store */
+                $property->address->region = $request->region ?? $property->address->region;
+                $property->address->township = $request->township ?? $property->address->township;
+                $property->address->street_name = $request->street_name;
+                $property->address->ward = $request->ward;
+                $property->address->type_of_street = $request->type_of_street;
+                $property->address->building_name = $request->building_name;
 
-            /* Area Size Store */
-            $property->areasize->area_option = $request->area_option;
-            /* Width x length */
-            if ($request->area_option == 1) {
-                $property->areasize->width = $request->width;
-                $property->areasize->length = $request->length;    
-            }
-            /** Area */
-            if ($request->area_option == 2) {
-                $property->areasize->area_size = $request->area_size;    
-                $property->areasize->area_unit = $request->area_unit;    
-            }
-            if ($request->property_category == 6) {
-                $property->areasize->level = $request->floor_level;
-            }
+                /* Area Size Store */
+                $property->areasize->area_option = $request->area_option;
+                /* Width x length */
+                if ($request->area_option == 1) {
+                    $property->areasize->width = $request->width;
+                    $property->areasize->length = $request->length;    
+                }
+                /** Area */
+                if ($request->area_option == 2) {
+                    $property->areasize->area_size = $request->area_size;    
+                    $property->areasize->area_unit = $request->area_unit;    
+                }
+                if ($request->property_category == 6) {
+                    $property->areasize->level = $request->floor_level;
+                }
 
-            /* Partation Store */
-            $property->partation->type = $request->partation_type;
-            $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
-            $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
-            // $property->partation->carpark = $request->carpark;
+                /* Partation Store */
+                $property->partation->type = $request->partation_type;
+                $property->partation->bed_room = ($request->partation_type == 2) ? $request->bed_room : null;
+                $property->partation->bath_room = ($request->partation_type == 2) ? $request->bath_room : null;
+                // $property->partation->carpark = $request->carpark;
 
-            /* Payment Store */
-            $property->payment->installment = ($request->installment) ? 1 : 0;
-            $property->payment->purchase_type = $request->purchase_type ? 1 : 0;
+                /* Payment Store */
+                $property->payment->installment = ($request->installment) ? 1 : 0;
+                $property->payment->purchase_type = $request->purchase_type ? 1 : 0;
 
-            /* Sale Price Data Store */
-            if ($request->property_type == 1) {
-                /* Price Store */
-                $property->price->price = $request->sale_price;
-                $property->price->area = $request->sale_area;
-                $property->price->price_by_area = $request->sale_price_by_area ?? null;
-                $property->price->currency_code = $request->sale_currency_code;
-            }
-            /* Rent Price Data Store */
-            if ($request->property_type == 2) {
-                /* Price Store */
-                $property->rentprice->price = $request->price;
-                $property->rentprice->area = $request->area;
-                $property->rentprice->price_by_area = $request->price_by_area ?? null;
-                $property->rentprice->currency_code = $request->currency_code;
-                $property->rentprice->minimum_month = $request->minimum_month;
-                $property->rentprice->rent_pay_type = $request->rent_pay_type;
-                $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
-            }
+                /* Sale Price Data Store */
+                if ($request->property_type == 1) {
+                    /* Price Store */
+                    $property->price->price = $request->sale_price;
+                    $property->price->area = $request->sale_area;
+                    $property->price->price_by_area = $request->sale_price_by_area ?? null;
+                    $property->price->currency_code = $request->sale_currency_code;
+                }
+                /* Rent Price Data Store */
+                if ($request->property_type == 2) {
+                    /* Price Store */
+                    $property->rentprice->price = $request->price;
+                    $property->rentprice->area = $request->area;
+                    $property->rentprice->price_by_area = $request->price_by_area ?? null;
+                    $property->rentprice->currency_code = $request->currency_code;
+                    $property->rentprice->minimum_month = $request->minimum_month;
+                    $property->rentprice->rent_pay_type = $request->rent_pay_type;
+                    $property->rentprice->rent_payby_daily = $request->rent_payby_daily;
+                }
 
-            /* Situation Store */
-            $property->situation->year_of_construction = $request->year_of_construction;
-            $property->situation->building_repairing = $request->building_repairing;
-            $property->situation->building_condition = $request->building_condition;
+                /* Situation Store */
+                $property->situation->year_of_construction = $request->year_of_construction;
+                $property->situation->building_repairing = $request->building_repairing;
+                $property->situation->building_condition = $request->building_condition;
 
-            /* Electri & water Store */
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
-            $property->suppliment->note = $request->note ?? null;
+                /* Electri & water Store */
+                $property->suppliment->water_sys = $request->water ? 1 : 0;
+                $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+                $property->suppliment->note = $request->note ?? null;
 
-            /* Unit Aminity */
-            if ($request->unit_amenity) {
-                $splice_amenity = explode('|', $request->unit_amenity);
-                $unit_amenity = config('const.unit_amenity');
-                $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
-                $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
-                if ($unit_amenity_diff) {
-                    foreach ($unit_amenity_diff as $key => $diff) {
-                        $property->unitAmenity->$diff = 0;
+                /* Unit Aminity */
+                if ($request->unit_amenity) {
+                    $splice_amenity = explode('|', $request->unit_amenity);
+                    $unit_amenity = config('const.unit_amenity');
+                    $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
+                    $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                    if ($unit_amenity_diff) {
+                        foreach ($unit_amenity_diff as $key => $diff) {
+                            $property->unitAmenity->$diff = 0;
+                        }
+                    }
+                    if ($unit_amenity_intersect) {
+                        foreach ($unit_amenity_intersect as $key => $interset) {
+                            $property->unitAmenity->$interset = 1;
+                        }
                     }
                 }
-                if ($unit_amenity_intersect) {
-                    foreach ($unit_amenity_intersect as $key => $interset) {
-                        $property->unitAmenity->$interset = 1;
+
+                /* Building Aminity */
+                if ($request->building_amenity) {
+                    $splice_building_amenity = explode('|', $request->building_amenity);
+                    $building_amenity = config('const.building_amenity');
+                    $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
+                    $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                    if ($building_amenity_diff) {
+                        foreach ($building_amenity_diff as $key => $diff) {
+                            $property->buildingAmenity->$diff = 0;
+                        }
+                    }
+                    if ($building_amenity_intersect) {
+                        foreach ($building_amenity_intersect as $key => $interset) {
+                            $property->buildingAmenity->$interset = 1;
+                        }
                     }
                 }
+
+                /* LotFeature */
+                if ($request->lot_feature) {
+                    $splice_lot_feature = explode('|', $request->lot_feature);
+                    $lot_feature = config('const.lot_feature');
+                    $lot_feature_diff = array_diff($lot_feature,$splice_lot_feature);
+                    $lot_feature_intersect = array_intersect($lot_feature,$splice_lot_feature);
+                    if ($lot_feature_diff) {
+                        foreach ($lot_feature_diff as $key => $diff) {
+                            $property->lotFeature->$diff = 0;
+                        }
+                    }
+                    if ($lot_feature_intersect) {
+                        foreach ($lot_feature_intersect as $key => $interset) {
+                            $property->lotFeature->$interset = 1;
+                        }
+                    }
+                }
+                /* Property Image */
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                        $data_images[] = $file_name;
+                    }
+                    $decode_images = json_decode($property->propertyImage->images);
+                    $result = array_merge($decode_images,$data_images);
+                    $property->propertyImage->images = $result;
+                    
+                }
+                // /* Splice if not img  */
+                // if ($request->old || $request->photos) {
+                //     $old_data = $request->old ?? [];
+                //     $count = count($request->file('photos') ?? []);
+                //     $data = array_reverse($old_data);
+                //     $splice_data = array_splice($data, $count);
+
+                //     /* Fetch Old Image */
+                //     $store_data = $property->propertyImage->first('images');
+                //     $store_data = json_decode($store_data['images']);
+
+                //     /* Diff image */
+                //     $collection = collect($store_data);
+                //     $diff_image = $collection->diff($splice_data);
+
+                //     /* Delete image */
+                //     if (!$diff_image->all() == []) {
+                //         foreach ($diff_image as $key => $diff) {
+                //             Storage::disk('public')->delete('property_images/' . $diff);
+                //         }
+                //     }
+
+                //     /* Get Remain Data from coming form */
+                //     foreach ($splice_data as $image) {
+                //         $data[] = $image;
+                //     }
+
+                //     /* Upload New image */
+                //     if ($request->hasfile('photos')) {
+                //         foreach ($request->file('photos') as $image) {
+                //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                //             $data[] = $file_name;
+                //         }
+                //     }
+                //     /* Splice No Need Data */
+                //     $filtered = array_splice($data, $count);
+                //     $property->propertyImage->images = json_encode($filtered);
+                // }
+
+                $property->push();
+
+                DB::commit();
+                return ResponseHelper::success('Successfully Updated', Null);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return ResponseHelper::fail('Something Wrong', $e);
             }
-
-            /* Building Aminity */
-            if ($request->building_amenity) {
-                $splice_building_amenity = explode('|', $request->building_amenity);
-                $building_amenity = config('const.building_amenity');
-                $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
-                $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
-                if ($building_amenity_diff) {
-                    foreach ($building_amenity_diff as $key => $diff) {
-                        $property->buildingAmenity->$diff = 0;
-                    }
-                }
-                if ($building_amenity_intersect) {
-                    foreach ($building_amenity_intersect as $key => $interset) {
-                        $property->buildingAmenity->$interset = 1;
-                    }
-                }
-            }
-
-            /* LotFeature */
-            if ($request->lot_feature) {
-                $splice_lot_feature = explode('|', $request->lot_feature);
-                $lot_feature = config('const.lot_feature');
-                $lot_feature_diff = array_diff($lot_feature,$splice_lot_feature);
-                $lot_feature_intersect = array_intersect($lot_feature,$splice_lot_feature);
-                if ($lot_feature_diff) {
-                    foreach ($lot_feature_diff as $key => $diff) {
-                        $property->lotFeature->$diff = 0;
-                    }
-                }
-                if ($lot_feature_intersect) {
-                    foreach ($lot_feature_intersect as $key => $interset) {
-                        $property->lotFeature->$interset = 1;
-                    }
-                }
-            }
-            /* Property Image */
-            if ($request->hasfile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-                    $data_images[] = $file_name;
-                }
-                $decode_images = json_decode($property->propertyImage->first('images'));
-                $result = array_merge($decode_images,$data_images);
-                $property->propertyImage->images = $result;
-                
-            }
-            // /* Splice if not img  */
-            // if ($request->old || $request->photos) {
-            //     $old_data = $request->old ?? [];
-            //     $count = count($request->file('photos') ?? []);
-            //     $data = array_reverse($old_data);
-            //     $splice_data = array_splice($data, $count);
-
-            //     /* Fetch Old Image */
-            //     $store_data = $property->propertyImage->first('images');
-            //     $store_data = json_decode($store_data['images']);
-
-            //     /* Diff image */
-            //     $collection = collect($store_data);
-            //     $diff_image = $collection->diff($splice_data);
-
-            //     /* Delete image */
-            //     if (!$diff_image->all() == []) {
-            //         foreach ($diff_image as $key => $diff) {
-            //             Storage::disk('public')->delete('property_images/' . $diff);
-            //         }
-            //     }
-
-            //     /* Get Remain Data from coming form */
-            //     foreach ($splice_data as $image) {
-            //         $data[] = $image;
-            //     }
-
-            //     /* Upload New image */
-            //     if ($request->hasfile('photos')) {
-            //         foreach ($request->file('photos') as $image) {
-            //             $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-            //             Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
-            //             $data[] = $file_name;
-            //         }
-            //     }
-            //     /* Splice No Need Data */
-            //     $filtered = array_splice($data, $count);
-            //     $property->propertyImage->images = json_encode($filtered);
-            // }
-
-            $property->push();
-
-            DB::commit();
-            return ResponseHelper::success('Successfully Updated', Null);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return ResponseHelper::fail('Something Wrong', $e);
         }
+        return ResponseHelper::fail('Fail Request', 'you are not own this');
     }
 
     public function DeletePropertyImage(Request $request)
@@ -1720,17 +1729,23 @@ class PropertyController extends Controller
         if (!$data) {
             return ResponseHelper::fail('Fail Request','Data not found');
         }
-        $data_images = json_decode($data->propertyImage->first('images'));
+        $data_images = $data->propertyImage->images;
+        $data_images = json_decode($data_images,true);
         $images = explode(',',$request->images);
+        
         if ($data) {
             foreach ($images as $key => $del) {
-                Storage::disk('public')->delete('/new_project/' . $del);
                 $rev = array_search($del, $data_images); 
-                unset($data_images[$rev]);
+                if ($rev !== false) {        
+                    Storage::disk('public')->delete('/property_images/' . $data_images[$rev]);
+                    unset($data_images[$rev]);
+                }
             }
-            $data->propertyImage->images = array_values($data_images);
-            $data->update();
-        }
+            $data->propertyImage->images = json_encode(array_values($data_images));
+            $data->push();
+            return ResponseHelper::success('Success', 'Successfully Deleted');
 
+        }
+        
     }
 }

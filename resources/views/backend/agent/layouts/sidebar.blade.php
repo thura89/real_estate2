@@ -47,6 +47,10 @@
                         <i class="metismenu-icon pe-7s-menu"></i>
                         Properties
                     </a>
+                    <a href="{{ route('agent.expired_property.index')}}" class="@yield('expired_property-active')">
+                        <i class="metismenu-icon pe-7s-menu"></i>
+                        Expired Property
+                    </a>
                     <a href="{{ route('agent.want2buyrent.index')}}" class="@yield('want2buyrent-active')">
                         <i class="metismenu-icon pe-7s-display2"></i>
                         Want2BuyRent

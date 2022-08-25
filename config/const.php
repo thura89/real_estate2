@@ -40,7 +40,6 @@ return array(
                 1 => 'SQ',
                 2 => 'AC',
         ],
-
         'area_option' => [
                 1 => 'Width x Length',
                 2 => 'Area',
@@ -247,18 +246,6 @@ return array(
         'news_img_path' => 'storage/news/',
         'new_project_img_path' => 'storage/new_project/',
         'sliders_img_path' => 'storage/slider/',
-        'carpark' => [
-                1 => '1',
-                2 => '2',
-                3 => '3',
-                4 => '4',
-                5 => '5',
-                6 => '6',
-                7 => '7',
-                8 => '8',
-                9 => '9',
-                10 => '10',
-        ],
         'bath_room' => [
                 1 => '1',
                 2 => '2',

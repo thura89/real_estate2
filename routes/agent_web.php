@@ -22,6 +22,11 @@ Route::prefix('agent')->name('agent.')->namespace('Backend\Agent')->middleware('
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
 
+    /* Expired Property */
+    Route::resource('/expired_property', 'ExpiredPropertyController');
+    Route::get('/expired_property/datatables/ssd', 'ExpiredPropertyController@ssd');
+    Route::post('/expired_property/renew/{id}', 'ExpiredPropertyController@expired')->name('agent.expired_property.expired');
+
     /* Agent Profile */
     Route::get('profile', 'AgentPageController@profile')->name('profile');
     Route::post('profile/{id}', 'AgentPageController@profile_update')->name('profile.update');

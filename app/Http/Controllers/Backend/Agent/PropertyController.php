@@ -18,6 +18,7 @@ use App\Suppliment;
 use App\UnitAmenity;
 use App\PropertyImage;
 use App\BuildingAmenity;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helpers\UUIDGenerate;
 use Yajra\Datatables\Datatables;
@@ -38,7 +39,7 @@ class PropertyController extends Controller
     }
     public function ssd(Request $request)
     {
-
+        $date = Carbon::today()->subMonths(12);
         $data = Property::query()->with([
             'address',
             'areasize',
@@ -50,8 +51,8 @@ class PropertyController extends Controller
             'situation',
             'suppliment',
             'unitAmenity',
-            
-        ])->where('user_id',Auth()->user()->id);
+        ])->whereDate('created_at', '>=', $date)
+          ->where('user_id',Auth::user()->id);
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }
@@ -62,7 +63,8 @@ class PropertyController extends Controller
             $data->where('hot_feature', $request->get('hot_feature'));
         }
         if ($request->get('title')) {
-            $data->where('title', $request->get('title'));
+            $title = $request->get('title');
+            $data->where('title', 'LIKE', "%$title%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
@@ -256,13 +258,6 @@ class PropertyController extends Controller
             });
         }
 
-        // if ($request->get('carpark')) {
-        //     $carpark = $request->get('carpark');
-        //     $data->whereHas('partation', function ($query) use ($carpark) {
-        //         $query->where('carpark', $carpark);
-        //     });
-        // }
-        
         if ($request->get('sorter')) {
             $sort = $request->get('sorter');
             $type = $request->get('type');
@@ -320,7 +315,7 @@ class PropertyController extends Controller
                 });
             })
             ->filterColumn('title', function ($query, $keyword) {  
-                $query->where('title', 'LIKE', '%' . $keyword . '%');
+                    $query->where('title', 'LIKE', '%' . $keyword . '%');
             })
             ->addColumn('images', function ($each) {
                 $image = $each->propertyImage()->first('images');
@@ -331,14 +326,15 @@ class PropertyController extends Controller
                 return '';
             })
             ->editColumn('title', function ($each) {
-                return $each->title;
+                return Str::limit($each->title, 20, '...');
+            
             })
             ->editColumn('p_code', function ($each) {
                 return $each->p_code;
             })
             ->editColumn('region', function ($each) {
                 $region = $each->address->region()->first('name');
-                return $region->name ?? '-';
+                return Str::before($region->name,'Region','State') ?? '-';
             })
             ->editColumn('township', function ($each) {
                 $township = $each->address->township()->first('name');
@@ -356,15 +352,24 @@ class PropertyController extends Controller
             ->editColumn('category', function ($each) {
                 return config('const.property_category')[$each->category] ?? '-';
             })
+            ->editColumn('status', function ($each) {
+                if ($each->status == 1) {
+                    return '<span class="badge badge-pill badge-success">' . config('const.recommend_status')[$each->status] . '</span>' ?? '-';
+                }
+                return '<span class="badge badge-pill badge-warning">' . config('const.recommend_status')[0] . '</span>' ?? '-';
+            })
+            ->editColumn('expired_at', function ($each) {
+                return 365 - $each->created_at->diff(Carbon::now())->days .' days';
+            })
             ->editColumn('created_at', function ($each) {
-                return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
+                return $each->created_at->diffForHumans();
             })
             ->addColumn('action', function ($each) {
                 $edit_icon = '<a href="' . route('agent.property.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
                 return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['images', 'action'])
+            ->rawColumns(['images', 'status', 'action'])
             ->make(true);
     }
     /* Property Create by Relative */

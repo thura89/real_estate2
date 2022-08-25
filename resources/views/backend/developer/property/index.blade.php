@@ -2,74 +2,77 @@
 @section('title', 'Property Management')
 @section('property-active', 'mm-active')
 @section('content')
-    <div class="app-main__inner">
-        <div class="app-page-title">
-            <div class="page-title-wrapper">
-                <div class="page-title-heading">
-                    <div class="page-title-icon">
-                        <i class="pe-7s-users icon-gradient bg-mean-fruit">
-                        </i>
-                    </div>
-                    <div>Property Management
-                    </div>
+<div class="app-main__inner">
+    <div class="app-page-title">
+        <div class="page-title-wrapper">
+            <div class="page-title-heading">
+                <div class="page-title-icon">
+                    <i class="pe-7s-users icon-gradient bg-mean-fruit">
+                    </i>
+                </div>
+                <div>Property Management
                 </div>
             </div>
         </div>
-        <div class="mb-3 d-flex align-items-end flex-column">
-            <div class="d-inline-block dropdown">
-                <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    class="btn-shadow dropdown-toggle btn btn-primary">
-                    <span class="btn-icon-wrapper pr-2 opacity-7">
-                        <i class="fa fa-business-time fa-w-20"></i>
-                    </span>
-                    Create
-                    Property
-                </button>
-                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right"
-                    x-placement="bottom-end"
-                    style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(112px, 33px, 0px);">
-                    <ul class="nav flex-column">
-                        @foreach (config('const.property_category') as $key => $item)
-                            <li class="nav-item">
-                                <a href="{{ route('developer.property.create') }}?property_category={{ $key }}"
-                                    class="dropdown-item">
-                                    {{ $item }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2">
-            <div class="card-body">
-                <button type="button" class="btn mr-2 mb-2 btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="pe-7s-filter"></i> Advance Filter</button>
-            </div>
-        </div>
-        <br>
-        <div class="content">
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-borderd DataTables">
-                        <thead>
-                            <th class="no-sort">#</th>
-                            <th class="no-sort">Title</th>
-                            <th class="no-sort">P-Code</th>
-                            <th>Region</th>
-                            <th>Township</th>
-                            <th>Price</th>
-                            <th>Type</th>
-                            <th>Category</th>
-                            <th>Created At</th>
-                            <th class="no-sort">Action</th>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+
+    </div>
+    <div class="mb-3 d-flex align-items-end flex-column">
+        <div class="d-inline-block dropdown">
+            <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                class="btn-shadow dropdown-toggle btn btn-primary">
+                <span class="btn-icon-wrapper pr-2 opacity-7">
+                    <i class="fa fa-business-time fa-w-20"></i>
+                </span>
+                Create
+                Property
+            </button>
+            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right"
+                x-placement="bottom-end"
+                style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(112px, 33px, 0px);">
+                <ul class="nav flex-column">
+                    @foreach (config('const.property_category') as $key => $item)
+                        <li class="nav-item">
+                            <a href="{{ route('developer.property.create') }}?property_category={{ $key }}"
+                                class="dropdown-item">
+                                {{ $item }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
         </div>
     </div>
+    <div class="card mb-2">
+        <div class="card-body">
+            <button type="button" class="btn mr-2 mb-2 btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="pe-7s-filter"></i> Advance Filter</button>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderd DataTables">
+                    <thead>
+                        <th class="no-sort">Img</th>
+                        <th class="no-sort">Title</th>
+                        <th class="no-sort">P-Code</th>
+                        <th>Region</th>
+                        <th>Township</th>
+                        <th>Price</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th class="no-sort">Recommend</th>
+                        <th>Expired</th>
+                        <th>Created</th>
+                        <th class="no-sort">Action</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('script')
     <script>
@@ -119,6 +122,7 @@
                         data: 'images',
                         name: 'images',
                         sortable: false,
+                        orderable: false,
                         searchable: false,
                     },
                     {
@@ -163,6 +167,19 @@
                         searchable: false,
                     },
                     {
+                        data: 'status',
+                        name: 'status',
+                        sortable: false,
+                        searchable: false,
+                    },
+
+                    {
+                        data: 'expired_at',
+                        name: 'expired_at',
+                        sortable: false,
+                        searchable: false,
+                    },
+                    {
                         data: 'created_at',
                         name: 'created_at'
                     },
@@ -172,14 +189,7 @@
                         sortable: false,
                         searchable: false,
                     },
-
-                ],
-                columnDefs: [{
-                    orderable: false,
-                    targets: 0,
-                    // visible:false
-
-                }]
+                ]
             });
             $('#btnFiterSubmitSearch').click(function() {
                 $('.DataTables').DataTable().draw(true);

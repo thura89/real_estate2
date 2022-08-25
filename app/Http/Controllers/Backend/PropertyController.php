@@ -38,6 +38,7 @@ class PropertyController extends Controller
     }
     public function ssd(Request $request)
     {
+        $date = Carbon::today()->subMonths(12);
         $data = Property::query()->with([
             'address',
             'areasize',
@@ -49,7 +50,7 @@ class PropertyController extends Controller
             'situation',
             'suppliment',
             'unitAmenity',
-        ]);
+        ])->whereDate('created_at', '>=', $date);
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }

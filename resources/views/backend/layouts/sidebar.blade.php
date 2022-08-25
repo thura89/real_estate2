@@ -76,6 +76,10 @@
                         <i class="metismenu-icon pe-7s-display2"></i>
                         Want2BuyRent
                     </a>
+                    <a href="{{ route('admin.expired_property.index')}}" class="@yield('expired_property-active')">
+                        <i class="metismenu-icon pe-7s-menu"></i>
+                        Expired Property
+                    </a>
                 </li>
                 <li class="app-sidebar__heading">News</li>
                 <li>

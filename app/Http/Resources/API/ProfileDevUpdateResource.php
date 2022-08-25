@@ -21,6 +21,7 @@ class ProfileDevUpdateResource extends JsonResource
             }
         }
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'company_name' => $this->company_name,
             'user_type' => $this->user_type,

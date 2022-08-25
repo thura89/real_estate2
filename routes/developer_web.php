@@ -22,6 +22,11 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
 
+    /* Expired Property */
+    Route::resource('/expired_property', 'ExpiredPropertyController');
+    Route::get('/expired_property/datatables/ssd', 'ExpiredPropertyController@ssd');
+    Route::post('/expired_property/renew/{id}', 'ExpiredPropertyController@expired')->name('developer.expired_property.expired');
+
     /* New Project */
     Route::resource('/new_project', 'NewProjectController');
     Route::get('/new_project/datatables/ssd', 'NewProjectController@ssd');
