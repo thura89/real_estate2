@@ -31,7 +31,7 @@ class NewProjectDetail extends JsonResource
             'township' => $township->name ?? null,
             'min_price' => number_format($this->min_price) ?? null,
             'max_price' => number_format($this->max_price) ?? null,
-            'currency_code' => config('const.currency_code')[$this->currency_code] ?? null,
+            'currency_code' => $this->currency_code ?? null,
             'project_start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? '-',
             'project_end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? '-',
             'townsandvillages' => $this->townsandvillages,
