@@ -66,8 +66,8 @@ class PropertyDetail16 extends JsonResource
         $data['bed_room'] = $this->partation ? $this->partation->bed_room : null;
 
         /* Supplyment */
-        $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
-        $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
+        // $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
+        // $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
         $data['note'] = $this->suppliment ? $this->suppliment->note : null;
 
         /* Situation */

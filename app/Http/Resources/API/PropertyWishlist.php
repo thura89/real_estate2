@@ -22,7 +22,7 @@ class PropertyWishlist extends JsonResource
         /* Buy properties_type => 1 */
         if ($this->properties_type == 1) {
             $currency_code = $this->price->currency_code ? config('const.currency_code')[$this->price->currency_code] : '';
-            $price =  $this->price ? number_format($this->price->price) .' '. $currency_code  : '0';
+            $price = $this->price ? number_format($this->price->price) .' '. $currency_code  : '0';
         }
         /* Buy properties_type => 0 */
         if ($this->properties_type == 2) {

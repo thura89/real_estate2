@@ -124,5 +124,10 @@
                 $('.partation_hider').hide();
             }
         });
+
+        // Agreement for update
+        $('input#agreecheck').attr("checked", 'checked');
+        $('input#agreecheck').prop("disabled", true);
+        $('button#agreebtn').prop("disabled", false);
     });
 </script>

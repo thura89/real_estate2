@@ -425,6 +425,7 @@
                             </div>
                         </div>
                         {{-- Suppliment --}}
+                        @if (1 == 2)
                         <div class="form-group">
                             <h5>Electric & Water Suppliment</h5>
                             <hr>
@@ -465,6 +466,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                         {{-- Unit Amenities --}}
                         <div class="form-group">
                             <h5>Unit Amenities</h5>

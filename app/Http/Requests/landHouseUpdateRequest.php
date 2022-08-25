@@ -46,8 +46,8 @@ class landHouseUpdateRequest extends FormRequest
             'bed_room' => 'required_if:partation_type,==,2',
 
             /* Supplyment */
-            'water' => 'required',
-            'electric' => 'required',
+            // 'water' => 'required',
+            // 'electric' => 'required',
 
             /* Situation */
             'building_repairing' => 'required',

@@ -91,8 +91,8 @@ class PropertyDetail348 extends JsonResource
         $data['building_condition'] = $this->situation ? $this->situation->building_condition : null;
 
         /* Supplyment */
-        $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
-        $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
+        // $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
+        // $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
         $data['note'] = $this->suppliment ? $this->suppliment->note : null;
         
         /* unitAmenity */

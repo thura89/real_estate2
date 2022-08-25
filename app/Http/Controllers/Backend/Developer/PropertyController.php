@@ -165,35 +165,35 @@ class PropertyController extends Controller
             });
         }
 
-        if ($request->get('water_sys')) {
-            $water_sys = $request->get('water_sys');
-            if ($water_sys == 'yes') {
-                $data->whereHas('suppliment', function ($query) use ($water_sys) {
-                    $query->where('water_sys', 1);
-                });
-            }
+        // if ($request->get('water_sys')) {
+        //     $water_sys = $request->get('water_sys');
+        //     if ($water_sys == 'yes') {
+        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
+        //             $query->where('water_sys', 1);
+        //         });
+        //     }
 
-            if ($water_sys == 'no') {
-                $data->whereHas('suppliment', function ($query) use ($water_sys) {
-                    $query->where('water_sys', 0);
-                });
-            }
+        //     if ($water_sys == 'no') {
+        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
+        //             $query->where('water_sys', 0);
+        //         });
+        //     }
             
-        }
+        // }
 
-        if ($request->get('electricity_sys')) {
-            $electricity_sys = $request->get('electricity_sys');
-            if ($electricity_sys == 'yes') {
-                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-                    $query->where('electricity_sys', 1);
-                });
-            }
-            if ($electricity_sys == 'no') {
-                $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-                    $query->where('electricity_sys', 0);
-                });
-            }
-        }
+        // if ($request->get('electricity_sys')) {
+        //     $electricity_sys = $request->get('electricity_sys');
+        //     if ($electricity_sys == 'yes') {
+        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
+        //             $query->where('electricity_sys', 1);
+        //         });
+        //     }
+        //     if ($electricity_sys == 'no') {
+        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
+        //             $query->where('electricity_sys', 0);
+        //         });
+        //     }
+        // }
 
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
@@ -494,8 +494,8 @@ class PropertyController extends Controller
 
             /* Electri & water Store */
             $suppliment = new Suppliment();
-            $suppliment->water_sys = $request->water ? 1 : 0;
-            $suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $suppliment->water_sys = $request->water ? 1 : 0;
+            // $suppliment->electricity_sys = $request->electric ? 1 : 0;
             $suppliment->note = $request->note ?? null;
             $property->suppliment()->save($suppliment);
 
@@ -637,8 +637,8 @@ class PropertyController extends Controller
             }
 
             /* Electri & water Store */
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $property->suppliment->water_sys = $request->water ? 1 : 0;
+            // $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
             $property->suppliment->note = $request->note ?? null;
 
             /* Unit Aminity */
@@ -835,8 +835,8 @@ class PropertyController extends Controller
 
             /* Electri & water Store */
             $suppliment = new Suppliment();
-            $suppliment->water_sys = $request->water ? 1 : 0;
-            $suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $suppliment->water_sys = $request->water ? 1 : 0;
+            // $suppliment->electricity_sys = $request->electric ? 1 : 0;
             $suppliment->note = $request->note ?? null;
             $property->suppliment()->save($suppliment);
 
@@ -941,8 +941,8 @@ class PropertyController extends Controller
             }
 
             /* Electri & water Store */
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $property->suppliment->water_sys = $request->water ? 1 : 0;
+            // $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
             $property->suppliment->note = $request->note ?? null;
 
             /* Splice if not image  */
@@ -1088,8 +1088,8 @@ class PropertyController extends Controller
 
             /* Electri & water Store */
             $suppliment = new Suppliment();
-            $suppliment->water_sys = $request->water ? 1 : 0;
-            $suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $suppliment->water_sys = $request->water ? 1 : 0;
+            // $suppliment->electricity_sys = $request->electric ? 1 : 0;
             $suppliment->note = $request->note ?? null;
             $property->suppliment()->save($suppliment);
 
@@ -1224,8 +1224,8 @@ class PropertyController extends Controller
             $property->situation->building_condition = $request->building_condition;
 
             // Electri & water Store
-            $property->suppliment->water_sys = $request->water ? 1 : 0;
-            $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
+            // $property->suppliment->water_sys = $request->water ? 1 : 0;
+            // $property->suppliment->electricity_sys = $request->electric ? 1 : 0;
             $property->suppliment->note = $request->note ?? null;
 
             // Unit Aminity

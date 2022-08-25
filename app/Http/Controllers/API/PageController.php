@@ -142,34 +142,34 @@ class PageController extends Controller
                 $query->where('fence_condition', $fence_condition);
             });
         }
-        if ($request->get('water_sys')) {
-            $water_sys = $request->get('water_sys');
-            if ($water_sys == 'yes') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
-                    $query->where('water_sys', 1);
-                });
-            }
+        // if ($request->get('water_sys')) {
+        //     $water_sys = $request->get('water_sys');
+        //     if ($water_sys == 'yes') {
+        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
+        //             $query->where('water_sys', 1);
+        //         });
+        //     }
 
-            if ($water_sys == 'no') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
-                    $query->where('water_sys', 0);
-                });
-            }
+        //     if ($water_sys == 'no') {
+        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
+        //             $query->where('water_sys', 0);
+        //         });
+        //     }
             
-        }
-        if ($request->get('electricity_sys')) {
-            $electricity_sys = $request->get('electricity_sys');
-            if ($electricity_sys == 'yes') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
-                    $query->where('electricity_sys', 1);
-                });
-            }
-            if ($electricity_sys == 'no') {
-                $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
-                    $query->where('electricity_sys', 0);
-                });
-            }
-        }
+        // }
+        // if ($request->get('electricity_sys')) {
+        //     $electricity_sys = $request->get('electricity_sys');
+        //     if ($electricity_sys == 'yes') {
+        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
+        //             $query->where('electricity_sys', 1);
+        //         });
+        //     }
+        //     if ($electricity_sys == 'no') {
+        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
+        //             $query->where('electricity_sys', 0);
+        //         });
+        //     }
+        // }
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
             $data->whereHas('address', function ($query) use ($type_of_street) {

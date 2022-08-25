@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\User;
 use App\Region;
-use App\AdminUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;

@@ -359,7 +359,7 @@
                             </div>
                         </div>
                         {{-- Suppliment --}}
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <h5>Electric & Water Suppliment</h5>
                             <hr>
                             <div class="row">
@@ -394,7 +394,7 @@
                                     </fieldset>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         {{-- Unit Amenities --}}
                         <div class="form-group">
                             <h5>Unit Amenities</h5>

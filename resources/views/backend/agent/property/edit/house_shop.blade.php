@@ -428,46 +428,48 @@
                             </div>
                         </div>
                         {{-- Suppliment --}}
-                        <div class="form-group">
-                            <h5>Electric & Water Suppliment</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <label for="">Water Supply</label>
-                                    <fieldset class="position-relative form-group">
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="water" type="radio" class="form-check-input" value="1"
-                                                    @if ($property->suppliment->water_sys == 1) checked @endif> Yes
-                                            </label>
-                                        </div>
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="water" type="radio" class="form-check-input" value="0"
-                                                    @if ($property->suppliment->water_sys == 0) checked @endif> No
-                                            </label>
-                                        </div>
-                                    </fieldset>
+                        @if (1==2)
+                            <div class="form-group">
+                                <h5>Electric & Water Suppliment</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <label for="">Water Supply</label>
+                                        <fieldset class="position-relative form-group">
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="water" type="radio" class="form-check-input" value="1"
+                                                        @if ($property->suppliment->water_sys == 1) checked @endif> Yes
+                                                </label>
+                                            </div>
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="water" type="radio" class="form-check-input" value="0"
+                                                        @if ($property->suppliment->water_sys == 0) checked @endif> No
+                                                </label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="">Electric Supply</label>
+                                        <fieldset class="position-relative form-group">
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="electric" type="radio" class="form-check-input" value="1"
+                                                        @if ($property->suppliment->electricity_sys == 1) checked @endif> Yes
+                                                </label>
+                                            </div>
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="electric" type="radio" class="form-check-input" value="0"
+                                                        @if ($property->suppliment->electricity_sys == 0) checked @endif> No
+                                                </label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
                                 </div>
-                                <div class="col form-group">
-                                    <label for="">Electric Supply</label>
-                                    <fieldset class="position-relative form-group">
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="electric" type="radio" class="form-check-input" value="1"
-                                                    @if ($property->suppliment->electricity_sys == 1) checked @endif> Yes
-                                            </label>
-                                        </div>
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="electric" type="radio" class="form-check-input" value="0"
-                                                    @if ($property->suppliment->electricity_sys == 0) checked @endif> No
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                        </div>
+                            </div> 
+                        @endif
                         @if ($category == 1)
                             {{-- Unit Amenities --}}
                             <div class="form-group">

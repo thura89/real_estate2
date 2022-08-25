@@ -71,8 +71,8 @@ class PropertyDetail257 extends JsonResource
         }
 
         /* Supplyment */
-        $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
-        $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
+        // $data['water'] = $this->suppliment ? $this->suppliment->water_sys : null;
+        // $data['electric'] = $this->suppliment ? $this->suppliment->electricity_sys : null;
         $data['note'] = $this->suppliment ? $this->suppliment->note : null;
 
         /* Situation Store */

@@ -28,6 +28,12 @@ class DeveloperController extends Controller
                  ->orWhere('email','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
         }
+        if ($request->get('region')) {
+            $data->where('region', $request->get('region'));
+        }
+        if ($request->get('township')) {
+            $data->where('township', $request->get('township'));
+        }
         
         $data =  $data->orderBy('created_at','DESC')->paginate(10);
 

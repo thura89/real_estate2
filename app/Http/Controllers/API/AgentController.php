@@ -19,6 +19,7 @@ class AgentController extends Controller
 
         if ($request->get('keywords')) {
             $data->where('name','like', '%' . $request->get('keywords') . '%')
+                 ->orWhere('company_name','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('email','like', '%' . $request->get('keywords') . '%')
                  ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
         }

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Region;
-use Carbon\Carbon;
 use App\WantToBuyRent;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
-use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
