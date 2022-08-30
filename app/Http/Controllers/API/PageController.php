@@ -6,25 +6,25 @@ use App\Region;
 use App\Property;
 
 use App\Township;
+use Carbon\Carbon;
+use App\WantToBuyRent;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyList;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
 use App\Http\Resources\PropertyDetail348;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\API\RegionResource;
+use App\Http\Resources\API\Want2BuyRentListsResource;
+use App\Http\Resources\API\Want2BuyRentDetailsResource;
 
 class PageController extends Controller
 {
-    public function index(Request $request)
-    {
-        return Property::all();
-    }
-
     public function property_list(Request $request)
     {
+        
         $data = Property::query()->with([
             'address',
             'partation',
@@ -34,13 +34,10 @@ class PageController extends Controller
             'areasize',
             'user',
             'suppliment'
-        ])->where('status',1);//published Status
+        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
-            // $data->whereHas('suppliment', function ($query) use ($keyword) {
-            //         $query->where('note',  'LIKE', "{%$keyword%}");
-            //     })->whereLike('title',$keyword);
             $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
                 ->select('properties.*', 'suppliments.note')
                 ->where('title', 'like', '%' . $keyword . '%')
@@ -48,7 +45,6 @@ class PageController extends Controller
         }
         if ($request->get('title')) {
             $title = $request->get('title');
-            // return $title;
             $data->whereHas('suppliment', function ($query) use ($title) {
                 $query->where('note', 'like', '%'.$title.'%');
             });
@@ -142,34 +138,6 @@ class PageController extends Controller
                 $query->where('fence_condition', $fence_condition);
             });
         }
-        // if ($request->get('water_sys')) {
-        //     $water_sys = $request->get('water_sys');
-        //     if ($water_sys == 'yes') {
-        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 1);
-        //         });
-        //     }
-
-        //     if ($water_sys == 'no') {
-        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 0);
-        //         });
-        //     }
-            
-        // }
-        // if ($request->get('electricity_sys')) {
-        //     $electricity_sys = $request->get('electricity_sys');
-        //     if ($electricity_sys == 'yes') {
-        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 1);
-        //         });
-        //     }
-        //     if ($electricity_sys == 'no') {
-        //         $data->with('suppliment')->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 0);
-        //         });
-        //     }
-        // }
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
             $data->whereHas('address', function ($query) use ($type_of_street) {
@@ -215,7 +183,7 @@ class PageController extends Controller
         if ($request->get('floor_level')) {
             $floor_level = $request->get('floor_level');
             $data->with('areasize')->whereHas('areasize', function ($query) use ($floor_level) {
-                $query->where('floor_level', $floor_level);
+                $query->where('level', $floor_level);
             });
         }
         if ($request->get('height')) {
@@ -241,15 +209,7 @@ class PageController extends Controller
             $data->whereHas('partation', function ($query) use ($bath_room) {
                 $query->where('bath_room', $bath_room);
             });
-        }
-
-        // if ($request->get('carpark')) {
-        //     $carpark = $request->get('carpark');
-        //     $data->whereHas('partation', function ($query) use ($carpark) {
-        //         $query->where('carpark', $carpark);
-        //     });
-        // }
-        
+        }   
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */
@@ -291,6 +251,7 @@ class PageController extends Controller
         return $data;
     }
 
+    /** Recommend Property List */
     public function recommend_property(Request $request)
     {
         $data = Property::query()->with([
@@ -299,7 +260,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ]);
+            ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
@@ -321,6 +282,7 @@ class PageController extends Controller
         return $data;
     }
 
+    /** Hot Property List */
     public function hot_property(Request $request)
     {
         $data = Property::query()->with([
@@ -329,7 +291,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ]);
+        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
@@ -351,7 +313,44 @@ class PageController extends Controller
         return $data;
     }
 
+    /** Want To Buy Rent List */
+    public function wantToBuyRent(Request $request)
+    {
+        $data = WantToBuyRent::query()->with([
+            'region',
+            'township',
+        ]);
 
+        if($request->keywords){
+            $keyword = $request->keywords;
+            $data->whereHas('region', function ($qr) use ($keyword) {
+                $qr->where('name', 'LIKE', '%' . $keyword . '%');
+            })->orWhereHas('region', function ($qr) use ($keyword) {
+                $qr->where('name', 'LIKE', '%' . $keyword . '%');
+            });
+        }
+        if ($request->type) {
+            $data->where('properties_type',$request->type);
+        }
+        if ($request->category) {
+            $data->where('properties_category',$request->category);
+        }
+
+        $data =  $data->orderBy('created_at','DESC')->paginate(10);
+
+        return Want2BuyRentListsResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        
+    }
+
+    /** Want To Buy Rent Detail */
+    public function wantToBuyRentshow($id)
+    {
+        $data = WantToBuyRent::with('user')->findOrFail($id);
+        $data = new Want2BuyRentDetailsResource($data);
+        return ResponseHelper::success('success',$data);
+    }
+
+    /** Property Detail */
     public function show(Request $request, $id)
     {
         
@@ -429,4 +428,5 @@ class PageController extends Controller
         }
         return ResponseHelper::fail('Fail', null);
     }
+
 }

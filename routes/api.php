@@ -31,6 +31,10 @@ Route::namespace('API')->group(function () {
     /* Common Const */
     Route::post('/common/const', 'PageController@const');
 
+    /** Want To Buy Rent */
+    Route::get('/want2buyrent', 'PageController@wantToBuyRent');
+    Route::get('/want2buyrent/{id}/show', 'PageController@wantToBuyRentshow');
+
     /* Property */
     Route::get('/property-lists', 'PageController@property_list');
     Route::get('/recommend_property', 'PageController@recommend_property');

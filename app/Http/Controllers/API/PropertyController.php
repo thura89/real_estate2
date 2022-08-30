@@ -41,7 +41,6 @@ class PropertyController extends Controller
 
     public function property_list(Request $request)
     {
-        $date = Carbon::today()->subMonths(12);
         $data = Property::query()->with([
             'address',
             'partation',
@@ -50,10 +49,9 @@ class PropertyController extends Controller
             'propertyImage',
             'areasize',
             'user'
-        ])->whereDate('created_at', '>=', $date)
+        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))
           ->where('user_id',Auth::user()->id);
           
-
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
             $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
@@ -166,34 +164,6 @@ class PropertyController extends Controller
                 $query->where('fence_condition', $fence_condition);
             });
         }
-        // if ($request->get('water_sys')) {
-        //     $water_sys = $request->get('water_sys');
-        //     if ($water_sys == 'yes') {
-        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 1);
-        //         });
-        //     }
-
-        //     if ($water_sys == 'no') {
-        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 0);
-        //         });
-        //     }
-            
-        // }
-        // if ($request->get('electricity_sys')) {
-        //     $electricity_sys = $request->get('electricity_sys');
-        //     if ($electricity_sys == 'yes') {
-        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 1);
-        //         });
-        //     }
-        //     if ($electricity_sys == 'no') {
-        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 0);
-        //         });
-        //     }
-        // }
         if ($request->get('type_of_street')) {
             $type_of_street = $request->get('type_of_street');
             $data->whereHas('address', function ($query) use ($type_of_street) {
@@ -233,7 +203,7 @@ class PropertyController extends Controller
         if ($request->get('floor_level')) {
             $floor_level = $request->get('floor_level');
             $data->whereHas('areasize', function ($query) use ($floor_level) {
-                $query->where('floor_level', $floor_level);
+                $query->where('level', $floor_level);
             });
         }
         if ($request->get('partation_type')) {
@@ -312,7 +282,8 @@ class PropertyController extends Controller
             'unitAmenity',
             'user',
             'wishlist'
-        ])->where('user_id',Auth::user()->id)->find($id);
+        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))
+            ->where('user_id',Auth::user()->id)->find($id);
         if ($property) {
             $category = $property->category;
             /* Redirect to Edit Page By Relative */
