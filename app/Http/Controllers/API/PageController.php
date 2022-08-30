@@ -34,7 +34,7 @@ class PageController extends Controller
             'areasize',
             'user',
             'suppliment'
-        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
@@ -260,7 +260,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-            ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
+            ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
@@ -291,7 +291,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',1);//published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }

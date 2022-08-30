@@ -49,7 +49,7 @@ class PropertyController extends Controller
             'propertyImage',
             'areasize',
             'user'
-        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
           ->where('user_id',Auth::user()->id);
           
         if ($request->get('keywords')) {
@@ -282,7 +282,7 @@ class PropertyController extends Controller
             'unitAmenity',
             'user',
             'wishlist'
-        ])->whereDate('created_at', '>=', Carbon::today()->subMonths(12))
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
             ->where('user_id',Auth::user()->id)->find($id);
         if ($property) {
             $category = $property->category;
