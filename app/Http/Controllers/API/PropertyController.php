@@ -86,9 +86,13 @@ class PropertyController extends Controller
         }
         if ($request->get('region')) {
             $region = $request->get('region');
-            $data->whereHas('address', function ($query) use ($region) {
-                $query->where('region', $region);
-            });
+            if ($region != 0) {
+                $data->whereHas('address', function ($query) use ($region) {
+                    $query->where('region', $region);
+                });
+            }else{
+                $data;
+            }
         }
         if ($request->get('township')) {
             $township = $request->get('township');

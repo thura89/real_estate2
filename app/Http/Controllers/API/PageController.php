@@ -60,9 +60,13 @@ class PageController extends Controller
         }
         if ($request->get('region')) {
             $region = $request->get('region');
-            $data->whereHas('address', function ($query) use ($region) {
-                $query->where('region', $region);
-            });
+            if ($region != 0) {
+                $data->whereHas('address', function ($query) use ($region) {
+                    $query->where('region', $region);
+                });
+            }else{
+                $data;
+            }
         }
         if ($request->get('township')) {
             $township = $request->get('township');
@@ -269,9 +273,13 @@ class PageController extends Controller
         }
         if ($request->get('region')) {
             $region = $request->get('region');
-            $data->whereHas('address', function ($query) use ($region) {
-                $query->where('region', $region);
-            });
+            if ($region != 0) {
+                $data->whereHas('address', function ($query) use ($region) {
+                    $query->where('region', $region);
+                });
+            }else{
+                $data;
+            }
         }
         $data = $data->where('recommended_feature', 1)
                     ->orderBy('updated_at', 'DESC')
@@ -300,9 +308,13 @@ class PageController extends Controller
         }
         if ($request->get('region')) {
             $region = $request->get('region');
-            $data->whereHas('address', function ($query) use ($region) {
-                $query->where('region', $region);
-            });
+            if ($region != 0) {
+                $data->whereHas('address', function ($query) use ($region) {
+                    $query->where('region', $region);
+                });
+            }else{
+                $data;
+            }
         }
         $data = $data->where('hot_feature', 1)
                     ->orderBy('updated_at', 'DESC')
