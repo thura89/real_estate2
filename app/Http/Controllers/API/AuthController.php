@@ -144,7 +144,7 @@ class AuthController extends Controller
     public function resend_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'phone' => 'required|max:11',
+            'phone' => 'required|min:9|max:11',
         ]);
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail to request', $validate->errors());
@@ -153,7 +153,7 @@ class AuthController extends Controller
         if (isset($user)) {
             $user->verify_code = UUIDGenerate::vCodeGenerator();
             $user->update();
-            SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
+            SMS::send($user->phone, 'Dear ' . $user->name . ', Your verify_code is ' . $user->verify_code . ' from TineMyay RealEstate. Please continue...');
             return ResponseHelper::success('Successfully Created Verify code', $user->verify_code);
         }
         return ResponseHelper::fail('Fail to request', $validate->errors());
@@ -235,7 +235,7 @@ class AuthController extends Controller
         if ($user) {
             $user->verify_code = UUIDGenerate::vCodeGenerator();
             $user->update();
-            SMS::send($user->phone, 'Dear ' . $user->name . ', Your password reset_code is ' . $user->verify_code . ' from Future House RealEstate. Please continue...');
+            SMS::send($user->phone, 'Dear ' . $user->name . ', Your password reset_code is ' . $user->verify_code . ' from TineMyay RealEstate. Please continue...');
             return ResponseHelper::success('Successfully Created reset_code', $user->verify_code);
         }
         return ResponseHelper::fail('Fail to request', 'Please Register');
@@ -266,10 +266,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // $request->validate([
-        //     'phone' => 'required|exists:users|max:11',
-        //     'password' => 'required',
-        // ]);
         $validate = Validator::make($request->all(),[
             'phone' => 'required|exists:users|min:9|max:11',
             'password' => 'required',
