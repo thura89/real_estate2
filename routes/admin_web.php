@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_admin')->group(function () {
     Route::get('/', 'PageController@index')->name('dashboard');  
 
+    /** Admin Dashboard */
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     /* Admin Profile */
     Route::get('profile', 'AdminUserController@profile')->name('profile');
     Route::post('profile/{id}', 'AdminUserController@profile_update')->name('profile.update');

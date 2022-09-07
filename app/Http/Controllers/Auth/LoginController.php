@@ -65,15 +65,15 @@ class LoginController extends Controller
             
             /* Admin */
             if (auth()->user()->user_type == 1) {
-                return redirect()->route('admin.property.index');
+                return redirect()->route('admin.dashboard');
             }
             /* Admin Staff */
             if (auth()->user()->user_type == 2) {
-                return redirect()->route('admin.property.index');
+                return redirect()->route('admin.dashboard');
             }
             /* Admin Editor */
             if (auth()->user()->user_type == 3) {
-                return redirect()->route('admin.property.index');
+                return redirect()->route('admin.dashboard');
             }
             /* Agent */
             if (auth()->user()->user_type == 4) {

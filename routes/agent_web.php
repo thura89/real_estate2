@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::prefix('agent')->name('agent.')->namespace('Backend\Agent')->middleware('is_agent')->group(function () {
-    Route::get('/', 'AgentPageController@index')->name('dashboard');  
+    
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');  
 
     Route::resource('/property', 'PropertyController');
     Route::get('/property/datatables/ssd', 'PropertyController@ssd');
