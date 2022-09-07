@@ -68,11 +68,11 @@
                         <div class="widget-content-outer">
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left pr-2 fsize-1">
-                                    <div class="widget-numbers mt-0 fsize-3 text-danger">{{ count($users->where('user_type',config('const.Admin'))) }}</div>
+                                    <div class="widget-numbers mt-0 fsize-3 text-danger">{{ count($users->whereIn('user_type',[1,2,3])) }}</div>
                                 </div>
                                 <div class="widget-content-right w-100">
                                     <div class="progress-bar-xs progress">
-                                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{count($users->where('user_type',config('const.Admin')))}}" aria-valuemin="0" aria-valuemax="100" style="width: {{count($users->where('user_type',config('const.Admin')))}}%;"></div>
+                                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{count($users->whereIn('user_type',[1,2,3]))}}" aria-valuemin="0" aria-valuemax="100" style="width: {{ count($users->whereIn('user_type',[1,2,3])) }}%;"></div>
                                     </div>
                                 </div>
                             </div>
