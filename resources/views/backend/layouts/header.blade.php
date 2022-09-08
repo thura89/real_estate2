@@ -1,6 +1,6 @@
 <div class="app-header header-shadow">
     <div class="app-header__logo">
-        <div class="logo-src"><img src="{{ asset('backend/images/timemyay_logo.png') }}" alt=""><span class="logo-text">TineMyay</span></div>
+        <div class="logo-src"><img src="{{ asset('backend/images/tinemyay.png') }}" alt=""><span class="logo-text">Tinemyay</span></div>
         
         <div class="header__pane ml-auto">
             <div>

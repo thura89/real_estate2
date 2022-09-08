@@ -61,11 +61,10 @@ textarea {
 }
 
 .login-wrap .icon {
-    width: 80px;
-    height: 80px;
-    background-image: url('../images/timemyay_logo.png');
-    background-size: 86px;
-    border-radius: 50%;
+    width: 180px;
+    height: 180px;
+    background-image: url('../images/tinemyay.png');
+    background-size: 180px;
     font-size: 30px;
     margin: 0 auto;
     margin-bottom: 10px;

@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\User;
-use App\AgentUser;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
-use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\CreateAgentUserRequest;
-use App\Http\Requests\UpdateAgentUserRequest;
 use App\Http\Requests\CreateDeveloperUserRequest;
 use App\Http\Requests\UpdateDeveloperUserRequest;
 
