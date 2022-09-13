@@ -23,6 +23,7 @@ class PropertyList extends JsonResource
         $image = json_decode($image['images']);
         $image = asset(config('const.p_img_path')) . '/' . $image[0];
         
+        
         /* Buy properties_type => 1 */
         if ($this->properties_type == 1) {
             $currency_code = $this->price->currency_code ? config('const.currency_code')[$this->price->currency_code] : '';
@@ -33,11 +34,14 @@ class PropertyList extends JsonResource
             $rent_currency_code = $this->rentprice->currency_code ? config('const.currency_code')[$this->rentprice->currency_code] : '';
             $price = $this->rentprice ? number_format($this->rentprice->price) .' '. $rent_currency_code : '0';
         }
+        
+        
         /* township */
         $township = $this->address ? $this->address->township()->first('name') : null;
         /** Region */
         $region = $this->address ? $this->address->region()->first('name') : null;
 
+        
         /* AreaSize */
         if ($this->areasize) {
             if ($this->areasize->area_option != NULL) {
@@ -45,11 +49,14 @@ class PropertyList extends JsonResource
                     $area_size =  $this->areasize->width .' x '. $this->areasize->length;
                 } 
                 if ($this->areasize->area_option == 2) {
-                    $area_size =  $this->areasize->area_size .' '. config('const.area_short')[$this->areasize->area_unit];
+                    if ($this->areasize->area_unit > 2) {
+                        $area_size =  $this->areasize->area_size .' '. '-';
+                    } else {
+                        $area_size =  $this->areasize->area_size .' '. config('const.area_short')[$this->areasize->area_unit];
+                    }
+                    
                 }
             }
-        }else{
-            $area_size = NULL;
         }
         
         $data['id'] = $this->id;
