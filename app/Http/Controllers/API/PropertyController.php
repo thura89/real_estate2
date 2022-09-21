@@ -48,7 +48,8 @@ class PropertyController extends Controller
             'rentPrice',
             'propertyImage',
             'areasize',
-            'user'
+            'user',
+            'wishlist',
         ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
           ->where('user_id',Auth::user()->id);
           

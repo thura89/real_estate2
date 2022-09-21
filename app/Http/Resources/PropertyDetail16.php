@@ -135,7 +135,7 @@ class PropertyDetail16 extends JsonResource
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
             if ($favorite) {
-                $data['favorite_status'] = 1;
+                $data['favorite_status'] = $favorite->id;
             }else{
                 $data['favorite_status'] = 0;
             }
