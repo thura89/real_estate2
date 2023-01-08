@@ -1006,9 +1006,11 @@ class PropertyController extends Controller
         }
     }
     /* Create Aparment Condo , Office */
-    public function apart_condo_office_create(ApartCondoCreateRequest $request)
+    public function apart_condo_office_create(Request $request)
     {
 
+        return $request->all();
+        
         DB::beginTransaction();
         try {
             /* Property Store */

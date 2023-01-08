@@ -610,7 +610,7 @@
     </div>
 @endsection
 @section('script')
-    {!! JsValidator::formRequest('App\Http\Requests\ApartCondoCreateRequest', '#create') !!}
+    {{-- {!! JsValidator::formRequest('App\Http\Requests\ApartCondoCreateRequest', '#create') !!} --}}
     @include('backend.property.script')
     <script>
         $('.price_sale_hider').hide();
