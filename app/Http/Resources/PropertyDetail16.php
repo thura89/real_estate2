@@ -40,17 +40,17 @@ class PropertyDetail16 extends JsonResource
         $region = $this->address ? $this->address->region : null;
         $township = $this->address ? $this->address->township : null;
         
-        $data['category'] = $this->category; 
-        $data['properties_type'] = $this->properties_type; 
-        $data['p_code'] = $this->p_code; 
+        $data['category'] = (string)$this->category; 
+        $data['properties_type'] = (string)$this->properties_type; 
+        $data['p_code'] = (string)$this->p_code; 
         $data['title'] = $this->title; 
         
         $data['address'] = [
             'street_name' => $this->address ? $this->address->street_name : null,
-            'type_of_street' => $this->address ? $this->address->type_of_street : null,
+            'type_of_street' => $this->address ? (string)$this->address->type_of_street : null,
             'ward' => $this->address ? $this->address->ward : null,
-            'township' => $township ?? null,
-            'region' => $region ?? null,
+            'township' => (string)$township ?? null,
+            'region' => (string)$region ?? null,
         ];
 
         /* AreaSize */
@@ -71,36 +71,36 @@ class PropertyDetail16 extends JsonResource
         $data['note'] = $this->suppliment ? $this->suppliment->note : null;
 
         /* Situation */
-        $data['year_of_construction'] = $this->situation ? $this->situation->year_of_construction : null;
-        $data['building_repairing'] = $this->situation ? $this->situation->building_repairing : null;
-        $data['building_condition'] = $this->situation ? $this->situation->building_condition : null;
+        $data['year_of_construction'] = $this->situation ? (string)$this->situation->year_of_construction : null;
+        $data['building_repairing'] = $this->situation ? (string)$this->situation->building_repairing : null;
+        $data['building_condition'] = $this->situation ? (string)$this->situation->building_condition : null;
         if ($this->category == 1) {
-            $data['type_of_building'] = $this->situation ? $this->situation->type_of_building : null;
+            $data['type_of_building'] = $this->situation ? (string)$this->situation->type_of_building : null;
         }
         if ($this->category == 6) {
-            $data['shop_type'] = $this->situation ? $this->situation->shop_type : null;
+            $data['shop_type'] = $this->situation ? (string)$this->situation->shop_type : null;
         }
         
         /* Payment */
-        $data['purchase_type'] = $this->payment ? $this->payment->purchase_type : null;
-        $data['installment'] = $this->payment ? $this->payment->installment : null;
+        $data['purchase_type'] = $this->payment ? (string)$this->payment->purchase_type : null;
+        $data['installment'] = $this->payment ? (string)$this->payment->installment : null;
 
         if ($this->properties_type == 1) {
             /* Sale Price */
-            $data['price'] = $this->price ? $this->price->price : null;
+            $data['price'] = $this->price ? (string)$this->price->price : null;
             $data['currency_code'] = $this->price ? $this->price->currency_code : null;
-            $data['price_by_area'] = $this->price ? $this->price->price_by_area : null;
-            $data['area'] = $this->price ? $this->price->area : null;
+            $data['price_by_area'] = $this->price ? (string)$this->price->price_by_area : null;
+            $data['area'] = $this->price ? (string)$this->price->area : null;
         }
         if ($this->properties_type == 2) {
             /* Rent Price */
-            $data['price'] = $this->rentprice ? $this->rentprice->price : null ;
+            $data['price'] = $this->rentprice ? (string)$this->rentprice->price : null ;
             $data['currency_code'] = $this->rentprice ? $this->rentprice->currency_code : null ;
-            $data['price_by_area'] = $this->rentprice ? $this->rentprice->price_by_area : null ;
-            $data['area'] = $this->rentprice ? $this->rentprice->area : null ;
-            $data['minimum_month'] = $this->rentprice ? $this->rentprice->minimum_month : null ;
-            $data['rent_pay_type'] = $this->rentprice ? $this->rentprice->rent_pay_type : null ;
-            $data['rent_payby_daily'] = $this->rentprice ? $this->rentprice->rent_payby_daily : null ;
+            $data['price_by_area'] = $this->rentprice ? (string)$this->rentprice->price_by_area : null ;
+            $data['area'] = $this->rentprice ? (string)$this->rentprice->area : null ;
+            $data['minimum_month'] = $this->rentprice ? (string)$this->rentprice->minimum_month : null ;
+            $data['rent_pay_type'] = $this->rentprice ? (string)$this->rentprice->rent_pay_type : null ;
+            $data['rent_payby_daily'] = $this->rentprice ? (string)$this->rentprice->rent_payby_daily : null ;
         }
         
         if ($this->category == 1) {
@@ -135,7 +135,7 @@ class PropertyDetail16 extends JsonResource
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id',Auth::guard('api')->user()->id)->where('property_id',$this->id)->first();
             if ($favorite) {
-                $data['favorite_status'] = $favorite->id;
+                $data['favorite_status'] = (string)$favorite->id;
             }else{
                 $data['favorite_status'] = 0;
             }
@@ -143,11 +143,11 @@ class PropertyDetail16 extends JsonResource
         /* User */
 
         $data['user'] = [
-            'id' => $this->user->id ?? null,
+            'id' => (string)$this->user->id ?? null,
             'name' => $this->user->name ?? null,
             'phone' => $this->user->phone ?? null,
             'company_name' => $this->user->company_name ?? null,
-            'user_type' => $this->user->user_type ?? null,
+            'user_type' => (string)$this->user->user_type ?? null,
             'profile_photo' => $this->user->profile_photo ?? null,
             'cover_photo' => $this->user->cover_photo ?? null,
         ];
