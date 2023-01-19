@@ -72,6 +72,9 @@ Route::namespace('API')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('/profile', 'ProfileController@profile');
         Route::post('/profile', 'ProfileController@update_profile');
+        /* Profile Update - Delete Image */
+        Route::post('/profile/delete_company_image' , 'ProfileController@DeleteCompanyImage');
+        
         Route::post('/logout', 'AuthController@logout');
         Route::post('/change-password', 'AuthController@changePassword');
 
@@ -105,6 +108,7 @@ Route::namespace('API')->group(function () {
 
         /* Property Create - Update */
         Route::post('user/property/delete_image' , 'PropertyController@DeletePropertyImage');
+
         /* House  */
         Route::post('user/property/create/house_shop' , 'PropertyController@house_shop_create');
         Route::post('user/property/update/house_shop' , 'PropertyController@house_shop_update');

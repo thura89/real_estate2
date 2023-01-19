@@ -82,19 +82,18 @@ class ProfileController extends Controller
         $user->description = $request->description;
 
         /* Company Image */
-        $company_images = $user->company_images;
+        $company_images = $user->company_images ?? [];
         if ($request->hasfile('company_images')) {
-            foreach ($company_images as $key => $del) {
-                Storage::disk('public')->delete('company_images/' . $del);
-            }
-            $company_images = [];
+            
             foreach ($request->file('company_images') as $image) {
                 $file_name = uniqid() . '_' . time() . '.' . $image->extension();
                 Storage::disk('public')->put('/company_images/' . $file_name, file_get_contents($image));
-                $company_images[] = $file_name;
+                $data_images[] = $file_name;
             }
+            // $decode_images = json_decode($company_images);
+            $company_images = array_merge($company_images,$data_images);
+            
         }
-        
         $user->company_images = $company_images;
         $user->update();
 
@@ -107,5 +106,39 @@ class ProfileController extends Controller
                 return ResponseHelper::success('Success',$data);
             }   
         }
+    }
+
+    
+    public function DeleteCompanyImage(Request $request)
+    {
+        $validate = Validator::make($request->all(),[
+            'company_images' => 'required',
+        ]);
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail Request',$validate->errors());
+        }
+        
+        $data = User::where('id',auth()->user()->id)->first();
+
+        if (!$data) {
+            return ResponseHelper::fail('Fail Request','Data not found');
+        }
+        $data_images = $data->company_images;
+        $images = explode(',',$request->company_images);
+        
+        if ($data) {
+            foreach ($images as $key => $del) {
+                $rev = array_search($del, $data_images); 
+                if ($rev !== false) {        
+                    Storage::disk('public')->delete('/company_images/' . $data_images[$rev]);
+                    unset($data_images[$rev]);
+                }
+            }
+            $data->company_images = array_values($data_images);
+            $data->push();
+            return ResponseHelper::success('Success', 'Successfully Deleted');
+
+        }
+        
     }
 }

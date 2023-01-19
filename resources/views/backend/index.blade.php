@@ -200,7 +200,6 @@
                                                 </div>
                                                 <div class="widget-content-left flex2">
                                                     <div class="widget-heading">{{$new->user->name ?? '-' }}</div>
-                                                    <div class="widget-subheading opacity-7">{{ $new->user->user_type ? config('const.role_level')[$new->user->user_type] : '-' }}</div>
                                                 </div>
                                             </div>
                                         </div>

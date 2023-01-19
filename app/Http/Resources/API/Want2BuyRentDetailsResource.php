@@ -15,29 +15,46 @@ class Want2BuyRentDetailsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $region = $this->region()->first(['id','name']);
+        $township = $this->township()->first(['id','name']);
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'phone' => $this->phone_no,
-            'budget_from' => $this->budget_from,
-            'budget_to' => $this->budget_to,
-            'currency_code' => $this->currency_code,
-            'area_unit' => $this->area_unit,
-            'area_width' => $this->area_width,
-            'area_length' => $this->area_length,
-            'floor_level' => $this->floor_level ?? null,
-            'completion' => $this->completion,
-            'furnished_status' => $this->furnished_status,
-            'co_broke' => $this->co_broke,
-            'region' => $this->region()->first(['id','name']),
-            'township' => $this->township()->first(['id','name']),
-            'properties_type' => $this->properties_type,
-            'properties_category' => $this->properties_category,
-            'descriptions' => $this->descriptions,
-            'terms_condition' => $this->terms_condition,
-            'status' => $this->status,
-            'post_by' => $this->user->name,
-            'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
+            'id' => (string)$this->id ?? null,
+            'title' => $this->title ?? null,
+            'phone' => $this->phone_no ?? null,
+            'budget_from' => (string)$this->budget_from ?? null,
+            'budget_to' => (string)$this->budget_to ?? null,
+            'currency_code' => $this->currency_code ?? null,
+            'area_unit' => (string)$this->area_unit ?? null,
+            'area_width' => (string)$this->area_width ?? null,
+            'area_length' => (string)$this->area_length ?? null,
+            'floor_level' => (string)$this->floor_level ?? null,
+            'completion' => (string)$this->completion ?? null,
+            'furnished_status' => (string)$this->furnished_status,
+            'co_broke' => (string)$this->co_broke ?? null,
+            'region' => [
+                'id' => (string)$region->id ?? null,
+                'name' => (string)$region->name ?? null,
+            ],
+            'township' => [
+                'id' => (string)$township->id ?? null,
+                'name' => (string)$township->name ?? null,
+            ],
+            'properties_type' => (string)$this->properties_type ?? null,
+            'properties_category' => (string)$this->properties_category ?? null,
+            'descriptions' => $this->descriptions ?? null,
+            'terms_condition' => (string)$this->terms_condition ?? null,
+            'status' => (string)$this->status ?? null,
+            'post_by' => $this->user->name ?? null,
+            'user' => [
+                'id' => (string)$this->user->id ?? null,
+                'name' => $this->user->name ?? null,
+                'phone' => $this->user->phone ?? null,
+                'company_name' => $this->user->company_name ?? null,
+                'user_type' => (string)$this->user->user_type ?? null,
+                'profile_photo' => $this->user->profile_photo ?? null,
+                'cover_photo' => $this->user->cover_photo ?? null,
+            ],
+            'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s') ?? null,
         ];
     }
 }
