@@ -127,7 +127,7 @@ class PropertyDetail257 extends JsonResource
             if ($favorite) {
                 $data['favorite_status'] = (string)$favorite->id;
             }else{
-                $data['favorite_status'] = 0;
+                $data['favorite_status'] = '0';
             }
         }
         /* User */
