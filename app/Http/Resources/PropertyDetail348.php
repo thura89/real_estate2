@@ -143,6 +143,7 @@ class PropertyDetail348 extends JsonResource
             }
         }
         /* User */
+        $data['view_count'] = $this->view_count ? $this->view_count : null;
 
         $data['user'] = [
             'id' => (string)$this->user->id ?? null,

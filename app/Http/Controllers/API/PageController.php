@@ -382,12 +382,14 @@ class PageController extends Controller
             'wishlist'
         ])->where('id', $id)->first();
         $category = $property->category;
-
+        if (isset($property)) {
+            $property->view_count = $property->view_count + 1;
+            $property->update();
+        }
         if ($property) {
             /* Redirect to Edit Page By Relative */
             /* House , Shoop */
             if ($category == 1 || $category == 6) {
-                // return $property;
                 $data = new PropertyDetail16($property);
                 return ResponseHelper::success('Success', $data);
             }

@@ -17,6 +17,7 @@ class PropertyDetail16 extends JsonResource
      */
     public function toArray($request)
     {
+        // return $request;
         $data = [];
         
 
@@ -141,7 +142,7 @@ class PropertyDetail16 extends JsonResource
             }
         }
         /* User */
-
+        $data['view_count'] = $this->view_count ? $this->view_count : null;
         $data['user'] = [
             'id' => (string)$this->user->id ?? null,
             'name' => $this->user->name ?? null,

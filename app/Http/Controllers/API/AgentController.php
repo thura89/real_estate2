@@ -16,12 +16,21 @@ class AgentController extends Controller
     public function agentList(Request $request)
     {
         $data = User::query()->where('user_type',config('const.Agent'));
-
-        if ($request->get('keywords')) {
-            $data->where('name','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('company_name','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('email','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
+        if ($request->get('name')) {
+            $name = $request->get('name');
+            $data->where("name","LIKE", "%{$name}%");
+        }
+        if ($request->get('company_name')) {
+            $company_name = $request->get('company_name');
+            $data->where("company_name","LIKE", "%{$company_name}%");
+        }
+        if ($request->get('email')) {
+            $email = $request->get('email');
+            $data->where("email","LIKE", "%{$email}%");
+        }
+        if ($request->get('phone')) {
+            $phone = $request->get('phone');
+            $data->where("phone","LIKE", "%{$phone}%");
         }
         if ($request->get('region')) {
             $data->where('region', $request->get('region'));
