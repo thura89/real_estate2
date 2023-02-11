@@ -324,7 +324,10 @@ return array(
         'electricity_sys' => [
                 1 => 'Yes',
                 0 => 'No'
-        ]
+        ],
+        'unauthorized' => 'Unauthorized',
+        'fail_to_request' => 'Fail to request',
+        
         // 'region' => [
         //         1 => 'Yangon Region',
         //         2 => 'Mandalay Region',

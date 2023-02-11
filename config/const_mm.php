@@ -323,7 +323,9 @@ return array(
         'electricity_sys' => [
                 1 => 'Yes',
                 0 => 'No'
-        ]
+        ],
+        'unauthorized' => 'လုပ်ဆောင်ရန်ခွင့်ပြုချက်မရှိပါ',
+        'fail_to_request' => 'တောင်းဆိုမှူ မအောင်မြင်ပါ',
         // 'region' => [
         //         1 => 'Yangon Region',
         //         2 => 'Mandalay Region',

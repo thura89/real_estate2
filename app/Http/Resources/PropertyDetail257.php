@@ -140,6 +140,7 @@ class PropertyDetail257 extends JsonResource
             'company_name' => $this->user->company_name ?? null,
             'user_type' => (string)$this->user->user_type ?? null,
             'profile_photo' => $this->user->profile_photo ?? null,
+            'post_count' => $this->user->properties ? (string)$this->user->properties->count() : '0',
             'cover_photo' => $this->user->cover_photo ?? null,
         ];
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');

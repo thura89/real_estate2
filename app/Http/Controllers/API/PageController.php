@@ -358,6 +358,10 @@ class PageController extends Controller
     public function wantToBuyRentshow($id)
     {
         $data = WantToBuyRent::with('user')->findOrFail($id);
+        if (isset($data)) {
+            $data->view_count = $data->view_count + 1;
+            $data->update();
+        }
         $data = new Want2BuyRentDetailsResource($data);
         return ResponseHelper::success('success',$data);
     }

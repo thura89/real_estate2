@@ -149,6 +149,7 @@ class PropertyDetail16 extends JsonResource
             'phone' => $this->user->phone ?? null,
             'company_name' => $this->user->company_name ?? null,
             'user_type' => (string)$this->user->user_type ?? null,
+            'post_count' => $this->user->properties ? (string)$this->user->properties->count() : '0',
             'profile_photo' => $this->user->profile_photo ?? null,
             'cover_photo' => $this->user->cover_photo ?? null,
         ];

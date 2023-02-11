@@ -45,6 +45,7 @@ class Want2BuyRentDetailsResource extends JsonResource
             'terms_condition' => (string)$this->terms_condition ?? null,
             'status' => (string)$this->status ?? null,
             'post_by' => $this->user->name ?? null,
+            'view_count' =>  (string)$this->view_count ?? null,
             'user' => [
                 'id' => (string)$this->user->id ?? null,
                 'name' => $this->user->name ?? null,

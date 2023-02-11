@@ -81,8 +81,15 @@ class PropertyList extends JsonResource
             }
         }
         $data['user'] = [
+            'id' => (string)$this->user->id ?? null,
+            'name' => $this->user->name ?? null,
+            'phone' => $this->user->phone ?? null,
+            'company_name' => $this->user->company_name ?? null,
+            'user_type' => (string)$this->user->user_type ?? null,
+            'post_count' => $this->user->properties ? (string)$this->user->properties->count() : '0',
             'profile_photo' => $this->user->profile_photo ?? null,
-            'company_name' => $this->user->company_name ?? null
+            'cover_photo' => $this->user->cover_photo ?? null,
+            
         ];
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;
