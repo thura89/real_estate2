@@ -81,6 +81,7 @@ Route::namespace('API')->group(function () {
         /* Property List */
         Route::get('/user/property', 'PropertyController@property_list');
         Route::get('/user/property/{id}/show', 'PropertyController@show');
+        Route::get('/user/property/{id}/delete', 'PropertyController@destroy');
 
         /* Expired Property List */
         Route::get('/user/expired_property', 'ExpiredPropertyController@property_list');

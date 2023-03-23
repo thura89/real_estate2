@@ -24,7 +24,6 @@ class PageController extends Controller
 {
     public function property_list(Request $request)
     {
-        
         $data = Property::query()->with([
             'address',
             'partation',
@@ -46,7 +45,7 @@ class PageController extends Controller
         if ($request->get('title')) {
             $title = $request->get('title');
             $data->whereHas('suppliment', function ($query) use ($title) {
-                $query->where('note', 'like', '%'.$title.'%');
+                $query->where('title', 'like', '%'.$title.'%');
             });
         }
         if ($request->get('p_code')) {

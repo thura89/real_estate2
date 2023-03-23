@@ -9,6 +9,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyList;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
 use App\Http\Resources\PropertyDetail348;
@@ -324,9 +325,22 @@ class ExpiredPropertyController extends Controller
 
     public function destroy($id)
     {
-        $property = Property::findOrFail($id);
-        $property->delete();
-        return ResponseHelper::success('Success', 'Successfully Deleted');
+        $data = Property::where('user_id',auth('api')->user()->id)
+                            ->findOrFail($id);
+        if (!$data) {
+            return ResponseHelper::fail('Fail Request','Data not found');
+        }
+        $data_images = $data->propertyImage->images;
+        $data_images = json_decode($data_images,true);
+        
+        if ($data) {
+            foreach ($data_images as $key => $del) {
+                Storage::disk('public')->delete('/property_images/' . $del);
+            }
+            $data->delete();
+            return ResponseHelper::success('Success', 'Successfully Deleted');
+
+        }
     }
     public function renew($id)
     {

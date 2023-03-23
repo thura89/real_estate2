@@ -1724,4 +1724,25 @@ class PropertyController extends Controller
         }
         
     }
+
+    public function destroy($id)
+    {
+        $data = Property::where('user_id',auth('api')->user()->id)
+                            ->findOrFail($id);
+        if (!$data) {
+            return ResponseHelper::fail('Fail Request','Data not found');
+        }
+        $data_images = $data->propertyImage->images;
+        $data_images = json_decode($data_images,true);
+        
+        if ($data) {
+            foreach ($data_images as $key => $del) {
+                Storage::disk('public')->delete('/property_images/' . $del);
+            }
+            $data->delete();
+            return ResponseHelper::success('Success', 'Successfully Deleted');
+
+        }
+        
+    }
 }

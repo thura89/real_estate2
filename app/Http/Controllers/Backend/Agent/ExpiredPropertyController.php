@@ -364,7 +364,8 @@ class ExpiredPropertyController extends Controller
     }
     public function destroy($id)
     {
-        $property = Property::findOrFail($id);
+        $property = Property::where('user_id',Auth::user()->id)
+                             ->findOrFail($id);
         $property->delete();
         return redirect()->route('agent.expired_property.index')->with('delete', 'Successfully Deleted');
     }

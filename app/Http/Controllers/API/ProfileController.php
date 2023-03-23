@@ -118,7 +118,7 @@ class ProfileController extends Controller
             return ResponseHelper::fail('Fail Request',$validate->errors());
         }
         
-        $data = User::where('id',auth()->user()->id)->first();
+        $data = User::where('id',auth('api')->user()->id)->first();
 
         if (!$data) {
             return ResponseHelper::fail('Fail Request','Data not found');

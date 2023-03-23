@@ -23,13 +23,17 @@ class AgentByProperties extends JsonResource
                 $company_images[] = asset(config('const.company_images')) . '/' .$image;
             }
         }
-
+        $region = $this->region()->first('name');
+        $township = $this->township()->first('name');
         $data = [];
         $data['id'] =  $this->id ?? null;
         $data['name'] =  $this->name ?? null;
+        $data['email'] =  $this->email ?? null;
         $data['phone'] =  $this->phone ?? null;
         $data['other_phone'] =  $this->other_phone ?? [];
         $data['company_name'] =  $this->company_name ?? null;
+        $data['region'] =  $region['name'] ?? null;
+        $data['township'] =  $township['name'] ?? null;
         $data['agent_type'] =  config('const.agent_type')[$this->agent_type] ?? null;
         $data['profile_photo'] =  $this->profile_photo ?? null;
         $data['cover_photo'] =  $this->cover_photo ?? null;

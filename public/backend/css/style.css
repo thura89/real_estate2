@@ -207,3 +207,6 @@ i.profile_img {
     width: 100px;
     border: 1px solid #ddd;
 }
+.DataTables{
+    width: 100% !important;
+}

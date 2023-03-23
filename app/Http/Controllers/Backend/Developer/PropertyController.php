@@ -354,8 +354,8 @@ class PropertyController extends Controller
                 return config('const.property_category')[$each->category] ?? '-';
             })
             ->editColumn('status', function ($each) {
-                if ($each->status == 1) {
-                    return '<span class="badge badge-pill badge-success">' . config('const.recommend_status')[$each->status] . '</span>' ?? '-';
+                if ($each->recommended_feature == 1) {
+                    return '<span class="badge badge-pill badge-success">' . config('const.recommend_status')[$each->recommended_feature] . '</span>' ?? '-';
                 }
                 return '<span class="badge badge-pill badge-warning">' . config('const.recommend_status')[0] . '</span>' ?? '-';
             })
@@ -1360,7 +1360,8 @@ class PropertyController extends Controller
     }
     public function destroy($id)
     {
-        $property = Property::findOrFail($id);
+        $property = Property::where('user_id',Auth::user()->id)
+                            ->findOrFail($id);
         $property->delete();
         return 'success';
     }
