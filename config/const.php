@@ -45,7 +45,7 @@ return array(
                 2 => 'Area',
         ],
         'currency_code' => [
-                'mmk' => 'MMK',
+                'mmk' => 'Lakh',
                 'us' => 'US',
                 'sg' => 'SG',
         ],

@@ -45,7 +45,7 @@ return array(
                 2 => 'Area',
         ],
         'currency_code' => [
-                'mmk' => 'ကျပ်',
+                'mmk' => 'သိန်း',
                 'us' => 'အမေရိကန်',
                 'sg' => 'စင်ကာပူ',
         ],
