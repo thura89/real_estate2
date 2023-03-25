@@ -225,6 +225,8 @@ return array(
                 1 => 'Available',
                 2 => 'Unavailable',
         ],
+        'publish' => 1,
+        'pending' => 0,
         'publish_status' => [
                 1 => 'Publish',
                 0 => 'Pending',

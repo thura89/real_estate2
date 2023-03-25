@@ -34,6 +34,7 @@ class AgentByProperties extends JsonResource
         $data['company_name'] =  $this->company_name ?? null;
         $data['region'] =  $region['name'] ?? null;
         $data['township'] =  $township['name'] ?? null;
+        $data['address'] =  $this->address ?? null;
         $data['agent_type'] =  config('const.agent_type')[$this->agent_type] ?? null;
         $data['profile_photo'] =  $this->profile_photo ?? null;
         $data['cover_photo'] =  $this->cover_photo ?? null;

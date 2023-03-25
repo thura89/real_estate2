@@ -52,7 +52,8 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ])->whereDate('created_at', '>=', $date)
-          ->where('user_id',Auth::user()->id);
+          ->where('user_id',Auth::user()->id)
+          ->where('status',config('const.publish'));//published Status;
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }
@@ -407,7 +408,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -569,7 +570,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->title = $request->title;
 
             // Address Store
@@ -740,7 +741,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -869,7 +870,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->title = $request->title;
 
             /* Address Store */
@@ -1009,7 +1010,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -1170,7 +1171,7 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->title = $request->title;
 
             // Address Store

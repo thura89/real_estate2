@@ -13,6 +13,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+     
         $users = User::findOrFail(Auth()->user()->id);
         $WantToBuyRents = WantToBuyRent::query()->where('user_id',Auth::user()->id)->get();
         $properties = Property::query()->whereDate('created_at', '>=', Carbon::today()->subMonths(12))->where('user_id',Auth::user()->id)->get();

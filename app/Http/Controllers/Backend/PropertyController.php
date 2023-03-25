@@ -411,7 +411,7 @@ class PropertyController extends Controller
             $property->category = $request->property_category;
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -575,7 +575,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
 
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;
@@ -751,7 +751,7 @@ class PropertyController extends Controller
             $property->category = $request->property_category;
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -881,7 +881,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
 
             /* Address Store */
             $property->address->region = $request->region ?? $property->address->region;
@@ -1024,7 +1024,7 @@ class PropertyController extends Controller
             $property->category = $request->property_category;
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -1188,7 +1188,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
             $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
 
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;

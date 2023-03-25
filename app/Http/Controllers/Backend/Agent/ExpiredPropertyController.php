@@ -34,7 +34,8 @@ class ExpiredPropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ])->whereDate('created_at', '<=', $date)
-          ->where('user_id', Auth::user()->id);
+          ->where('user_id', Auth::user()->id)
+          ->where('status',config('const.publish'));//published Status;
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }

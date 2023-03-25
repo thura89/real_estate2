@@ -51,7 +51,8 @@ class PropertyController extends Controller
             'user',
             'wishlist',
         ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
-          ->where('user_id',Auth::user()->id);
+          ->where('user_id',Auth::user()->id)
+          ->where('status',config('const.publish'));//published Status;
           
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
@@ -405,7 +406,7 @@ class PropertyController extends Controller
             // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -619,7 +620,7 @@ class PropertyController extends Controller
                 $property->user_id = Auth()->user()->id;
                 $property->lat = '112344533'; // Sample lag
                 $property->long = '112344533'; // Sample long
-                $property->status = $request->status ? 1 : 0; //Publish Status
+                $property->status = config('const.publish'); //Publish Status
 
                 // Address Store
                 $property->address->region = $request->region ?? $property->address->region;
@@ -879,7 +880,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -1081,7 +1082,7 @@ class PropertyController extends Controller
                 $property->user_id = Auth()->user()->id;
                 $property->lat = '112344533'; // Sample lag
                 $property->long = '112344533'; // Sample long
-                $property->status = $request->status ? 1 : 0; //Publish Status
+                $property->status = config('const.publish'); //Publish Status
 
                 /* Address Store */
                 $property->address->region = $request->region ?? $property->address->region;
@@ -1300,7 +1301,7 @@ class PropertyController extends Controller
             $property->long = '112344533'; // Sample long
             $property->properties_type = $request->property_type;
             $property->category = $request->property_category;
-            $property->status = $request->status ? 1 : 0; //Publish Status
+            $property->status = config('const.publish'); //Publish Status
             $property->save();
 
             /* Address Store */
@@ -1506,7 +1507,7 @@ class PropertyController extends Controller
                 $property->user_id = Auth()->user()->id;
                 $property->lat = '112344533'; // Sample lag
                 $property->long = '112344533'; // Sample long
-                $property->status = $request->status ? 1 : 0; //Publish Status
+                $property->status = config('const.publish'); //Publish Status
 
                 /* Address Store */
                 $property->address->region = $request->region ?? $property->address->region;
