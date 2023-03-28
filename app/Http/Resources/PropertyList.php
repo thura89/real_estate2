@@ -41,7 +41,10 @@ class PropertyList extends JsonResource
         /** Region */
         $region = $this->address ? $this->address->region()->first('name') : null;
 
-        
+        /* User */
+        $userregion = $this->user->region()->first('name');
+        $usertownship = $this->user->township()->first('name');
+
         /* AreaSize */
         if ($this->areasize) {
             if ($this->areasize->area_option != NULL) {
@@ -80,11 +83,22 @@ class PropertyList extends JsonResource
                 $data['favorite_status'] = 0;
             }
         }
+        $data['phone'] =  $this->phone ?? null;
+        $data['other_phone'] =  $this->other_phone ?? [];
+        $data['company_name'] =  $this->company_name ?? null;
+        $data['region'] =  $region['name'] ?? null;
+        $data['township'] =  $township['name'] ?? null;
+        $data['address'] =  $this->address ?? null;
+
         $data['user'] = [
             'id' => (string)$this->user->id ?? null,
             'name' => $this->user->name ?? null,
-            'phone' => $this->user->phone ?? null,
             'company_name' => $this->user->company_name ?? null,
+            'phone' => $this->user->phone ?? null,
+            'other_phone' => $this->user->other_phone ?? null,
+            'region' => $userregion['name'] ?? null,
+            'township' => $usertownship['name'] ?? null,
+            'address' => $this->user->address ?? null,
             'user_type' => (string)$this->user->user_type ?? null,
             'post_count' => $this->user->properties ? (string)$this->user->properties->count() : '0',
             'profile_photo' => $this->user->profile_photo ?? null,
