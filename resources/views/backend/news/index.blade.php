@@ -10,7 +10,7 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Want2 Buy & Rent Management
+                    <div>News Management
                     </div>
                 </div>
             </div>
@@ -18,8 +18,7 @@
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
-                <a href="{{ route('admin.news.create') }}"
-                    class="btn-shadow btn btn-primary">
+                <a href="{{ route('admin.news.create') }}" class="btn-shadow btn btn-primary">
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-business-time fa-w-20"></i>
                     </span>
@@ -49,7 +48,7 @@
         </div>
     </div>
     <br>
-    
+
 @endsection
 @section('script')
     <script>
@@ -59,8 +58,7 @@
                 serverSide: true,
                 aaSorting: [],
                 ajax: "/admin/news/datatables/ssd",
-                columns: [
-                    {
+                columns: [{
                         data: 'images',
                         name: 'images',
                         sortable: false,
