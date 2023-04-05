@@ -51,9 +51,9 @@ class PropertyController extends Controller
             'user',
             'wishlist',
         ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
-          ->where('user_id',Auth::user()->id)
-          ->where('status',config('const.publish'));//published Status;
-          
+            ->where('user_id', Auth::user()->id)
+            ->where('status', config('const.publish')); //published Status;
+
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
             $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
@@ -92,7 +92,7 @@ class PropertyController extends Controller
                 $data->whereHas('address', function ($query) use ($region) {
                     $query->where('region', $region);
                 });
-            }else{
+            } else {
                 $data;
             }
         }
@@ -109,7 +109,7 @@ class PropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
@@ -121,7 +121,7 @@ class PropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
@@ -137,12 +137,12 @@ class PropertyController extends Controller
             $installment = $request->get('installment');
             if ($installment === 'yes') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',1);
+                    $query->where('installment', 1);
                 });
             }
             if ($installment === 'no') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',0);
+                    $query->where('installment', 0);
                 });
             }
         }
@@ -170,12 +170,12 @@ class PropertyController extends Controller
                 $query->where('fence_condition', $fence_condition);
             });
         }
-        if ($request->get('type_of_street')) {
-            $type_of_street = $request->get('type_of_street');
-            $data->whereHas('address', function ($query) use ($type_of_street) {
-                $query->where('type_of_street', $type_of_street);
-            });
-        }
+        // if ($request->get('type_of_street')) {
+        //     $type_of_street = $request->get('type_of_street');
+        //     $data->whereHas('address', function ($query) use ($type_of_street) {
+        //         $query->where('type_of_street', $type_of_street);
+        //     });
+        // }
         if ($request->get('area_option')) {
             $area_option = $request->get('area_option');
             $data->whereHas('areasize', function ($query) use ($area_option) {
@@ -230,31 +230,31 @@ class PropertyController extends Controller
                 $query->where('bath_room', $bath_room);
             });
         }
-        
+
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */
             if ($sort == 'max') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
                 }
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
                 }
             }
             if ($sort == 'new') {
@@ -263,7 +263,7 @@ class PropertyController extends Controller
             if ($sort == 'old') {
                 $data->orderBy('updated_at', 'ASC');
             }
-        }else{
+        } else {
             $data->orderBy('updated_at', 'DESC');
         }
 
@@ -289,7 +289,7 @@ class PropertyController extends Controller
             'user',
             'wishlist'
         ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
-            ->where('user_id',Auth::user()->id)->find($id);
+            ->where('user_id', Auth::user()->id)->find($id);
         if ($property) {
             $category = $property->category;
             /* Redirect to Edit Page By Relative */
@@ -334,9 +334,6 @@ class PropertyController extends Controller
             'title' => 'required',
             'region' => 'required',
             'township' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
             /* Area Size */
@@ -412,10 +409,10 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             if ($request->property_category == 6) {
                 $address->building_name = $request->building_name;
             }
@@ -427,12 +424,12 @@ class PropertyController extends Controller
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -509,7 +506,7 @@ class PropertyController extends Controller
                     $property->unitAmenity()->save($unitAmenity);
                 }
             }
-            
+
             /* Building Amenity */
             if ($request->building_amenity) {
                 if ($request->property_category == 6) {
@@ -545,15 +542,12 @@ class PropertyController extends Controller
     /* Update House , Shop */
     public function house_shop_update(Request $request)
     {
-        
+
         $validate = Validator::make($request->all(), [
             /* Address */
             'id' => 'required',
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'title' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
             /* Area Size */
@@ -607,8 +601,8 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        $property = Property::where('user_id',auth()->id())->find($request->id);
-        
+        $property = Property::where('user_id', auth()->id())->find($request->id);
+
         if ($property) {
             DB::beginTransaction();
             try {
@@ -625,9 +619,9 @@ class PropertyController extends Controller
                 // Address Store
                 $property->address->region = $request->region ?? $property->address->region;
                 $property->address->township = $request->township ?? $property->address->township;
-                $property->address->street_name = $request->street_name;
-                $property->address->ward = $request->ward;
-                $property->address->type_of_street = $request->type_of_street;
+                $property->address->street_name = $request->street_name ?? null;
+                $property->address->ward = $request->ward ?? null;
+                $property->address->type_of_street = $request->type_of_street ?? null;
                 if ($request->property_category == 6) {
                     $property->address->building_name = $request->building_name;
                 }
@@ -637,12 +631,12 @@ class PropertyController extends Controller
                 /* Width x length */
                 if ($request->area_option == 1) {
                     $property->areasize->width = $request->width;
-                    $property->areasize->length = $request->length;    
+                    $property->areasize->length = $request->length;
                 }
                 /** Area */
                 if ($request->area_option == 2) {
-                    $property->areasize->area_size = $request->area_size;    
-                    $property->areasize->area_unit = $request->area_unit;    
+                    $property->areasize->area_size = $request->area_size;
+                    $property->areasize->area_unit = $request->area_unit;
                 }
                 if ($request->property_category == 6) {
                     $property->areasize->level = $request->floor_level;
@@ -700,8 +694,8 @@ class PropertyController extends Controller
                         $splice_amenity = $request->unit_amenity;
                         $splice_amenity = explode('|', $splice_amenity);
                         $unit_amenity = config('const.unit_amenity');
-                        $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
-                        $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                        $unit_amenity_diff = array_diff($unit_amenity, $splice_amenity);
+                        $unit_amenity_intersect = array_intersect($unit_amenity, $splice_amenity);
                         if ($unit_amenity_diff) {
                             foreach ($unit_amenity_diff as $key => $diff) {
                                 $property->unitAmenity->$diff = 0;
@@ -721,8 +715,8 @@ class PropertyController extends Controller
                         $splice_building_amenity = $request->building_amenity;
                         $splice_building_amenity = explode('|', $splice_building_amenity);
                         $building_amenity = config('const.building_amenity');
-                        $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
-                        $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                        $building_amenity_diff = array_diff($building_amenity, $splice_building_amenity);
+                        $building_amenity_intersect = array_intersect($building_amenity, $splice_building_amenity);
                         if ($building_amenity_diff) {
                             foreach ($building_amenity_diff as $key => $diff) {
                                 $property->buildingAmenity->$diff = 0;
@@ -733,7 +727,7 @@ class PropertyController extends Controller
                                 $property->buildingAmenity->$interset = 1;
                             }
                         }
-                    }    
+                    }
                 }
                 /* Property Image */
                 if ($request->hasfile('images')) {
@@ -743,9 +737,8 @@ class PropertyController extends Controller
                         $data_images[] = $file_name;
                     }
                     $decode_images = json_decode($property->propertyImage->images);
-                    $result = array_merge($decode_images,$data_images);
+                    $result = array_merge($decode_images, $data_images);
                     $property->propertyImage->images = $result;
-                    
                 }
                 // Splice if not img 
                 // if ($request->old || $request->photos) {
@@ -786,9 +779,9 @@ class PropertyController extends Controller
                 //     $filtered = array_splice($data, $count);
                 //     $property->propertyImage->images = json_encode($filtered);
                 // }
-                
+
                 $property->push();
-                
+
 
                 DB::commit();
 
@@ -809,9 +802,6 @@ class PropertyController extends Controller
             'title' => 'required',
             'region' => 'required',
             'township' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
             /* Area Size */
@@ -886,10 +876,10 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             if ($property->category == 7) {
                 $address->building_name = $request->building_name;
             }
@@ -901,12 +891,12 @@ class PropertyController extends Controller
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -1015,9 +1005,6 @@ class PropertyController extends Controller
             'title' => 'required',
             'region' => 'required',
             'township' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required_if:property_category,==,7',
 
             /* Area Size */
@@ -1072,8 +1059,8 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        $property = Property::where('user_id',auth()->id())->find($request->id);
-        
+        $property = Property::where('user_id', auth()->id())->find($request->id);
+
         if ($property) {
             DB::beginTransaction();
             try {
@@ -1087,9 +1074,9 @@ class PropertyController extends Controller
                 /* Address Store */
                 $property->address->region = $request->region ?? $property->address->region;
                 $property->address->township = $request->township ?? $property->address->township;
-                $property->address->street_name = $request->street_name;
-                $property->address->ward = $request->ward;
-                $property->address->type_of_street = $request->type_of_street;
+                $property->address->street_name = $request->street_name ?? null;
+                $property->address->ward = $request->ward ?? null;
+                $property->address->type_of_street = $request->type_of_street ?? null;
                 if ($property->category == 7) {
                     $property->address->building_name = $request->building_name;
                 }
@@ -1099,12 +1086,12 @@ class PropertyController extends Controller
                 /* Width x length */
                 if ($request->area_option == 1) {
                     $property->areasize->width = $request->width;
-                    $property->areasize->length = $request->length;    
+                    $property->areasize->length = $request->length;
                 }
                 /** Area */
                 if ($request->area_option == 2) {
-                    $property->areasize->area_size = $request->area_size;    
-                    $property->areasize->area_unit = $request->area_unit;    
+                    $property->areasize->area_size = $request->area_size;
+                    $property->areasize->area_unit = $request->area_unit;
                 }
                 if ($request->property_category == 6) {
                     $property->areasize->level = $request->floor_level;
@@ -1170,9 +1157,8 @@ class PropertyController extends Controller
                         $data_images[] = $file_name;
                     }
                     $decode_images = json_decode($property->propertyImage->images);
-                    $result = array_merge($decode_images,$data_images);
+                    $result = array_merge($decode_images, $data_images);
                     $property->propertyImage->images = $result;
-                    
                 }
                 /* Splice if not image  */
                 // if ($request->old || $request->photos) {
@@ -1234,9 +1220,6 @@ class PropertyController extends Controller
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'title' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required',
 
             /* Area Size */
@@ -1307,10 +1290,10 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             $address->building_name = $request->building_name;
             $property->address()->save($address);
 
@@ -1320,12 +1303,12 @@ class PropertyController extends Controller
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -1395,7 +1378,7 @@ class PropertyController extends Controller
                 }
                 $property->unitAmenity()->save($unitAmenity);
             }
-            
+
             /* Building Amenity */
             if ($request->building_amenity) {
                 $buildingAmenity = new BuildingAmenity();
@@ -1445,9 +1428,6 @@ class PropertyController extends Controller
             /* Address */
             'property_category' => 'required|in:1,2,3,4,5,6,7,8',
             'title' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required|in:1,2,3',
-            'ward' => 'required',
             'building_name' => 'required',
 
             /* Area Size */
@@ -1457,7 +1437,7 @@ class PropertyController extends Controller
             'length' => 'required_if:area_option,==,1',
             'area_size' => 'required_if:area_option,==,2',
             'area_unit' => 'required_if:area_option,==,2',
-            
+
             /* Partation */
             'partation_type' => 'required|in:1,2',
             'bed_room' => 'required_if:partation_type,==,2',
@@ -1497,8 +1477,8 @@ class PropertyController extends Controller
         if ($validate->fails()) {
             return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        $property = Property::where('user_id',auth()->id())->find($request->id);
-        
+        $property = Property::where('user_id', auth()->id())->find($request->id);
+
         if ($property) {
             DB::beginTransaction();
             try {
@@ -1512,9 +1492,9 @@ class PropertyController extends Controller
                 /* Address Store */
                 $property->address->region = $request->region ?? $property->address->region;
                 $property->address->township = $request->township ?? $property->address->township;
-                $property->address->street_name = $request->street_name;
-                $property->address->ward = $request->ward;
-                $property->address->type_of_street = $request->type_of_street;
+                $property->address->street_name = $request->street_name ?? null;
+                $property->address->ward = $request->ward ?? null;
+                $property->address->type_of_street = $request->type_of_street ?? null;
                 $property->address->building_name = $request->building_name;
 
                 /* Area Size Store */
@@ -1522,12 +1502,12 @@ class PropertyController extends Controller
                 /* Width x length */
                 if ($request->area_option == 1) {
                     $property->areasize->width = $request->width;
-                    $property->areasize->length = $request->length;    
+                    $property->areasize->length = $request->length;
                 }
                 /** Area */
                 if ($request->area_option == 2) {
-                    $property->areasize->area_size = $request->area_size;    
-                    $property->areasize->area_unit = $request->area_unit;    
+                    $property->areasize->area_size = $request->area_size;
+                    $property->areasize->area_unit = $request->area_unit;
                 }
                 if ($request->property_category == 6) {
                     $property->areasize->level = $request->floor_level;
@@ -1577,8 +1557,8 @@ class PropertyController extends Controller
                 if ($request->unit_amenity) {
                     $splice_amenity = explode('|', $request->unit_amenity);
                     $unit_amenity = config('const.unit_amenity');
-                    $unit_amenity_diff = array_diff($unit_amenity,$splice_amenity);
-                    $unit_amenity_intersect = array_intersect($unit_amenity,$splice_amenity);
+                    $unit_amenity_diff = array_diff($unit_amenity, $splice_amenity);
+                    $unit_amenity_intersect = array_intersect($unit_amenity, $splice_amenity);
                     if ($unit_amenity_diff) {
                         foreach ($unit_amenity_diff as $key => $diff) {
                             $property->unitAmenity->$diff = 0;
@@ -1595,8 +1575,8 @@ class PropertyController extends Controller
                 if ($request->building_amenity) {
                     $splice_building_amenity = explode('|', $request->building_amenity);
                     $building_amenity = config('const.building_amenity');
-                    $building_amenity_diff = array_diff($building_amenity,$splice_building_amenity);
-                    $building_amenity_intersect = array_intersect($building_amenity,$splice_building_amenity);
+                    $building_amenity_diff = array_diff($building_amenity, $splice_building_amenity);
+                    $building_amenity_intersect = array_intersect($building_amenity, $splice_building_amenity);
                     if ($building_amenity_diff) {
                         foreach ($building_amenity_diff as $key => $diff) {
                             $property->buildingAmenity->$diff = 0;
@@ -1613,8 +1593,8 @@ class PropertyController extends Controller
                 if ($request->lot_feature) {
                     $splice_lot_feature = explode('|', $request->lot_feature);
                     $lot_feature = config('const.lot_feature');
-                    $lot_feature_diff = array_diff($lot_feature,$splice_lot_feature);
-                    $lot_feature_intersect = array_intersect($lot_feature,$splice_lot_feature);
+                    $lot_feature_diff = array_diff($lot_feature, $splice_lot_feature);
+                    $lot_feature_intersect = array_intersect($lot_feature, $splice_lot_feature);
                     if ($lot_feature_diff) {
                         foreach ($lot_feature_diff as $key => $diff) {
                             $property->lotFeature->$diff = 0;
@@ -1634,9 +1614,8 @@ class PropertyController extends Controller
                         $data_images[] = $file_name;
                     }
                     $decode_images = json_decode($property->propertyImage->images);
-                    $result = array_merge($decode_images,$data_images);
+                    $result = array_merge($decode_images, $data_images);
                     $property->propertyImage->images = $result;
-                    
                 }
                 // /* Splice if not img  */
                 // if ($request->old || $request->photos) {
@@ -1692,28 +1671,28 @@ class PropertyController extends Controller
 
     public function DeletePropertyImage(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'id' => 'required',
             'images' => 'required',
         ]);
         if ($validate->fails()) {
-            return ResponseHelper::fail('Fail Request',$validate->errors());
+            return ResponseHelper::fail('Fail Request', $validate->errors());
         }
-        
-        $data = Property::where('user_id',auth()->user()->id)
-                            ->where('id',$request->id)
-                            ->first();
+
+        $data = Property::where('user_id', auth()->user()->id)
+            ->where('id', $request->id)
+            ->first();
         if (!$data) {
-            return ResponseHelper::fail('Fail Request','Data not found');
+            return ResponseHelper::fail('Fail Request', 'Data not found');
         }
         $data_images = $data->propertyImage->images;
-        $data_images = json_decode($data_images,true);
-        $images = explode(',',$request->images);
-        
+        $data_images = json_decode($data_images, true);
+        $images = explode(',', $request->images);
+
         if ($data) {
             foreach ($images as $key => $del) {
-                $rev = array_search($del, $data_images); 
-                if ($rev !== false) {        
+                $rev = array_search($del, $data_images);
+                if ($rev !== false) {
                     Storage::disk('public')->delete('/property_images/' . $data_images[$rev]);
                     unset($data_images[$rev]);
                 }
@@ -1721,29 +1700,25 @@ class PropertyController extends Controller
             $data->propertyImage->images = json_encode(array_values($data_images));
             $data->push();
             return ResponseHelper::success('Success', 'Successfully Deleted');
-
         }
-        
     }
 
     public function destroy($id)
     {
-        $data = Property::where('user_id',auth('api')->user()->id)
-                            ->findOrFail($id);
+        $data = Property::where('user_id', auth('api')->user()->id)
+            ->findOrFail($id);
         if (!$data) {
-            return ResponseHelper::fail('Fail Request','Data not found');
+            return ResponseHelper::fail('Fail Request', 'Data not found');
         }
         $data_images = $data->propertyImage->images;
-        $data_images = json_decode($data_images,true);
-        
+        $data_images = json_decode($data_images, true);
+
         if ($data) {
             foreach ($data_images as $key => $del) {
                 Storage::disk('public')->delete('/property_images/' . $del);
             }
             $data->delete();
             return ResponseHelper::success('Success', 'Successfully Deleted');
-
         }
-        
     }
 }

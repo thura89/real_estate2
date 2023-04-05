@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Property;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,6 +17,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\AutoDeleteCron::class,
+        Commands\W2BExpired::class
     ];
 
     /**
@@ -26,10 +28,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('autodelete:cron')->everyMinute();
-        $schedule->call(function () {
-            $data = Property::where('created_at', '<', Carbon::now()->subYear())->update(['status'=>1]);
-        })->everyMinute();
+        $schedule->command('autodelete:cron')->everyMinute();
+        // $schedule->call(function () {
+        //     $data = Property::where('created_at', '<', Carbon::now()->subYear())->update(['status'=>1]);
+        // })->everyMinute();
+
+
+        $schedule->command('w2bExpire:cron')
+            ->everyMinute();
     }
 
     /**
@@ -39,7 +45,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

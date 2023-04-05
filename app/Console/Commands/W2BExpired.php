@@ -3,25 +3,26 @@
 namespace App\Console\Commands;
 
 use App\Property;
+use App\WantToBuyRent;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class AutoDeleteCron extends Command
+class W2BExpired extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'autodelete:cron';
+    protected $signature = 'w2bExpire:cron';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Properties Auto Delete when expired';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -40,12 +41,8 @@ class AutoDeleteCron extends Command
      */
     public function handle()
     {
-        Log::info("Auto Delete Cron is working fine!");
-        /*
-           Write your database logic we bellow:
-           Item::create(['name'=>'hello new']);
-        */
-
-        $this->info('Demo:Cron Cummand Run successfully!');
+        WantToBuyRent::where('created_at', '<', Carbon::now()->subYear())->update(['status' => 0]);
+        Property::where('created_at', '<', Carbon::now()->subYear())->update(['status' => 0]);
+        $this->info('Success');
     }
 }

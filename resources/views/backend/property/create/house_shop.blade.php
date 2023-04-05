@@ -14,7 +14,11 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Property Create @if ($category == 1) House @else Shop @endif
+                    <div>Property Create @if ($category == 1)
+                            House
+                        @else
+                            Shop
+                        @endif
                     </div>
                 </div>
             </div>
@@ -62,7 +66,8 @@
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>
                                         @foreach ($regions as $key => $region)
-                                            <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                            <option value="{{ $region->id }}"
+                                                @if (old('region') == $region->id) selected="selected" @endif>
                                                 {{ $region->name }}</option>
                                         @endforeach
                                     </select>
@@ -75,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="street_name">Street Name</label>
                                     <input type="text" name="street_name" class="form-control">
                                 </div>
@@ -91,12 +96,12 @@
                                 <div class="col form-group">
                                     <label for="ward">Ward</label>
                                     <input type="text" name="ward" class="form-control">
-                                </div>
+                                </div> --}}
                                 @if ($category == 6)
-                                <div class="col form-group">
-                                    <label for="building_name">Building Name</label>
-                                    <input type="text" name="building_name" class="form-control">
-                                </div>
+                                    <div class="col form-group">
+                                        <label for="building_name">Building Name</label>
+                                        <input type="text" name="building_name" class="form-control">
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -149,16 +154,16 @@
 
                                 @if ($category == 6)
                                     <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="fence_width">Floor Level</label>
-                                        <select name="floor_level" class="form-control">
-                                            <option value="">Please Select</option>
-                                            @foreach (config('const.floor_level') as $key => $level)
-                                                <option value="{{ $key }}">{{ $level }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="form-group">
+                                            <label for="fence_width">Floor Level</label>
+                                            <select name="floor_level" class="form-control">
+                                                <option value="">Please Select</option>
+                                                @foreach (config('const.floor_level') as $key => $level)
+                                                    <option value="{{ $key }}">{{ $level }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
                                 @endif
                             </div>
                         </div>
@@ -343,8 +348,8 @@
                                     <label for="year_of_construction">Year Of Construction</label>
                                     <select name="year_of_construction" class="form-control">
                                         <option value="">Select</option>
-                                        @for ($i=(int)date('Y');$i>=((int)date('Y') - 100);$i--)
-                                            <option value='{{$i}}'>{{$i}}</option>
+                                        @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
+                                            <option value='{{ $i }}'>{{ $i }}</option>
                                         @endfor
                                     </select>
                                 </div>
@@ -369,20 +374,20 @@
                             </div>
                             <div class="row">
                                 @if ($category == 1)
-                                <div class="col-md-4 form-group">
-                                    <label for="type_of_building">Type Of Building</label>
-                                    <input type="text" name="type_of_building" class="form-control">
-                                </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="type_of_building">Type Of Building</label>
+                                        <input type="text" name="type_of_building" class="form-control">
+                                    </div>
                                 @else
-                                <div class="col-md-4 form-group">
-                                    <label for="shop_type">Shop Type</label>
-                                    <select name="shop_type" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.shop_type') as $key => $type)
-                                            <option value="{{ $key }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div class="col-md-4 form-group">
+                                        <label for="shop_type">Shop Type</label>
+                                        <select name="shop_type" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.shop_type') as $key => $type)
+                                                <option value="{{ $key }}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -425,109 +430,122 @@
                         </div> --}}
                         @if ($category == 1)
                             {{-- Unit Amenities --}}
-                        <div class="form-group">
-                            <h5>Unit Amenities</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="refrigerator"
-                                                value="1" class="form-check-input">Refrigerator</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="washing_machine" value="1" class="form-check-input">Washing
-                                            Machine</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="mirowave" value="1" class="form-check-input">Mirowave</label>
+                            <div class="form-group">
+                                <h5>Unit Amenities</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="refrigerator" value="1"
+                                                    class="form-check-input">Refrigerator</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="washing_machine" value="1"
+                                                    class="form-check-input">Washing
+                                                Machine</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="mirowave" value="1"
+                                                    class="form-check-input">Mirowave</label>
+                                        </div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="gas_or_electric_stove" value="1"
+                                                    class="form-check-input">Gas
+                                                or Electric Stove</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="air_conditioning" value="1"
+                                                    class="form-check-input">Air
+                                                Conditioning</label></div>
                                     </div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="gas_or_electric_stove" value="1" class="form-check-input">Gas
-                                            or Electric Stove</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="air_conditioning" value="1" class="form-check-input">Air
-                                            Conditioning</label></div>
-                                </div>
-                                <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="tv" value="1" class="form-check-input">TV</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="cable_satellite" value="1" class="form-check-input">Cable/
-                                            Satellite</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="internet_wifi" value="1" class="form-check-input">Internet
-                                            Wifi</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="water_heater"
-                                                value="1" class="form-check-input">WaterHeater</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="security_cctv" value="1" class="form-check-input">Security
-                                            CCTV</label></div>
-                                </div>
-                                <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="fire_alarm" value="1" class="form-check-input">Fire
-                                            Alarm</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="dinning_table" value="1" class="form-check-input">Dinning
-                                            Table</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="bed" value="1" class="form-check-input">Bed</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="sofa_chair" value="1" class="form-check-input">Sofa
-                                            Chair</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="private_swimming_pool"
-                                                value="1" class="form-check-input">Private Swimming Pool</label></div>
+                                    <div class="col form-group">
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="tv" value="1"
+                                                    class="form-check-input">TV</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="cable_satellite" value="1"
+                                                    class="form-check-input">Cable/
+                                                Satellite</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="internet_wifi" value="1"
+                                                    class="form-check-input">Internet
+                                                Wifi</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="water_heater" value="1"
+                                                    class="form-check-input">WaterHeater</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="security_cctv" value="1"
+                                                    class="form-check-input">Security
+                                                CCTV</label></div>
+                                    </div>
+                                    <div class="col form-group">
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="fire_alarm" value="1"
+                                                    class="form-check-input">Fire
+                                                Alarm</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="dinning_table" value="1"
+                                                    class="form-check-input">Dinning
+                                                Table</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="bed" value="1"
+                                                    class="form-check-input">Bed</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="sofa_chair" value="1"
+                                                    class="form-check-input">Sofa
+                                                Chair</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="private_swimming_pool" value="1"
+                                                    class="form-check-input">Private Swimming Pool</label></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @else
-                        {{-- Building Amenities --}}
-                        <div class="form-group">
-                            <h5>Building Amenities</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="elevator" value="1"
-                                                class="form-check-input">Elevator</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="garage" value="1"
-                                                class="form-check-input">Garage</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="fitness_center" value="1"
-                                                class="form-check-input">Fitness Center</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="Security" value="1"
-                                                class="form-check-input">security</label></div>
-                                </div>
-                                <div class="col form-group">
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="swimming_pool" value="1"
-                                                class="form-check-input">Swimming Pool</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="spa_hot_tub" value="1" class="form-check-input">Spa/
-                                            Hot Tub</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="playground" value="1"
-                                                class="form-check-input">Playground</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="garden" value="1"
-                                                class="form-check-input">Garden</label></div>
-                                </div>
-                                <div class="col form-group">
-                                    {{-- <div class="position-relative form-check"><label class="form-check-label"><input
+                            {{-- Building Amenities --}}
+                            <div class="form-group">
+                                <h5>Building Amenities</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="elevator" value="1"
+                                                    class="form-check-input">Elevator</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="garage" value="1"
+                                                    class="form-check-input">Garage</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="fitness_center" value="1"
+                                                    class="form-check-input">Fitness Center</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="Security" value="1"
+                                                    class="form-check-input">security</label></div>
+                                    </div>
+                                    <div class="col form-group">
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="swimming_pool" value="1"
+                                                    class="form-check-input">Swimming Pool</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="spa_hot_tub" value="1"
+                                                    class="form-check-input">Spa/
+                                                Hot Tub</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="playground" value="1"
+                                                    class="form-check-input">Playground</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="garden" value="1"
+                                                    class="form-check-input">Garden</label></div>
+                                    </div>
+                                    <div class="col form-group">
+                                        {{-- <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="carpark" value="1"
                                                 class="form-check-input">Carpark</label></div> --}}
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="own_transformer" value="1"
-                                                class="form-check-input">Own Transformer</label></div>
-                                    <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="disposal" value="1"
-                                                class="form-check-input">Disposal</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="own_transformer" value="1"
+                                                    class="form-check-input">Own Transformer</label></div>
+                                        <div class="position-relative form-check"><label class="form-check-label"><input
+                                                    type="checkbox" name="disposal" value="1"
+                                                    class="form-check-input">Disposal</label></div>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div> 
                         @endif
                         {{-- Image --}}
                         <div class="form-group">
@@ -591,7 +609,7 @@
     <script>
         $('.price_sale_hider').hide();
         $('.price_rent_hider').hide();
-        $('.property_type').on('change', function(){
+        $('.property_type').on('change', function() {
             $('.price_sale_hider').hide();
             $('.price_rent_hider').hide();
             var type = this.value;

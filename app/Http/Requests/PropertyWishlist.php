@@ -28,16 +28,16 @@ class PropertyWishlist extends FormRequest
         $image = $this->propertyImage()->first('images');
         $image = json_decode($image['images']);
         $image = asset(config('const.p_img_path')) . '/' . $image[0];
-        
+
         /* Buy properties_type => 1 */
         if ($this->properties_type == 1) {
             $currency_code = $this->price->currency_code ? config('const.currency_code')[$this->price->currency_code] : '';
-            $price =  $this->price ? number_format($this->price->price) .' '. $currency_code  : '0';
+            $price =  $this->price ? number_format($this->price->price) . ' ' . $currency_code  : '0';
         }
         /* Buy properties_type => 0 */
         if ($this->properties_type == 2) {
             $rent_currency_code = $this->rentprice->currency_code ? config('const.currency_code')[$this->rentprice->currency_code] : '';
-            $price = $this->rentprice ? number_format($this->rentprice->price) .' '. $rent_currency_code : '0';
+            $price = $this->rentprice ? number_format($this->rentprice->price) . ' ' . $rent_currency_code : '0';
         }
         /* township */
         $township = $this->address ? $this->address->township()->first('name') : null;

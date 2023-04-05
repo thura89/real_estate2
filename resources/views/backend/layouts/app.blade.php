@@ -10,18 +10,22 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Implement in your applications Google or vector maps." />
     <meta name="msapplication-tap-highlight" content="no" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('backend/images/tinemyay-favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('backend/images/tinemyay-favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('backend/images/tinemyay-favicon/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ asset('backend/images/tinemyay-favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ asset('backend/images/tinemyay-favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ asset('backend/images/tinemyay-favicon/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ asset('backend/images/tinemyay-favicon/site.webmanifest') }}">
     <link rel="mask-icon" href="{{ asset('backend/images/tinemyay-favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <title>@yield('title')</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}" >
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-    
+
     {{-- themes css --}}
     <link href="{{ asset('backend/css/main.css') }}" rel="stylesheet" />
     {{-- Custom Css --}}
@@ -45,6 +49,7 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
     <!-- Laravel Javascript Validation -->
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
     {{-- Sweet alert --}}
@@ -52,10 +57,10 @@
     <script>
         $(document).ready(function() {
             let token = document.head.querySelector('meta[name="csrf-token"]');
-            if(token){
+            if (token) {
                 $.ajaxSetup({
                     headers: {
-                        'X-CSRF_TOKEN' : token.content
+                        'X-CSRF_TOKEN': token.content
                     }
                 });
             }
@@ -75,46 +80,50 @@
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             })
-            
-            @if(session('create'))
-            Toast.fire({
-                icon: 'success',
-                title: '{{session('create')}}'
-            })
+
+            @if (session('create'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('create') }}'
+                })
             @endif
 
-            @if(session('update'))
-            Toast.fire({
-                icon: 'success',
-                title: '{{session('update')}}'
-            })
-            @endif
-            
-            @if(session('delete'))
-            Toast.fire({
-                icon: 'success',
-                title: '{{session('delete')}}'
-            })
+            @if (session('update'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('update') }}'
+                })
             @endif
 
-            @if(session('fail'))
-            Toast.fire({
-                icon: 'fail',
-                title: '{{session('fail')}}'
-            })
+            @if (session('delete'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('delete') }}'
+                })
+            @endif
+
+            @if (session('fail'))
+                Toast.fire({
+                    icon: 'fail',
+                    title: '{{ session('fail') }}'
+                })
             @endif
 
             //agree check
             $('#agreebtn').prop('disabled', true);
 
             $('#agreecheck').on('click', function() {
-                if ( $(this).prop('checked') == false ) {
+                if ($(this).prop('checked') == false) {
                     $('#agreebtn').prop('disabled', true);
                 } else {
                     $('#agreebtn').prop('disabled', false);
                 }
             });
+            // $('[data-toggle="tooltip"]').tooltip();
         });
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     </script>
     @yield('script')
 </body>

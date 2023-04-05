@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->middleware('is_developer')->group(function () {
-    Route::get('/', 'DeveloperPageController@index')->name('dashboard');  
+    Route::get('/', 'DeveloperPageController@index')->name('dashboard');
 
     Route::resource('/property', 'PropertyController');
     Route::get('/property/datatables/ssd', 'PropertyController@ssd');
@@ -21,6 +22,7 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     /* Want To Buy & Rent */
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
+    Route::post('/want2buyrent/renew/{id}', 'Want2BuyRentController@expired')->name('developer.want2buyrent.expired');
 
     /* Expired Property */
     Route::resource('/expired_property', 'ExpiredPropertyController');
@@ -36,20 +38,17 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     Route::post('profile/{id}', 'DeveloperPageController@profile_update')->name('profile.update');
 
     // House 
-    Route::post('/property/create/house_shop' , 'PropertyController@house_shop_create')->name('property.create.house_shop');
-    Route::post('/property/update/house_shop' , 'PropertyController@house_shop_update')->name('property.update.house_shop');
+    Route::post('/property/create/house_shop', 'PropertyController@house_shop_create')->name('property.create.house_shop');
+    Route::post('/property/update/house_shop', 'PropertyController@house_shop_update')->name('property.update.house_shop');
 
     // LandHouse
-    Route::post('/property/create/land_house_land' , 'PropertyController@land_house_land_create')->name('property.create.landhouse_land');
-    Route::post('/property/update/land_house_land' , 'PropertyController@land_house_land_update')->name('property.update.landhouse_land');
+    Route::post('/property/create/land_house_land', 'PropertyController@land_house_land_create')->name('property.create.landhouse_land');
+    Route::post('/property/update/land_house_land', 'PropertyController@land_house_land_update')->name('property.update.landhouse_land');
 
     // ApartmentAndCondo
-    Route::post('/property/create/apart_condo_office' , 'PropertyController@apart_condo_office_create')->name('property.create.apartcondo_office');
-    Route::post('/property/update/apart_condo_office' , 'PropertyController@apart_condo_office_update')->name('property.update.apartcondo_office');
+    Route::post('/property/create/apart_condo_office', 'PropertyController@apart_condo_office_create')->name('property.create.apartcondo_office');
+    Route::post('/property/update/apart_condo_office', 'PropertyController@apart_condo_office_update')->name('property.update.apartcondo_office');
 
-    Route::get('/region' , 'PropertyController@region')->name('region');
-    Route::post('/township' , 'PropertyController@township')->name('township');
-
+    Route::get('/region', 'PropertyController@region')->name('region');
+    Route::post('/township', 'PropertyController@township')->name('township');
 });
-
-

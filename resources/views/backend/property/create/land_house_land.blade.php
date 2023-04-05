@@ -14,7 +14,13 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Property Create @if ($category == 2) Land For House @elseif($category == 5) Land @elseif($category == 7) Industrial Zone @endif
+                    <div>Property Create @if ($category == 2)
+                            Land For House
+                        @elseif($category == 5)
+                            Land
+                        @elseif($category == 7)
+                            Industrial Zone
+                        @endif
                     </div>
                 </div>
             </div>
@@ -62,7 +68,8 @@
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>
                                         @foreach ($regions as $key => $region)
-                                            <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                            <option value="{{ $region->id }}"
+                                                @if (old('region') == $region->id) selected="selected" @endif>
                                                 {{ $region->name }}</option>
                                         @endforeach
                                     </select>
@@ -75,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="street_name">Street Name</label>
                                     <input type="text" name="street_name" class="form-control">
                                 </div>
@@ -91,12 +98,12 @@
                                 <div class="col form-group">
                                     <label for="ward">Ward</label>
                                     <input type="text" name="ward" class="form-control">
-                                </div>
+                                </div> --}}
                                 @if ($category == 7)
-                                <div class="col form-group">
-                                    <label for="building_name">Industrial Name</label>
-                                    <input type="text" name="building_name" class="form-control">
-                                </div>
+                                    <div class="col form-group">
+                                        <label for="building_name">Industrial Name</label>
+                                        <input type="text" name="building_name" class="form-control">
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -150,42 +157,42 @@
                         </div>
                         {{-- Partation --}}
                         @if ($category == 2 || $category == 7)
-                        <div class="form-group">
-                            <h5>Partation</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col-6 col-md-4 form-group">
-                                    <label for="width">Partation Type</label>
-                                    <select name="partation_type" class="partation_type form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.partation_type') as $key => $type)
-                                            <option value="{{ $key }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                            <div class="form-group">
+                                <h5>Partation</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-6 col-md-4 form-group">
+                                        <label for="width">Partation Type</label>
+                                        <select name="partation_type" class="partation_type form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.partation_type') as $key => $type)
+                                                <option value="{{ $key }}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                <div class="col-6 col-md-4 form-group partation_hider">
-                                    <label for="level">Bed Room</label>
-                                    <select name="bed_room" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.bed_room') as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div class="col-6 col-md-4 form-group partation_hider">
+                                        <label for="level">Bed Room</label>
+                                        <select name="bed_room" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.bed_room') as $room)
+                                                <option value="{{ $room }}">{{ $room }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                <div class="col-6 col-md-4 form-group partation_hider">
-                                    <label for="bath_room">Bath Room</label>
-                                    <select name="bath_room" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.bath_room') as $room)
-                                            <option value="{{ $room }}">{{ $room }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div class="col-6 col-md-4 form-group partation_hider">
+                                        <label for="bath_room">Bath Room</label>
+                                        <select name="bath_room" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.bath_room') as $room)
+                                                <option value="{{ $room }}">{{ $room }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                            </div>
-                            {{-- <div class="row">
+                                </div>
+                                {{-- <div class="row">
                                 <div class="col-6 col-md-4 form-group">
                                     <label for="carpark">CarPark</label>
                                     <select name="carpark" class="form-control">
@@ -196,7 +203,7 @@
                                     </select>
                                 </div>
                             </div> --}}
-                        </div>
+                            </div>
                         @endif
                         {{-- Price --}}
                         <div class="price_sale_hider form-group">
@@ -340,55 +347,55 @@
                                 </div>
                                 {{-- Land House --}}
                                 @if ($category == 2)
-                                <div class="col form-group">
-                                    <label for="fence_condition">Fence Condition</label>
-                                    <select name="fence_condition" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.fence_condition') as $key => $condition)
-                                            <option value="{{ $key }}">{{ $condition }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                {{-- Land --}}
+                                    <div class="col form-group">
+                                        <label for="fence_condition">Fence Condition</label>
+                                        <select name="fence_condition" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.fence_condition') as $key => $condition)
+                                                <option value="{{ $key }}">{{ $condition }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    {{-- Land --}}
                                 @elseif($category == 5)
-                                <div class="col form-group">
-                                    <label for="land_type">Land Type</label>
-                                    <select name="land_type" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.land_type') as $key => $type)
-                                            <option value="{{ $key }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                {{-- Industrial --}}
+                                    <div class="col form-group">
+                                        <label for="land_type">Land Type</label>
+                                        <select name="land_type" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.land_type') as $key => $type)
+                                                <option value="{{ $key }}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    {{-- Industrial --}}
                                 @elseif($category == 7)
-                                <div class="col form-group">
-                                    <label for="industrial_type">Industrial Type</label>
-                                    <select name="industrial_type" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.industrial_type') as $key => $type)
-                                            <option value="{{ $key }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="year_of_construction">Year Of Construction</label>
-                                    <select name="year_of_construction" class="form-control">
-                                        <option value="">Select</option>
-                                        @for ($i=(int)date('Y');$i>=((int)date('Y') - 100);$i--)
-                                            <option value='{{$i}}'>{{$i}}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="building_condition">Building Condition</label>
-                                    <select name="building_condition" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.building_condition') as $key => $condition)
-                                            <option value="{{ $key }}">{{ $condition }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div class="col form-group">
+                                        <label for="industrial_type">Industrial Type</label>
+                                        <select name="industrial_type" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.industrial_type') as $key => $type)
+                                                <option value="{{ $key }}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="year_of_construction">Year Of Construction</label>
+                                        <select name="year_of_construction" class="form-control">
+                                            <option value="">Select</option>
+                                            @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
+                                                <option value='{{ $i }}'>{{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="building_condition">Building Condition</label>
+                                        <select name="building_condition" class="form-control">
+                                            <option value="">Select</option>
+                                            @foreach (config('const.building_condition') as $key => $condition)
+                                                <option value="{{ $key }}">{{ $condition }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -492,7 +499,7 @@
     <script>
         $('.price_sale_hider').hide();
         $('.price_rent_hider').hide();
-        $('.property_type').on('change', function(){
+        $('.property_type').on('change', function() {
             var type = this.value;
             if (type == 1) {
                 $('.price_rent_hider').hide();
@@ -502,7 +509,7 @@
                 $('.price_sale_hider').hide();
                 $('.price_rent_hider').show();
             }
-        });   
+        });
         $('.area').hide();
         $('.area_widthxlenght').hide();
         $('.area_option').on('change', function() {

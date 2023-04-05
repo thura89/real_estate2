@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'facebook_id', 'google_id', 'apple_id' ,'other_phone',
+        'name', 'email', 'password', 'facebook_id', 'google_id', 'apple_id', 'other_phone',
     ];
 
     /**
@@ -49,13 +49,18 @@ class User extends Authenticatable
 
     public function properties()
     {
-        return $this->hasMany(Property::class, 'user_id', 'id');
+        return $this->hasMany(Property::class);
     }
+    public function getPropertyCountAttribute()
+    {
+        return $this->properties()->count();
+    }
+
     public function newprojects()
     {
         return $this->hasMany(NewProject::class, 'user_id', 'id');
     }
-    
+
     public function scopeWithAndWhereHas($query, $relation, $constraint)
     {
         return $query->whereHas($relation, $constraint)
@@ -124,7 +129,7 @@ class User extends Authenticatable
             ]);
         }
     }
-    
+
     public function unfollow(User $user)
     {
         Follow::where('user_id', auth()->id())->where('following_id', $user->id)->delete();
@@ -146,10 +151,10 @@ class User extends Authenticatable
     }
     public function region()
     {
-        return $this->belongsTo(Region::class,'region','id');
+        return $this->belongsTo(Region::class, 'region', 'id');
     }
     public function township()
     {
-        return $this->belongsTo(Township::class,'township','id');
+        return $this->belongsTo(Township::class, 'township', 'id');
     }
 }

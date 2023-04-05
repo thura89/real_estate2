@@ -14,7 +14,11 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Property Update @if ($category == 2) Land For House @else Land @endif
+                    <div>Property Update @if ($category == 2)
+                            Land For House
+                        @else
+                            Land
+                        @endif
                     </div>
                 </div>
             </div>
@@ -42,7 +46,8 @@
                                     <select name="property_type" class="property_type form-control" disabled>
                                         <option value="">Select Type</option>
                                         @foreach (config('const.property_type') as $key => $property_type)
-                                            <option value="{{ $key }}" @if ($property->properties_type == $key) selected @endif>
+                                            <option value="{{ $key }}"
+                                                @if ($property->properties_type == $key) selected @endif>
                                                 {{ $property_type }}</option>
                                         @endforeach
                                     </select>
@@ -70,7 +75,8 @@
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>
                                         @foreach ($regions as $key => $region)
-                                            <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                            <option value="{{ $region->id }}"
+                                                @if (old('region') == $region->id) selected="selected" @endif>
                                                 {{ $region->name }}</option>
                                         @endforeach
                                     </select>
@@ -87,7 +93,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="street_name">Street Name</label>
                                     <input type="text" value="{{ $property->address->street_name }}" name="street_name"
                                         class="form-control">
@@ -107,7 +113,7 @@
                                     <label for="ward">Ward</label>
                                     <input value="{{ $property->address->ward }}" type="text" name="ward"
                                         class="form-control">
-                                </div>
+                                </div> --}}
                                 @if ($category == 7)
                                     <div class="col form-group">
                                         <label for="building_name">Industrial Name</label>
@@ -128,7 +134,9 @@
                                         <select name="area_option" class="area_option form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.area_option') as $key => $area_opt)
-                                                <option value="{{ $key }}" @if ($property->areasize->area_option == $key) selected @endif>{{ $area_opt }}</option>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->areasize->area_option == $key) selected @endif>{{ $area_opt }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -137,11 +145,13 @@
                                     <div class="row area_widthxlenght">
                                         <div class="col form-group">
                                             <label for="width">Width</label>
-                                            <input type="number" name="width" class="form-control" value="{{ $property->areasize->width }}">
+                                            <input type="number" name="width" class="form-control"
+                                                value="{{ $property->areasize->width }}">
                                         </div>
                                         <div class="col form-group">
                                             <label for="length">Length</label>
-                                            <input type="number" name="length" class="form-control" value="{{ $property->areasize->length }}">
+                                            <input type="number" name="length" class="form-control"
+                                                value="{{ $property->areasize->length }}">
                                         </div>
                                     </div>
                                 </div>
@@ -149,14 +159,17 @@
                                     <div class="row area">
                                         <div class="col form-group">
                                             <label for="area_size">Area Size</label>
-                                            <input type="number" name="area_size" class="form-control" value="{{ $property->areasize->area_size }}">
+                                            <input type="number" name="area_size" class="form-control"
+                                                value="{{ $property->areasize->area_size }}">
                                         </div>
                                         <div class="col form-group">
                                             <label for="area_unit">Area Unit</label>
                                             <select name="area_unit" class="area form-control">
                                                 <option value="">Select</option>
                                                 @foreach (config('const.area') as $key => $val)
-                                                    <option value="{{ $key }}" @if ($property->areasize->area_unit == $key) selected @endif>{{ $val }}</option>
+                                                    <option value="{{ $key }}"
+                                                        @if ($property->areasize->area_unit == $key) selected @endif>
+                                                        {{ $val }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -176,7 +189,8 @@
                                         <select name="partation_type" class="partation_type form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.partation_type') as $key => $type)
-                                                <option value="{{ $key }}" @if ($property->partation->type == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->partation->type == $key) selected @endif>
                                                     {{ $type }}</option>
                                             @endforeach
                                         </select>
@@ -187,7 +201,8 @@
                                         <select name="bed_room" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.bed_room') as $room)
-                                                <option value="{{ $room }}" @if ($property->partation->bed_room == $key) selected @endif>
+                                                <option value="{{ $room }}"
+                                                    @if ($property->partation->bed_room == $key) selected @endif>
                                                     {{ $room }}</option>
                                             @endforeach
                                         </select>
@@ -198,7 +213,8 @@
                                         <select name="bath_room" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.bath_room') as $room)
-                                                <option value="{{ $room }}" @if ($property->partation->bath_room == $key) selected @endif>
+                                                <option value="{{ $room }}"
+                                                    @if ($property->partation->bath_room == $key) selected @endif>
                                                     {{ $room }}</option>
                                             @endforeach
                                         </select>
@@ -236,7 +252,8 @@
                                         <select name="sale_area" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.area') as $key => $area)
-                                                <option value="{{ $key }}" @if ($property->price->area == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->price->area == $key) selected @endif>
                                                     {{ $area }}</option>
                                             @endforeach
                                         </select>
@@ -251,7 +268,8 @@
                                         <select name="sale_currency_code" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.currency_code') as $key => $currency)
-                                                <option value="{{ $key }}" @if ($property->price->currency_code == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->price->currency_code == $key) selected @endif>
                                                     {{ $currency }}</option>
                                             @endforeach
                                         </select>
@@ -274,7 +292,8 @@
                                         <select name="area" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.area') as $key => $area)
-                                                <option value="{{ $key }}" @if ($property->rentprice->area == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->rentprice->area == $key) selected @endif>
                                                     {{ $area }}</option>
                                             @endforeach
                                         </select>
@@ -289,7 +308,8 @@
                                         <select name="currency_code" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.currency_code') as $key => $currency)
-                                                <option value="{{ $key }}" @if ($property->rentprice->currency_code == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->rentprice->currency_code == $key) selected @endif>
                                                     {{ $currency }}</option>
                                             @endforeach
                                         </select>
@@ -301,7 +321,8 @@
                                         <select name="minimum_month" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.minimum_month') as $key => $month)
-                                                <option value="{{ $key }}" @if ($property->rentprice->minimum_month == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->rentprice->minimum_month == $key) selected @endif>
                                                     {{ $month }}</option>
                                             @endforeach
                                         </select>
@@ -311,7 +332,8 @@
                                         <select name="rent_pay_type" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.rent_pay_type') as $key => $rent_pay_type)
-                                                <option value="{{ $key }}" @if ($property->rentprice->rent_pay_type == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->rentprice->rent_pay_type == $key) selected @endif>
                                                     {{ $rent_pay_type }}</option>
                                             @endforeach
                                         </select>
@@ -321,7 +343,8 @@
                                         <select name="rent_payby_daily" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.rent_payby_daily') as $key => $rent_payby_daily)
-                                                <option value="{{ $key }}" @if ($property->rentprice->rent_payby_daily == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->rentprice->rent_payby_daily == $key) selected @endif>
                                                     {{ $rent_payby_daily }}</option>
                                             @endforeach
                                         </select>
@@ -339,7 +362,8 @@
                                     <select name="purchase_type" class="form-control">
                                         <option value="">Select</option>
                                         @foreach (config('const.purchase_type') as $key => $purchase_type)
-                                            <option value="{{ $key }}" @if ($property->payment->purchase_type == $key) selected @endif>
+                                            <option value="{{ $key }}"
+                                                @if ($property->payment->purchase_type == $key) selected @endif>
                                                 {{ $purchase_type }}</option>
                                         @endforeach
                                     </select>
@@ -352,13 +376,15 @@
                                             <div class="position-relative form-check">
                                                 <label class="form-check-label">
                                                     <input name="installment" type="radio" value="1"
-                                                        @if ($property->payment->installment == 1) checked @endif class="form-check-input"> Yes
+                                                        @if ($property->payment->installment == 1) checked @endif
+                                                        class="form-check-input"> Yes
                                                 </label>
                                             </div>
                                             <div class="position-relative form-check">
                                                 <label class="form-check-label">
                                                     <input name="installment" type="radio" value="0"
-                                                        @if ($property->payment->installment == 0) checked @endif class="form-check-input"> No
+                                                        @if ($property->payment->installment == 0) checked @endif
+                                                        class="form-check-input"> No
                                                 </label>
                                             </div>
                                         </fieldset>
@@ -376,7 +402,8 @@
                                     <select name="building_repairing" class="form-control">
                                         <option value="">Select</option>
                                         @foreach (config('const.building_repairing') as $key => $repair)
-                                            <option value="{{ $key }}" @if ($property->situation->building_repairing == $key) selected @endif>
+                                            <option value="{{ $key }}"
+                                                @if ($property->situation->building_repairing == $key) selected @endif>
                                                 {{ $repair }}</option>
                                         @endforeach
                                     </select>
@@ -388,7 +415,8 @@
                                         <select name="fence_condition" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.fence_condition') as $key => $condition)
-                                                <option value="{{ $key }}" @if ($property->situation->fence_condition == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->situation->fence_condition == $key) selected @endif>
                                                     {{ $condition }}</option>
                                             @endforeach
                                         </select>
@@ -401,7 +429,8 @@
                                         <select name="land_type" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.land_type') as $key => $type)
-                                                <option value="{{ $key }}" @if ($property->situation->land_type == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->situation->land_type == $key) selected @endif>
                                                     {{ $type }}</option>
                                             @endforeach
                                         </select>
@@ -414,7 +443,8 @@
                                         <select name="industrial_type" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.industrial_type') as $key => $type)
-                                                <option value="{{ $key }}" @if ($property->situation->industrial_type == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->situation->industrial_type == $key) selected @endif>
                                                     {{ $type }}</option>
                                             @endforeach
                                         </select>
@@ -424,7 +454,8 @@
                                         <select name="year_of_construction" class="form-control">
                                             <option value="">Select</option>
                                             @for ($i = (int) date('Y'); $i >= (int) date('Y') - 100; $i--)
-                                                <option value='{{ $i }}' @if ($property->situation->year_of_construction == $i) selected @endif>
+                                                <option value='{{ $i }}'
+                                                    @if ($property->situation->year_of_construction == $i) selected @endif>
                                                     {{ $i }}</option>
                                             @endfor
                                         </select>
@@ -434,7 +465,8 @@
                                         <select name="building_condition" class="form-control">
                                             <option value="">Select</option>
                                             @foreach (config('const.building_condition') as $key => $condition)
-                                                <option value="{{ $key }}" @if ($property->situation->building_condition == $key) selected @endif>
+                                                <option value="{{ $key }}"
+                                                    @if ($property->situation->building_condition == $key) selected @endif>
                                                     {{ $condition }}</option>
                                             @endforeach
                                         </select>
@@ -444,46 +476,50 @@
                         </div>
                         {{-- Suppliment --}}
                         @if (1 == 2)
-                        <div class="form-group">
-                            <h5>Electric & Water Suppliment</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <label for="">Water Supply</label>
-                                    <fieldset class="position-relative form-group">
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="water" type="radio" class="form-check-input" value="1"
-                                                    @if ($property->suppliment->water_sys == 1) checked @endif> Yes
-                                            </label>
-                                        </div>
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="water" type="radio" class="form-check-input" value="0"
-                                                    @if ($property->suppliment->water_sys == 0) checked @endif> No
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="">Electric Supply</label>
-                                    <fieldset class="position-relative form-group">
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="electric" type="radio" class="form-check-input" value="1"
-                                                    @if ($property->suppliment->electricity_sys == 1) checked @endif> Yes
-                                            </label>
-                                        </div>
-                                        <div class="position-relative form-check">
-                                            <label class="form-check-label">
-                                                <input name="electric" type="radio" class="form-check-input" value="0"
-                                                    @if ($property->suppliment->electricity_sys == 0) checked @endif> No
-                                            </label>
-                                        </div>
-                                    </fieldset>
+                            <div class="form-group">
+                                <h5>Electric & Water Suppliment</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <label for="">Water Supply</label>
+                                        <fieldset class="position-relative form-group">
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="water" type="radio" class="form-check-input"
+                                                        value="1" @if ($property->suppliment->water_sys == 1) checked @endif>
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="water" type="radio" class="form-check-input"
+                                                        value="0" @if ($property->suppliment->water_sys == 0) checked @endif>
+                                                    No
+                                                </label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col form-group">
+                                        <label for="">Electric Supply</label>
+                                        <fieldset class="position-relative form-group">
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="electric" type="radio" class="form-check-input"
+                                                        value="1" @if ($property->suppliment->electricity_sys == 1) checked @endif>
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="position-relative form-check">
+                                                <label class="form-check-label">
+                                                    <input name="electric" type="radio" class="form-check-input"
+                                                        value="0" @if ($property->suppliment->electricity_sys == 0) checked @endif>
+                                                    No
+                                                </label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @endif
                         {{-- Image --}}
                         <div class="form-group">
@@ -500,8 +536,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
-                                    <textarea name="note"
-                                        class="form-control">{{ $property->suppliment->note ?? '' }}</textarea>
+                                    <textarea name="note" class="form-control">{{ $property->suppliment->note ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -509,7 +544,8 @@
                         <div class="row">
                             <div class="col-6 col-md-5 form-group">
                                 <input name="agreecheck" type="checkbox" id="agreecheck">
-                                <label for="agreecheck">By posting this content, I agree to be contacted by affiliates</label>
+                                <label for="agreecheck">By posting this content, I agree to be contacted by
+                                    affiliates</label>
                             </div>
                         </div>
                         {{-- Submit Button --}}
@@ -535,9 +571,9 @@
             $('.area_widthxlenght').hide();
             var type = $('.area_option').val();
             if (type == 1) {
-                    $('.area').hide();
-                    $('.area_widthxlenght').show();
-                }
+                $('.area').hide();
+                $('.area_widthxlenght').show();
+            }
             if (type == 2) {
                 $('.area').show();
                 $('.area_widthxlenght').hide();

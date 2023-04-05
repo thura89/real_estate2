@@ -23,9 +23,9 @@ class UserNewProjectResource extends JsonResource
         foreach ($decode_images as $key => $image) {
             $images[] = asset(config('const.new_project_img_path')) . '/' . $image;
         }
-        $images = $images ?? null; 
+        $images = $images ?? null;
         return [
-            
+
             'region' => $region ?? null,
             'township' => $township ?? null,
             'min_price' => number_format($this->min_price) ?? null,
@@ -34,9 +34,9 @@ class UserNewProjectResource extends JsonResource
             'project_start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? null,
             'project_end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? null,
             'townsandvillages' => $this->townsandvillages ?? null,
-            'wards' => $this->wards ?? null,
-            'street_name' => $this->street_name ?? null,
-            'type_of_street' => $this->type_of_street ?? null,
+            // 'wards' => $this->wards ?? null,
+            // 'street_name' => $this->street_name ?? null,
+            // 'type_of_street' => $this->type_of_street ?? null,
             'area_unit' => $this->area_unit ?? null,
             'purchase_type' => $this->purchase_type ?? null,
             'installment' => $this->installment ?? null,
@@ -55,11 +55,16 @@ class UserNewProjectResource extends JsonResource
             'disposal' => $this->disposal ?? null,
             'images' => $images ?? null,
             'user' => [
-                'name' => $this->user ? $this->user->name : null,
-                'profile_photo' => $this->user ? $this->user->profile_photo : null,
+                'name' => $this->user->name ?? null,
+                'company_name' => $this->user->company_name ?? null,
+                'profile_photo' => $this->user->profile_photo ?? null,
+                'phone' => $this->user->phone ?? null,
+                'region' => $userRegion['name'] ?? null,
+                'township' => $userTownship['name'] ?? null,
+                'address' => $this->user->address ?? null,
             ],
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
     }
-}   
+}

@@ -33,8 +33,8 @@ class PageController extends Controller
             'areasize',
             'user',
             'suppliment'
-        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',config('const.publish'));//published Status
-        
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status', config('const.publish')); //published Status
+
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
             $data->join('suppliments', 'properties.id', '=', 'suppliments.properties_id')
@@ -45,7 +45,7 @@ class PageController extends Controller
         if ($request->get('title')) {
             $title = $request->get('title');
             $data->whereHas('suppliment', function ($query) use ($title) {
-                $query->where('title', 'like', '%'.$title.'%');
+                $query->where('title', 'like', '%' . $title . '%');
             });
         }
         if ($request->get('p_code')) {
@@ -63,7 +63,7 @@ class PageController extends Controller
                 $data->whereHas('address', function ($query) use ($region) {
                     $query->where('region', $region);
                 });
-            }else{
+            } else {
                 $data;
             }
         }
@@ -80,7 +80,7 @@ class PageController extends Controller
                 $data->whereHas('price', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
@@ -92,7 +92,7 @@ class PageController extends Controller
                 $data->whereHas('price', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
@@ -108,12 +108,12 @@ class PageController extends Controller
             $installment = $request->get('installment');
             if ($installment === 'yes') {
                 $data->with('payment')->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',1);
+                    $query->where('installment', 1);
                 });
             }
             if ($installment === 'no') {
                 $data->with('payment')->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',0);
+                    $query->where('installment', 0);
                 });
             }
         }
@@ -194,7 +194,7 @@ class PageController extends Controller
             $data->with('areasize')->whereHas('areasize', function ($query) use ($height) {
                 $query->where('height', $height);
             });
-        }       
+        }
         if ($request->get('partation_type')) {
             $partation_type = $request->get('partation_type');
             $data->whereHas('partation', function ($query) use ($partation_type) {
@@ -212,31 +212,31 @@ class PageController extends Controller
             $data->whereHas('partation', function ($query) use ($bath_room) {
                 $query->where('bath_room', $bath_room);
             });
-        }   
+        }
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */
             if ($sort == 'max') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
                 }
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
                 }
             }
             if ($sort == 'new') {
@@ -245,7 +245,7 @@ class PageController extends Controller
             if ($sort == 'old') {
                 $data->orderBy('updated_at', 'ASC');
             }
-        }else{
+        } else {
             $data->orderBy('updated_at', 'DESC');
         }
         $data = $data->paginate('10');
@@ -263,7 +263,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-            ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',config('const.publish'));//published Status
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status', config('const.publish')); //published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
@@ -276,14 +276,14 @@ class PageController extends Controller
                 $data->whereHas('address', function ($query) use ($region) {
                     $query->where('region', $region);
                 });
-            }else{
+            } else {
                 $data;
             }
         }
         $data = $data->where('recommended_feature', 1)
-                    ->orderBy('updated_at', 'DESC')
-                    ->paginate(10);
-        
+            ->orderBy('updated_at', 'DESC')
+            ->paginate(10);
+
         $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;
@@ -298,7 +298,7 @@ class PageController extends Controller
             'price',
             'rentPrice',
             'propertyImage',
-        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status',config('const.publish'));//published Status
+        ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))->where('status', config('const.publish')); //published Status
         if ($request->get('property_type')) {
             $data->where('properties_type', $request->get('property_type'));
         }
@@ -311,14 +311,14 @@ class PageController extends Controller
                 $data->whereHas('address', function ($query) use ($region) {
                     $query->where('region', $region);
                 });
-            }else{
+            } else {
                 $data;
             }
         }
         $data = $data->where('hot_feature', 1)
-                    ->orderBy('updated_at', 'DESC')
-                    ->paginate(10);
-        
+            ->orderBy('updated_at', 'DESC')
+            ->paginate(10);
+
         $data = PropertyList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;
@@ -332,7 +332,7 @@ class PageController extends Controller
             'township',
         ]);
 
-        if($request->keywords){
+        if ($request->keywords) {
             $keyword = $request->keywords;
             $data->whereHas('region', function ($qr) use ($keyword) {
                 $qr->where('name', 'LIKE', '%' . $keyword . '%');
@@ -341,16 +341,15 @@ class PageController extends Controller
             });
         }
         if ($request->type) {
-            $data->where('properties_type',$request->type);
+            $data->where('properties_type', $request->type);
         }
         if ($request->category) {
-            $data->where('properties_category',$request->category);
+            $data->where('properties_category', $request->category);
         }
 
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
+        $data =  $data->orderBy('created_at', 'DESC')->paginate(10);
 
-        return Want2BuyRentListsResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
-        
+        return Want2BuyRentListsResource::collection($data)->additional(['result' => true, 'message' => 'Success']);
     }
 
     /** Want To Buy Rent Detail */
@@ -362,13 +361,13 @@ class PageController extends Controller
             $data->update();
         }
         $data = new Want2BuyRentDetailsResource($data);
-        return ResponseHelper::success('success',$data);
+        return ResponseHelper::success('success', $data);
     }
 
     /** Property Detail */
     public function show(Request $request, $id)
     {
-        
+
         /* Get Property */
         $property = Property::with([
             'address',
@@ -445,5 +444,4 @@ class PageController extends Controller
         }
         return ResponseHelper::fail('Fail', null);
     }
-
 }

@@ -67,37 +67,47 @@ class Want2BuyRentController extends Controller
             ->editColumn('properties_category', function ($each) {
                 return config('const.property_category')[$each->properties_category] ?? '-';
             })
-            ->editColumn('co_broke', function ($each) {
-                return config('const.broker')[$each->co_broke] ?? '-';
+            ->editColumn('status', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    return '<span class="badge badge-pill badge-danger">Expired</span>' ?? '-';
+                }
+                if ($each->status == config('const.publish')) {
+                    return '<span class="badge badge-pill badge-success">Active</span>' ?? '-';
+                }
             })
             ->editColumn('post_by', function ($each) {
                 if ($each->user_id) {
                     // return $each->user['name'];
-                    if($each->user['user_type'] == 1 || $each->user['user_type'] == 2 || $each->user['user_type'] == 3){
-                        return $each->user['name'] .' (Admin)' ?? 'Admin(-)';    
+                    if ($each->user['user_type'] == 1 || $each->user['user_type'] == 2 || $each->user['user_type'] == 3) {
+                        return $each->user['name'] . ' (Admin)' ?? 'Admin(-)';
                     }
-                    if($each->user['user_type'] == 4){
-                        return $each->user['name'] .' (Agent)'?? 'Agent(-)';    
+                    if ($each->user['user_type'] == 4) {
+                        return $each->user['name'] . ' (Agent)' ?? 'Agent(-)';
                     }
-                    if($each->user['user_type'] == 5){
-                        return $each->user['name'] .' (Dev)'?? 'Developer(-)';    
+                    if ($each->user['user_type'] == 5) {
+                        return $each->user['name'] . ' (Dev)' ?? 'Developer(-)';
                     }
-                    if($each->user['user_type'] == 6){
-                        return $each->user['name'] .' (User)'?? 'User(-)';    
+                    if ($each->user['user_type'] == 6) {
+                        return $each->user['name'] . ' (User)' ?? 'User(-)';
                     }
                     return '-';
                 }
                 return '-';
             })
             ->editColumn('created_at', function ($each) {
-                return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
+                return Carbon::parse($each->created_at)->format('d-m-y');
             })
             ->addColumn('action', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    $renew = '<a href="" data-id="' . $each->id . '" class="expired badge badge-pill badge-info text-white" data-toggle="tooltip" data-placement="top" title="Renew">renew</a>';
+                } else {
+                    $renew = '';
+                }
                 $edit_icon = '<a href="' . route('admin.want2buyrent.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
-                return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
+                return '<div class="action-icon">' . $renew . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['budget', 'action'])
+            ->rawColumns(['budget', 'action', 'status'])
             ->make(true);
     }
 
@@ -140,7 +150,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
-        $data->status = $request->status ?? 1;
+        $data->status = config('const.publish');
         $data->save();
 
         return redirect()->route('admin.want2buyrent.index')->with('create', 'Successfully Created');
@@ -200,7 +210,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke ? 1 : 0;
         $data->terms_condition = $request->terms_condition;
-        $data->status = $request->status ?? 1;
+        // $data->status = $request->status ?? 1;
         $data->update();
         return redirect()->route('admin.want2buyrent.index')->with('update', 'Successfully Updated');
     }
@@ -215,5 +225,15 @@ class Want2BuyRentController extends Controller
     {
         $data = WantToBuyRent::findOrFail($id);
         $data->delete();
+    }
+
+    public function expired($id)
+    {
+        $data = WantToBuyRent::findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->updated_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return redirect()->route('admin.want2buyrent.index')->with('Renew', 'Successfully Extended');
     }
 }

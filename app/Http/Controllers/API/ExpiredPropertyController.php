@@ -28,7 +28,8 @@ class ExpiredPropertyController extends Controller
             'areasize',
             'user'
         ])->whereDate('created_at', '<=', $date)
-          ->where('user_id',Auth::user()->id);
+            ->where('status', config('const.pending'))
+            ->where('user_id', Auth::user()->id);
         if ($request->get('keywords')) {
             $keyword = $request->get('keywords');
             // $data->whereHas('suppliment', function ($query) use ($keyword) {
@@ -83,7 +84,7 @@ class ExpiredPropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
@@ -95,7 +96,7 @@ class ExpiredPropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
@@ -111,12 +112,12 @@ class ExpiredPropertyController extends Controller
             $installment = $request->get('installment');
             if ($installment === 'yes') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',1);
+                    $query->where('installment', 1);
                 });
             }
             if ($installment === 'no') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',0);
+                    $query->where('installment', 0);
                 });
             }
         }
@@ -157,7 +158,6 @@ class ExpiredPropertyController extends Controller
                     $query->where('water_sys', 0);
                 });
             }
-            
         }
         if ($request->get('electricity_sys')) {
             $electricity_sys = $request->get('electricity_sys');
@@ -172,12 +172,12 @@ class ExpiredPropertyController extends Controller
                 });
             }
         }
-        if ($request->get('type_of_street')) {
-            $type_of_street = $request->get('type_of_street');
-            $data->whereHas('address', function ($query) use ($type_of_street) {
-                $query->where('type_of_street', $type_of_street);
-            });
-        }
+        // if ($request->get('type_of_street')) {
+        //     $type_of_street = $request->get('type_of_street');
+        //     $data->whereHas('address', function ($query) use ($type_of_street) {
+        //         $query->where('type_of_street', $type_of_street);
+        //     });
+        // }
         if ($request->get('area_option')) {
             $area_option = $request->get('area_option');
             $data->whereHas('areasize', function ($query) use ($area_option) {
@@ -238,31 +238,31 @@ class ExpiredPropertyController extends Controller
         //         $query->where('carpark', $carpark);
         //     });
         // }
-        
+
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */
             if ($sort == 'max') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
                 }
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
                 if ($request->get('property_type') == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
                 }
             }
             if ($sort == 'new') {
@@ -271,7 +271,7 @@ class ExpiredPropertyController extends Controller
             if ($sort == 'old') {
                 $data->orderBy('updated_at', 'ASC');
             }
-        }else{
+        } else {
             $data->orderBy('updated_at', 'DESC');
         }
 
@@ -297,10 +297,10 @@ class ExpiredPropertyController extends Controller
             'user',
             'wishlist'
         ])->where('id', $id)
-        ->where('user_id',Auth::user()->id)
-        ->first();
+            ->where('user_id', Auth::user()->id)
+            ->first();
         $category = $property->category ?? null;
-            
+
         if (isset($property)) {
             /* Redirect to Edit Page By Relative */
             /* House , Shoop */
@@ -325,27 +325,28 @@ class ExpiredPropertyController extends Controller
 
     public function destroy($id)
     {
-        $data = Property::where('user_id',auth('api')->user()->id)
-                            ->findOrFail($id);
+        $data = Property::where('user_id', auth('api')->user()->id)
+            ->findOrFail($id);
         if (!$data) {
-            return ResponseHelper::fail('Fail Request','Data not found');
+            return ResponseHelper::fail('Fail Request', 'Data not found');
         }
         $data_images = $data->propertyImage->images;
-        $data_images = json_decode($data_images,true);
-        
+        $data_images = json_decode($data_images, true);
+
         if ($data) {
             foreach ($data_images as $key => $del) {
                 Storage::disk('public')->delete('/property_images/' . $del);
             }
             $data->delete();
             return ResponseHelper::success('Success', 'Successfully Deleted');
-
         }
     }
     public function renew($id)
     {
-        $property = Property::where('user_id',Auth()->id)->findOrFail($id);
+        $property = Property::where('user_id', Auth()->id)->findOrFail($id);
+        $property->status = config('const.publish');
         $property->created_at = Carbon::now();
+        $property->updated_at = Carbon::now();
         $property->update();
         return ResponseHelper::success('Success', 'Successfully Renew');
     }

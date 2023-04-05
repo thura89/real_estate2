@@ -54,13 +54,21 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  .' '. config('const.currency_code')[$each->currency_code].' </div>';
+                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  . ' ' . config('const.currency_code')[$each->currency_code] . ' </div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
             })
             ->editColumn('properties_category', function ($each) {
                 return config('const.property_category')[$each->properties_category] ?? '-';
+            })
+            ->editColumn('status', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    return '<span class="badge badge-pill badge-danger">Expired</span>' ?? '-';
+                }
+                if ($each->status == config('const.publish')) {
+                    return '<span class="badge badge-pill badge-success">Active</span>' ?? '-';
+                }
             })
             ->editColumn('co_broke', function ($each) {
                 return config('const.broker')[$each->co_broke] ?? '-';
@@ -69,11 +77,16 @@ class Want2BuyRentController extends Controller
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
             })
             ->addColumn('action', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    $renew = '<a href="" data-id="' . $each->id . '" class="expired badge badge-pill badge-info text-white" data-toggle="tooltip" data-placement="top" title="Renew">renew</a>';
+                } else {
+                    $renew = '';
+                }
                 $edit_icon = '<a href="' . route('agent.want2buyrent.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
-                return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
+                return '<div class="action-icon">' . $renew . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['budget', 'action'])
+            ->rawColumns(['budget', 'action', 'status'])
             ->make(true);
     }
 
@@ -116,7 +129,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
-        $data->status = $request->status ?? 1;
+        $data->status = config('const.publish');
         $data->save();
 
         return redirect()->route('agent.want2buyrent.index')->with('create', 'Successfully Created');
@@ -176,7 +189,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke ? 1 : 0;
         $data->terms_condition = $request->terms_condition;
-        $data->status = $request->status ?? 1;
+        // $data->status = $request->status ?? 1;
         $data->update();
         return redirect()->route('agent.want2buyrent.index')->with('update', 'Successfully Updated');
     }
@@ -191,5 +204,15 @@ class Want2BuyRentController extends Controller
     {
         $data = WantToBuyRent::findOrFail($id);
         $data->delete();
+    }
+
+    public function expired($id)
+    {
+        $data = WantToBuyRent::where('user_id', Auth()->user()->id)->findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->updated_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return redirect()->route('agent.want2buyrent.index')->with('Renew', 'Successfully Extended');
     }
 }

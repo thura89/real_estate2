@@ -22,6 +22,7 @@ Route::prefix('agent')->name('agent.')->namespace('Backend\Agent')->middleware('
     /* Want To Buy & Rent */
     Route::resource('/want2buyrent', 'Want2BuyRentController');
     Route::get('/want2buyrent/datatables/ssd', 'Want2BuyRentController@ssd');
+    Route::post('/want2buyrent/renew/{id}', 'Want2BuyRentController@expired')->name('agent.want2buyrent.expired');
 
     /* Expired Property */
     Route::resource('/expired_property', 'ExpiredPropertyController');
@@ -48,5 +49,3 @@ Route::prefix('agent')->name('agent.')->namespace('Backend\Agent')->middleware('
     Route::post('/township' , 'PropertyController@township')->name('township');
 
 });
-
-

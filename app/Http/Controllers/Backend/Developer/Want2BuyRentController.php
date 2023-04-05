@@ -33,7 +33,7 @@ class Want2BuyRentController extends Controller
         $data = WantToBuyRent::query()->with([
             'region',
             'township',
-        ])->where('user_id',auth()->user()->id);
+        ])->where('user_id', auth()->user()->id);
         return Datatables::of($data)
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
@@ -44,7 +44,7 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from .'~'. $each->budget_to  . '</div>';
+                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  . '</div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -55,15 +55,28 @@ class Want2BuyRentController extends Controller
             ->editColumn('co_broke', function ($each) {
                 return config('const.broker')[$each->co_broke] ?? '-';
             })
+            ->editColumn('status', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    return '<span class="badge badge-pill badge-danger">Expired</span>' ?? '-';
+                }
+                if ($each->status == config('const.publish')) {
+                    return '<span class="badge badge-pill badge-success">Active</span>' ?? '-';
+                }
+            })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
             })
             ->addColumn('action', function ($each) {
+                if ($each->status == config('const.pending')) {
+                    $renew = '<a href="" data-id="' . $each->id . '" class="expired badge badge-pill badge-info text-white" data-toggle="tooltip" data-placement="top" title="Renew">renew</a>';
+                } else {
+                    $renew = '';
+                }
                 $edit_icon = '<a href="' . route('developer.want2buyrent.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
-                return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
+                return '<div class="action-icon">' . $renew . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['budget', 'action'])
+            ->rawColumns(['budget', 'action', 'status'])
             ->make(true);
     }
 
@@ -106,7 +119,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
-        $data->status = $request->status ?? 1;
+        $data->status = config('const.publish');
         $data->save();
 
         return redirect()->route('developer.want2buyrent.index')->with('create', 'Successfully Created');
@@ -134,7 +147,7 @@ class Want2BuyRentController extends Controller
         /* Get Region */
         $regions = Region::get(['name', 'id']);
         $data = WantToBuyRent::findOrFail($id);
-        return view('backend.developer.want2buyrent.edit', compact('id','regions','data'));
+        return view('backend.developer.want2buyrent.edit', compact('id', 'regions', 'data'));
     }
 
     /**
@@ -166,7 +179,7 @@ class Want2BuyRentController extends Controller
         $data->descriptions = $request->descriptions;
         $data->co_broke = $request->co_broke ? 1 : 0;
         $data->terms_condition = $request->terms_condition;
-        $data->status = $request->status ?? 1;
+        // $data->status = $request->status ?? 1;
         $data->update();
         return redirect()->route('developer.want2buyrent.index')->with('update', 'Successfully Updated');
     }
@@ -181,5 +194,14 @@ class Want2BuyRentController extends Controller
     {
         $data = WantToBuyRent::findOrFail($id);
         $data->delete();
+    }
+    public function expired($id)
+    {
+        $data = WantToBuyRent::where('user_id', Auth::user()->id)->findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->updated_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return redirect()->route('developer.want2buyrent.index')->with('Renew', 'Successfully Extended');
     }
 }

@@ -20,13 +20,13 @@ class DeveloperController extends Controller
 
     public function developerList(Request $request)
     {
-        $data = User::query()->with('properties')->where('user_type',config('const.Developer'));
+        $data = User::query()->with('properties')->where('user_type', config('const.Developer'));
 
         if ($request->get('keywords')) {
-            $data->where('name','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('company_name','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('email','like', '%' . $request->get('keywords') . '%')
-                 ->orWhere('phone','like', '%' . $request->get('keywords') . '%');
+            $data->where('name', 'like', '%' . $request->get('keywords') . '%')
+                ->orWhere('company_name', 'like', '%' . $request->get('keywords') . '%')
+                ->orWhere('email', 'like', '%' . $request->get('keywords') . '%')
+                ->orWhere('phone', 'like', '%' . $request->get('keywords') . '%');
         }
         if ($request->get('region')) {
             $data->where('region', $request->get('region'));
@@ -34,20 +34,19 @@ class DeveloperController extends Controller
         if ($request->get('township')) {
             $data->where('township', $request->get('township'));
         }
-        
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
 
-        $data = DeveloperList::collection($data)->additional(['result'=>true,'message'=>'Success']);
+        $data =  $data->orderBy('created_at', 'DESC')->paginate(10);
+
+        $data = DeveloperList::collection($data)->additional(['result' => true, 'message' => 'Success']);
 
         return $data;
-
     }
-    public function developerProperties(Request $request,$id)
+    public function developerProperties(Request $request, $id)
     {
         /* Get Property */
-        $data = User::query()->having('user_type',config('const.Developer'))->with([
+        $data = User::query()->having('user_type', config('const.Developer'))->with([
             'properties',
-        ])->where('id',$id);
+        ])->where('id', $id);
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
         }
@@ -66,13 +65,12 @@ class DeveloperController extends Controller
                 $query->where('township', $township);
             });
         }
-        
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
+
+        $data =  $data->orderBy('created_at', 'DESC')->paginate(10);
 
         $data = PropertiesByDeveloper::collection($data);
 
         return $data;
-        
     }
     // public function agentPropertyDetail(Request $request,$id,$property)
     // {
@@ -108,7 +106,7 @@ class DeveloperController extends Controller
     //             $data = new PropertyDetail348($property);
     //             return ResponseHelper::success('Success', $data);
     //         }
-            
+
     //     }
     //     return ResponseHelper::fail('Fail', null);
     // }

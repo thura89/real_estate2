@@ -69,7 +69,7 @@ class AuthController extends Controller
         $user->description = $request->description;
         $user->profile_photo = $profile_img_name;
         $user->cover_photo = $cover_img_name;
-        $user->password = Hash::make('123123123');
+        $user->password = Hash::make('tinemyay@changeme');
         $user->ip = $request->ip();
         $user->user_agent = $request->server('HTTP_USER_AGENT');
         $user->login_at = date('Y-m-d H:i:s');
@@ -109,7 +109,6 @@ class AuthController extends Controller
             DB::rollBack();
             return ResponseHelper::fail('Something Wrong', $e);
         }
-        
     }
 
     public function check_code(Request $request)
@@ -171,7 +170,7 @@ class AuthController extends Controller
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
             'company_images.*' => 'required|image|mimes:jpg,jpeg,png,gif',
-            
+
         ]);
 
         if ($validate->fails()) {
@@ -199,7 +198,7 @@ class AuthController extends Controller
                     $company_images[] = $file_name;
                 }
             }
-            
+
             $user->user_type = $request->user_type;
             $user->company_name = $request->company_name;
             if ($request->user_type == 4) {
@@ -266,7 +265,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'phone' => 'required|exists:users|min:9|max:11',
             'password' => 'required',
         ]);
@@ -351,7 +350,5 @@ class AuthController extends Controller
             auth()->user()->token()->revoke();
             return ResponseHelper::success('Successfully Logout', null);
         }
-        
     }
-
 }

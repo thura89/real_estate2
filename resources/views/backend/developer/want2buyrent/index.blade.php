@@ -18,8 +18,7 @@
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
-                <a href="{{ route('developer.want2buyrent.create') }}"
-                    class="btn-shadow btn btn-primary">
+                <a href="{{ route('developer.want2buyrent.create') }}" class="btn-shadow btn btn-primary">
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-business-time fa-w-20"></i>
                     </span>
@@ -40,8 +39,9 @@
                             <th>Type</th>
                             <th>Category</th>
                             <th>Broker</th>
-                            <th>Created At</th>
-                            <th class="no-sort">Action</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th width="100px;" class="no-sort">Action</th>
                         </thead>
                         <tbody>
                         </tbody>
@@ -51,7 +51,7 @@
         </div>
     </div>
     <br>
-    
+
 @endsection
 @section('script')
     <script>
@@ -90,12 +90,16 @@
                         name: 'co_broke'
                     },
                     {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
                         data: 'created_at',
                         name: 'created_at'
                     },
                     {
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
                     },
 
                 ],
@@ -117,6 +121,32 @@
                         $.ajax({
                             url: '/developer/want2buyrent/' + id,
                             type: 'DELETE',
+                            data: {
+                                '_token': "{{ csrf_token() }}",
+                            },
+                            success: function() {
+                                table.ajax.reload();
+                            }
+                        });
+                    }
+                })
+            });
+            $(document).on('click', '.expired', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to renew this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, renew it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/developer/want2buyrent/renew/' + id,
+                            type: 'POST',
                             data: {
                                 '_token': "{{ csrf_token() }}",
                             },

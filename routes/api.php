@@ -40,11 +40,11 @@ Route::namespace('API')->group(function () {
     Route::get('/recommend_property', 'PageController@recommend_property');
     Route::get('/hot_property', 'PageController@hot_property');
     Route::get('/property/{id}/show', 'PageController@show');
-    
+
     /* New Project */
     Route::get('/new-projects', 'NewProjectController@new_project');
     Route::get('/new-project/{id}/show', 'NewProjectController@show');
-    
+
     /* News */
     Route::get('/news-lists', 'NewsController@news');
     Route::get('/news/{id}/show', 'NewsController@news_detail');
@@ -65,16 +65,16 @@ Route::namespace('API')->group(function () {
     Route::post('/mobile-register/fullinfo', 'AuthController@mobileRegisterFullInfo');
     Route::post('/mobile/forgetpassword_send_code', 'AuthController@forgetPassword_send_code');
     Route::post('/mobile-register/resetpassword', 'AuthController@resetPassword');
-    
-    
+
+
     Route::post('/login', 'AuthController@login');
 
     Route::middleware('auth:api')->group(function () {
         Route::get('/profile', 'ProfileController@profile');
         Route::post('/profile', 'ProfileController@update_profile');
         /* Profile Update - Delete Image */
-        Route::post('/profile/delete_company_image' , 'ProfileController@DeleteCompanyImage');
-        
+        Route::post('/profile/delete_company_image', 'ProfileController@DeleteCompanyImage');
+
         Route::post('/logout', 'AuthController@logout');
         Route::post('/change-password', 'AuthController@changePassword');
 
@@ -95,6 +95,7 @@ Route::namespace('API')->group(function () {
         Route::post('/user/want2buyrent/create', 'Want2BuyRentController@store');
         Route::post('/user/want2buyrent/{id}/update', 'Want2BuyRentController@update');
         Route::post('/user/want2buyrent/{id}/delete', 'Want2BuyRentController@destroy');
+        Route::get('/user/want2buyrent/{id}/renew', 'Want2BuyRentController@renew');
 
 
         Route::middleware('api_is_developer')->group(function () {
@@ -108,19 +109,19 @@ Route::namespace('API')->group(function () {
         });
 
         /* Property Create - Update */
-        Route::post('user/property/delete_image' , 'PropertyController@DeletePropertyImage');
+        Route::post('user/property/delete_image', 'PropertyController@DeletePropertyImage');
 
         /* House  */
-        Route::post('user/property/create/house_shop' , 'PropertyController@house_shop_create');
-        Route::post('user/property/update/house_shop' , 'PropertyController@house_shop_update');
+        Route::post('user/property/create/house_shop', 'PropertyController@house_shop_create');
+        Route::post('user/property/update/house_shop', 'PropertyController@house_shop_update');
 
         /* LandHouse */
-        Route::post('user/property/create/land_house_land' , 'PropertyController@land_house_land_create');
-        Route::post('user/property/update/land_house_land' , 'PropertyController@land_house_land_update');
+        Route::post('user/property/create/land_house_land', 'PropertyController@land_house_land_create');
+        Route::post('user/property/update/land_house_land', 'PropertyController@land_house_land_update');
 
         /* ApartmentAndCondo */
-        Route::post('user/property/create/apart_condo_office' , 'PropertyController@apart_condo_office_create');
-        Route::post('user/property/update/apart_condo_office' , 'PropertyController@apart_condo_office_update');
+        Route::post('user/property/create/apart_condo_office', 'PropertyController@apart_condo_office_create');
+        Route::post('user/property/update/apart_condo_office', 'PropertyController@apart_condo_office_update');
 
         /* WishList */
         Route::resource('/wishlist', 'WishlistController', ['except' => ['create', 'edit', 'show', 'update']]);
@@ -129,7 +130,5 @@ Route::namespace('API')->group(function () {
         Route::post("follow", 'FollowController@follow');
         Route::post("unfollow", 'FollowController@unfollow');
         Route::get("myfollowers", 'FollowController@myFollowerList');
-
     });
-
 });

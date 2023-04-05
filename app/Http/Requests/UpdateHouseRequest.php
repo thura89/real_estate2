@@ -28,9 +28,9 @@ class UpdateHouseRequest extends FormRequest
             /* Address */
             'property_category' => 'required',
             'title' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required',
-            'ward' => 'required',
+            // 'street_name' => 'required',
+            // 'type_of_street' => 'required',
+            // 'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
             
             /* AreaSize */

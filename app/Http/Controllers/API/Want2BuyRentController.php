@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Region;
+use Carbon\Carbon;
 use App\WantToBuyRent;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
@@ -26,7 +27,7 @@ class Want2BuyRentController extends Controller
             'township',
         ])->where('user_id', auth()->user()->id);
 
-        if($request->keywords){
+        if ($request->keywords) {
             $keyword = $request->keywords;
             $data->whereHas('region', function ($qr) use ($keyword) {
                 $qr->where('name', 'LIKE', '%' . $keyword . '%');
@@ -35,16 +36,15 @@ class Want2BuyRentController extends Controller
             });
         }
         if ($request->type) {
-            $data->where('properties_type',$request->type);
+            $data->where('properties_type', $request->type);
         }
         if ($request->category) {
-            $data->where('properties_category',$request->category);
+            $data->where('properties_category', $request->category);
         }
 
-        $data =  $data->orderBy('created_at','DESC')->paginate(10);
+        $data =  $data->orderBy('created_at', 'DESC')->paginate(10);
 
-        return Want2BuyRentListsResource::collection($data)->additional(['result'=>true,'message'=>'Success']);
-
+        return Want2BuyRentListsResource::collection($data)->additional(['result' => true, 'message' => 'Success']);
     }
 
 
@@ -67,7 +67,7 @@ class Want2BuyRentController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             /* Info */
             'properties_category' => 'required',
             'properties_type' => 'required',
@@ -127,7 +127,7 @@ class Want2BuyRentController extends Controller
         $data->status = $request->status ?? 1;
         $data->save();
 
-        return ResponseHelper::success('Successfully Created',Null);
+        return ResponseHelper::success('Successfully Created', Null);
     }
 
     /**
@@ -140,7 +140,7 @@ class Want2BuyRentController extends Controller
     {
         $data = WantToBuyRent::with('user')->findOrFail($id);
         $data = new Want2BuyRentDetailsResource($data);
-        return ResponseHelper::success('success',$data);
+        return ResponseHelper::success('success', $data);
     }
 
     /**
@@ -166,7 +166,7 @@ class Want2BuyRentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             /* Info */
             'properties_category' => 'required',
             'properties_type' => 'required',
@@ -226,7 +226,7 @@ class Want2BuyRentController extends Controller
         $data->status = $request->status ?? 1;
         $data->update();
 
-        return ResponseHelper::success('Successfully Updated',Null);
+        return ResponseHelper::success('Successfully Updated', Null);
     }
 
     /**
@@ -239,6 +239,15 @@ class Want2BuyRentController extends Controller
     {
         $data = WantToBuyRent::findOrFail($id);
         $data->delete();
-        return ResponseHelper::success('Successfully Deleted',Null);
+        return ResponseHelper::success('Successfully Deleted', Null);
+    }
+    public function expired($id)
+    {
+        $data = WantToBuyRent::where('user_id', Auth()->id)->findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->update_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return ResponseHelper::success('Success', 'Successfully Renew');
     }
 }

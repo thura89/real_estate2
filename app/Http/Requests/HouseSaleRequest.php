@@ -30,9 +30,9 @@ class HouseSaleRequest extends FormRequest
             'title' => 'required',
             'region' => 'required',
             'township' => 'required',
-            'street_name' => 'required',
-            'type_of_street' => 'required',
-            'ward' => 'required',
+            // 'street_name' => 'required',
+            // 'type_of_street' => 'required',
+            // 'ward' => 'required',
             'building_name' => 'required_if:property_category,==,6',
 
             /* AreaSize */

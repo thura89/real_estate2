@@ -53,11 +53,9 @@ class PropertyController extends Controller
             'suppliment',
             'unitAmenity',
         ])->whereDate('created_at', '>=', $date)
-          ->where('user_id',Auth::user()->id)
-          ->where('status',config('const.publish'));//published Status;
-        if ($request->get('status')) {
-            $data->where('status', $request->get('status'));
-        }
+            ->where('user_id', Auth::user()->id)
+            ->where('status', config('const.publish')); //published Status;
+
         if ($request->get('recommended_feature')) {
             $data->where('recommended_feature', $request->get('recommended_feature'));
         }
@@ -99,7 +97,7 @@ class PropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($min, $max) {
                     $query->whereBetween('price', [$min, $max]);
                 });
@@ -112,7 +110,7 @@ class PropertyController extends Controller
                 $data->whereHas('price', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
-            }else{
+            } else {
                 $data->whereHas('rentprice', function ($query) use ($currency_code) {
                     $query->where('currency_code', $currency_code);
                 });
@@ -130,12 +128,12 @@ class PropertyController extends Controller
             $installment = $request->get('installment');
             if ($installment === 'yes') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',1);
+                    $query->where('installment', 1);
                 });
             }
             if ($installment === 'no') {
                 $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment',0);
+                    $query->where('installment', 0);
                 });
             }
         }
@@ -179,7 +177,7 @@ class PropertyController extends Controller
         //             $query->where('water_sys', 0);
         //         });
         //     }
-            
+
         // }
 
         // if ($request->get('electricity_sys')) {
@@ -196,12 +194,12 @@ class PropertyController extends Controller
         //     }
         // }
 
-        if ($request->get('type_of_street')) {
-            $type_of_street = $request->get('type_of_street');
-            $data->whereHas('address', function ($query) use ($type_of_street) {
-                $query->where('type_of_street', $type_of_street);
-            });
-        }
+        // if ($request->get('type_of_street')) {
+        //     $type_of_street = $request->get('type_of_street');
+        //     $data->whereHas('address', function ($query) use ($type_of_street) {
+        //         $query->where('type_of_street', $type_of_street);
+        //     });
+        // }
         if ($request->get('area_option')) {
             $area_option = $request->get('area_option');
             $data->whereHas('areasize', function ($query) use ($area_option) {
@@ -238,7 +236,7 @@ class PropertyController extends Controller
                 $query->where('floor_level', $floor_level);
             });
         }
-        
+
         if ($request->get('partation_type')) {
             $partation_type = $request->get('partation_type');
             $data->whereHas('partation', function ($query) use ($partation_type) {
@@ -267,24 +265,24 @@ class PropertyController extends Controller
             if ($sort == 'max') {
                 if ($type == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'DESC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'DESC');
                 }
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
                 if ($type == 1) {
                     $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                         ->select('properties.*', 'prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
-                } else{
+                        ->select('properties.*', 'prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
+                } else {
                     $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                         ->select('properties.*', 'rent_prices.price as price_order')
-                         ->orderBy('price_order', 'ASC');
+                        ->select('properties.*', 'rent_prices.price as price_order')
+                        ->orderBy('price_order', 'ASC');
                 }
             }
             if ($sort == 'new') {
@@ -293,7 +291,7 @@ class PropertyController extends Controller
             if ($sort == 'old') {
                 $data->orderBy('updated_at', 'ASC');
             }
-        }else{
+        } else {
             $data->orderBy('updated_at', 'DESC');
         }
         return Datatables::of($data)
@@ -316,8 +314,8 @@ class PropertyController extends Controller
                     $qa->where('price', 'LIKE', '%' . $keyword . '%');
                 });
             })
-            ->filterColumn('title', function ($query, $keyword) {  
-                    $query->where('title', 'LIKE', '%' . $keyword . '%');
+            ->filterColumn('title', function ($query, $keyword) {
+                $query->where('title', 'LIKE', '%' . $keyword . '%');
             })
             ->addColumn('images', function ($each) {
                 $image = $each->propertyImage()->first('images');
@@ -329,14 +327,13 @@ class PropertyController extends Controller
             })
             ->editColumn('title', function ($each) {
                 return Str::limit($each->title, 20, '...');
-            
             })
             ->editColumn('p_code', function ($each) {
                 return $each->p_code;
             })
             ->editColumn('region', function ($each) {
                 $region = $each->address->region()->first('name');
-                return Str::before($region->name,'Region','State') ?? '-';
+                return Str::before($region->name, 'Region', 'State') ?? '-';
             })
             ->editColumn('township', function ($each) {
                 $township = $each->address->township()->first('name');
@@ -344,9 +341,9 @@ class PropertyController extends Controller
             })
             ->editColumn('price', function ($each) {
                 if ($each->properties_type == 1) {
-                    return number_format($each->price->price).' '.config('const.currency_code')[$each->price->currency_code] ?? '-';
+                    return number_format($each->price->price) . ' ' . config('const.currency_code')[$each->price->currency_code] ?? '-';
                 }
-                return number_format($each->rentprice->price).' '.config('const.currency_code')[$each->rentprice->currency_code] ?? '-';
+                return number_format($each->rentprice->price) . ' ' . config('const.currency_code')[$each->rentprice->currency_code] ?? '-';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -354,24 +351,24 @@ class PropertyController extends Controller
             ->editColumn('category', function ($each) {
                 return config('const.property_category')[$each->category] ?? '-';
             })
-            ->editColumn('status', function ($each) {
+            ->editColumn('recommended_feature', function ($each) {
                 if ($each->recommended_feature == 1) {
                     return '<span class="badge badge-pill badge-success">' . config('const.recommend_status')[$each->recommended_feature] . '</span>' ?? '-';
                 }
                 return '<span class="badge badge-pill badge-warning">' . config('const.recommend_status')[0] . '</span>' ?? '-';
             })
             ->editColumn('expired_at', function ($each) {
-                return 365 - $each->created_at->diff(Carbon::now())->days .' days';
+                return 365 - $each->created_at->diff(Carbon::now())->days . ' days';
             })
             ->editColumn('created_at', function ($each) {
                 return $each->created_at->diffForHumans();
             })
             ->addColumn('action', function ($each) {
-                $edit_icon = '<a href="' . route('agent.property.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
+                $edit_icon = '<a href="' . route('developer.property.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
                 return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['images', 'status', 'action'])
+            ->rawColumns(['images', 'recommended_feature', 'action'])
             ->make(true);
     }
     /* Property Create by Relative */
@@ -415,10 +412,10 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             if ($request->property_category == 6) {
                 $address->building_name = $request->building_name;
             }
@@ -430,12 +427,12 @@ class PropertyController extends Controller
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -571,15 +568,15 @@ class PropertyController extends Controller
             $property->user_id = Auth()->user()->id;
             $property->lat = '112344533'; // Sample lag
             $property->long = '112344533'; // Sample long
-            $property->status = config('const.publish'); //Publish Status
+            // $property->status = config('const.publish'); //Publish Status
             $property->title = $request->title;
 
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;
             $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
+            $property->address->street_name = $request->street_name ?? null;
+            $property->address->ward = $request->ward ?? null;
+            $property->address->type_of_street = $request->type_of_street ?? null;
             if ($request->property_category == 6) {
                 $property->address->building_name = $request->building_name;
             }
@@ -748,10 +745,10 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             if ($property->category == 7) {
                 $address->building_name = $request->building_name;
             }
@@ -763,12 +760,12 @@ class PropertyController extends Controller
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
             if ($request->property_category == 6) {
                 $area_size->level = $request->floor_level;
@@ -877,9 +874,9 @@ class PropertyController extends Controller
             /* Address Store */
             $property->address->region = $request->region ?? $property->address->region;
             $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
+            $property->address->street_name = $request->street_name ?? null;
+            $property->address->ward = $request->ward ?? null;
+            $property->address->type_of_street = $request->type_of_street ?? null;
             if ($property->category == 7) {
                 $property->address->building_name = $request->building_name;
             }
@@ -1017,29 +1014,30 @@ class PropertyController extends Controller
             /* Address Store */
             $address = new Address();
             $address->region = $request->region;
-            $address->street_name = $request->street_name;
-            $address->ward = $request->ward;
-            $address->township = $request->township;
-            $address->type_of_street = $request->type_of_street;
+            $address->street_name = $request->street_name ?? null;
+            $address->ward = $request->ward ?? null;
+            $address->township = $request->township ?? null;
+            $address->type_of_street = $request->type_of_street ?? null;
             $address->building_name = $request->building_name;
             $property->address()->save($address);
 
             /* Area Size Store */
             $area_size = new AreaSize();
             $area_size->area_option = $request->area_option;
+            $area_size->level = $request->floor_level;
             /* Width x length */
             if ($request->area_option == 1) {
                 $area_size->width = $request->width;
-                $area_size->length = $request->length;    
+                $area_size->length = $request->length;
             }
             /** Area */
             if ($request->area_option == 2) {
-                $area_size->area_size = $request->area_size;    
-                $area_size->area_unit = $request->area_unit;    
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
             }
-            if ($request->property_category == 6) {
-                $area_size->level = $request->floor_level;
-            }
+            // if ($request->property_category == 6) {
+            //     $area_size->level = $request->floor_level;
+            // }
             $property->areasize()->save($area_size);
 
             /* Partation Store */
@@ -1178,9 +1176,9 @@ class PropertyController extends Controller
             // Address Store
             $property->address->region = $request->region ?? $property->address->region;
             $property->address->township = $request->township ?? $property->address->township;
-            $property->address->street_name = $request->street_name;
-            $property->address->ward = $request->ward;
-            $property->address->type_of_street = $request->type_of_street;
+            $property->address->street_name = $request->street_name ?? null;
+            $property->address->ward = $request->ward ?? null;
+            $property->address->type_of_street = $request->type_of_street ?? null;
             $property->address->building_name = $request->building_name;
 
             //Area Size Store
@@ -1361,8 +1359,8 @@ class PropertyController extends Controller
     }
     public function destroy($id)
     {
-        $property = Property::where('user_id',Auth::user()->id)
-                            ->findOrFail($id);
+        $property = Property::where('user_id', Auth::user()->id)
+            ->findOrFail($id);
         $property->delete();
         return 'success';
     }

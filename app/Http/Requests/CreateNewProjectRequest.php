@@ -27,10 +27,10 @@ class CreateNewProjectRequest extends FormRequest
             /* Address */
             'region' => 'required',
             'township' => 'required',
-            'wards' => 'required',
-            'street_name' => 'required',
+            // 'wards' => 'required',
+            // 'street_name' => 'required',
             'townsandvillages' => 'required',
-            'type_of_street' => 'required',
+            // 'type_of_street' => 'required',
 
             /* Price */
             'area_unit' => 'required',

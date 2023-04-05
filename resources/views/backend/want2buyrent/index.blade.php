@@ -18,8 +18,7 @@
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
-                <a href="{{ route('admin.want2buyrent.create') }}"
-                    class="btn-shadow btn btn-primary">
+                <a href="{{ route('admin.want2buyrent.create') }}" class="btn-shadow btn btn-primary">
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-business-time fa-w-20"></i>
                     </span>
@@ -39,10 +38,10 @@
                             <th>Budget</th>
                             <th>Type</th>
                             <th>Category</th>
-                            <th>Broker</th>
                             <th>Post By</th>
-                            <th>Created At</th>
-                            <th class="no-sort">Action</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th width="100px;" class="no-sort">Action</th>
                         </thead>
                         <tbody>
                         </tbody>
@@ -52,7 +51,6 @@
         </div>
     </div>
     <br>
-    
 @endsection
 @section('script')
     <script>
@@ -87,12 +85,12 @@
                         name: 'properties_category'
                     },
                     {
-                        data: 'co_broke',
-                        name: 'co_broke'
-                    },
-                    {
                         data: 'post_by',
                         name: 'post_by'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
                     },
                     {
                         data: 'created_at',
@@ -100,7 +98,7 @@
                     },
                     {
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
                     },
 
                 ],
@@ -109,6 +107,7 @@
                     sortable: false,
                 }],
             });
+
             $(document).on('click', '.delete', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
@@ -122,6 +121,32 @@
                         $.ajax({
                             url: '/admin/want2buyrent/' + id,
                             type: 'DELETE',
+                            data: {
+                                '_token': "{{ csrf_token() }}",
+                            },
+                            success: function() {
+                                table.ajax.reload();
+                            }
+                        });
+                    }
+                })
+            });
+            $(document).on('click', '.expired', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to renew this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, renew it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/admin/want2buyrent/renew/' + id,
+                            type: 'POST',
                             data: {
                                 '_token': "{{ csrf_token() }}",
                             },

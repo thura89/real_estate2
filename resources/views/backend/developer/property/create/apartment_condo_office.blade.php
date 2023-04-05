@@ -14,7 +14,11 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Property Create @if ($category == 3) Apartment & Condo @else Office @endif
+                    <div>Property Create @if ($category == 3)
+                            Apartment & Condo
+                        @else
+                            Office
+                        @endif
                     </div>
                 </div>
             </div>
@@ -62,7 +66,8 @@
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>
                                         @foreach ($regions as $key => $region)
-                                            <option value="{{ $region->id }}" @if (old('region') == $region->id) selected="selected" @endif>
+                                            <option value="{{ $region->id }}"
+                                                @if (old('region') == $region->id) selected="selected" @endif>
                                                 {{ $region->name }}</option>
                                         @endforeach
                                     </select>
@@ -75,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="street_name">Street Name</label>
                                     <input type="text" name="street_name" class="form-control">
                                 </div>
@@ -91,7 +96,7 @@
                                 <div class="col form-group">
                                     <label for="ward">Ward</label>
                                     <input type="text" name="ward" class="form-control">
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 form-group">
@@ -423,7 +428,8 @@
                                 </div>
                                 <div class="col form-group">
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="tv" value="1" class="form-check-input">TV</label>
+                                                type="checkbox" name="tv" value="1"
+                                                class="form-check-input">TV</label>
                                     </div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="cable_satellite" value="1"
@@ -443,17 +449,20 @@
                                 </div>
                                 <div class="col form-group">
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="fire_alarm" value="1" class="form-check-input">Fire
+                                                type="checkbox" name="fire_alarm" value="1"
+                                                class="form-check-input">Fire
                                             Alarm</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="dinning_table" value="1"
                                                 class="form-check-input">Dinning
                                             Table</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="bed" value="1" class="form-check-input">Bed</label>
+                                                type="checkbox" name="bed" value="1"
+                                                class="form-check-input">Bed</label>
                                     </div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="sofa_chair" value="1" class="form-check-input">Sofa
+                                                type="checkbox" name="sofa_chair" value="1"
+                                                class="form-check-input">Sofa
                                             Chair</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="private_swimming_pool" value="1"
@@ -485,7 +494,8 @@
                                                 type="checkbox" name="swimming_pool" value="1"
                                                 class="form-check-input">Swimming Pool</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="spa_hot_tub" value="1" class="form-check-input">Spa/
+                                                type="checkbox" name="spa_hot_tub" value="1"
+                                                class="form-check-input">Spa/
                                             Hot Tub</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
                                                 type="checkbox" name="playground" value="1"
@@ -515,13 +525,16 @@
                             <div class="row">
                                 <div class="col form-group">
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="cornet_lot" value="1" class="form-check-input">Cornet
+                                                type="checkbox" name="cornet_lot" value="1"
+                                                class="form-check-input">Cornet
                                             Lot</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_garden" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_garden" value="1"
+                                                class="form-check-input">View:
                                             Garden</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_lake" value="1" class="form-check-input">View
+                                                type="checkbox" name="view_lake" value="1"
+                                                class="form-check-input">View
                                             Lake</label></div>
                                 </div>
                                 <div class="col form-group">
@@ -529,22 +542,27 @@
                                                 type="checkbox" name="view_mountain" value="1"
                                                 class="form-check-input">View: Mountain</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_river" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_river" value="1"
+                                                class="form-check-input">View:
                                             River</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_pool" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_pool" value="1"
+                                                class="form-check-input">View:
                                             Pool</label></div>
 
                                 </div>
                                 <div class="col form-group">
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_sea" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_sea" value="1"
+                                                class="form-check-input">View:
                                             Sea</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_city" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_city" value="1"
+                                                class="form-check-input">View:
                                             City</label></div>
                                     <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="view_pagoda" value="1" class="form-check-input">View:
+                                                type="checkbox" name="view_pagoda" value="1"
+                                                class="form-check-input">View:
                                             Pagoda</label></div>
                                 </div>
                             </div>
@@ -575,7 +593,8 @@
                         <div class="row">
                             <div class="col-6 col-md-5 form-group">
                                 <input name="agreecheck" type="checkbox" id="agreecheck">
-                                <label for="agreecheck">By posting this content, I agree to be contacted by affiliates</label>
+                                <label for="agreecheck">By posting this content, I agree to be contacted by
+                                    affiliates</label>
                             </div>
                         </div>
                         {{-- Submit Button --}}
