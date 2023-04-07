@@ -75,7 +75,7 @@ class PropertyList extends JsonResource
         $data['bath_room'] = $this->partation->bath_room ?? null;
         $data['note'] = $this->suppliment->note ?? null;
         $data['area_size'] = $area_size ?? null;
-        $data['recommended_feature'] = $this->status;
+        $data['recommended_feature'] = $this->recommended_feature;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id', Auth::guard('api')->user()->id)->where('property_id', $this->id)->first();
             if ($favorite) {
@@ -106,6 +106,7 @@ class PropertyList extends JsonResource
             'cover_photo' => $this->user->cover_photo ?? null,
 
         ];
+        $data['status'] = $this->status;
         $data['expired_at'] = Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s');
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;

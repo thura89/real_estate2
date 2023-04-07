@@ -23,11 +23,13 @@ class Want2BuyRentListsResource extends JsonResource
             'budget_from' => $this->budget_from,
             'budget_to' => $this->budget_to,
             'currency_code' => $this->currency_code,
-            'region' => $this->region()->first(['id','name']),
-            'township' => $this->township()->first(['id','name']),
+            'region' => $this->region()->first(['id', 'name']),
+            'township' => $this->township()->first(['id', 'name']),
             'properties_type' => $this->properties_type,
             'properties_category' => $this->properties_category,
             'descriptions' => Str::limit($this->descriptions, 50, '...'),
+            'status' => (string)$this->status, //
+            'expired_at' => Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];
     }

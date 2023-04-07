@@ -127,10 +127,10 @@ class UserNewProjectController extends Controller
             /* Address */
             'region' => 'required',
             'township' => 'required',
-            'wards' => 'required',
-            'street_name' => 'required',
+            // 'wards' => 'required',
+            // 'street_name' => 'required',
             'townsandvillages' => 'required',
-            'type_of_street' => 'required',
+            // 'type_of_street' => 'required',
 
             /* Price */
             'area_unit' => 'required',
@@ -161,10 +161,10 @@ class UserNewProjectController extends Controller
         /* Address */
         $data->region = $request->region ?? $data->region;
         $data->township = $request->township ?? $data->township;
-        $data->wards = $request->wards;
+        // $data->wards = $request->wards;
         $data->townsandvillages = $request->townsandvillages;
-        $data->street_name = $request->street_name;
-        $data->type_of_street = $request->type_of_street;
+        // $data->street_name = $request->street_name;
+        // $data->type_of_street = $request->type_of_street;
 
         /* Price */
         $data->area_unit = $request->area_unit;

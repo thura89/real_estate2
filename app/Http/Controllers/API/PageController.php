@@ -331,7 +331,9 @@ class PageController extends Controller
             'region',
             'township',
         ]);
-
+        if ($request->expired) {
+            $data->where('status', config('const.pending'));
+        }
         if ($request->keywords) {
             $keyword = $request->keywords;
             $data->whereHas('region', function ($qr) use ($keyword) {
@@ -367,7 +369,6 @@ class PageController extends Controller
     /** Property Detail */
     public function show(Request $request, $id)
     {
-
         /* Get Property */
         $property = Property::with([
             'address',

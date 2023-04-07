@@ -155,6 +155,7 @@ class PropertyDetail348 extends JsonResource
             'profile_photo' => $this->user->profile_photo ?? null,
             'cover_photo' => $this->user->cover_photo ?? null,
         ];
+        $data['status'] = $this->status;
         $data['expired_at'] = Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s');
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         return $data;

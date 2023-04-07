@@ -15,8 +15,8 @@ class Want2BuyRentDetailsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $region = $this->region()->first(['id','name']);
-        $township = $this->township()->first(['id','name']);
+        $region = $this->region()->first(['id', 'name']);
+        $township = $this->township()->first(['id', 'name']);
         return [
             'id' => (string)$this->id ?? null,
             'title' => $this->title ?? null,
@@ -55,6 +55,7 @@ class Want2BuyRentDetailsResource extends JsonResource
                 'profile_photo' => $this->user->profile_photo ?? null,
                 'cover_photo' => $this->user->cover_photo ?? null,
             ],
+            'expired_at' => Carbon::parse($this->created_at)->addYear()->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s') ?? null,
         ];
     }
