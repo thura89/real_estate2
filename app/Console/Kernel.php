@@ -28,14 +28,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('autodelete:cron')->daily();
+        $schedule->command('autodelete:cron')->everyMinute();
         // $schedule->call(function () {
         //     $data = Property::where('created_at', '<', Carbon::now()->subYear())->update(['status'=>1]);
         // })->everyMinute();
 
 
         $schedule->command('w2bExpire:cron')
-            ->daily();
+            ->everyMinute();
     }
 
     /**
