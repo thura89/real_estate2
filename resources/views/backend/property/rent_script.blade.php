@@ -75,7 +75,7 @@
 
         let img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";
         $(img).appendTo('.uploaded');
-        
+
         $("input[type='file']").on('change', function() {
             $("div").remove(".upimg");
             var img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";

@@ -3,8 +3,10 @@
 namespace App\Exceptions;
 
 use Throwable;
+use App\Helpers\ResponseHelper;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -52,12 +54,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ModelNotFoundException) {
+            return ResponseHelper::fail('fail', ['error' => 'Record not found.']);
+        }
         return parent::render($request, $exception);
     }
 
-    public function unauthenticated($request, AuthenticationException $exception){
-            return $request->expectsJson()
-                    ? response()->json(['message' => 'Unauthenticated.'], 401)
-                    : redirect('/');
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        return $request->expectsJson()
+            ? response()->json(['message' => 'Unauthenticated.'], 401)
+            : redirect('/');
     }
 }

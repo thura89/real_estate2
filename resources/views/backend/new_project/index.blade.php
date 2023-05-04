@@ -18,8 +18,7 @@
         </div>
         <div class="mb-3 d-flex align-items-end flex-column">
             <div class="d-inline-block dropdown">
-                <a href="{{ route('admin.new_project.create') }}"
-                    class="btn-shadow btn btn-primary">
+                <a href="{{ route('admin.new_project.create') }}" class="btn-shadow btn btn-primary">
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-business-time fa-w-20"></i>
                     </span>
@@ -34,12 +33,10 @@
                     <table class="table table-borderd DataTables">
                         <thead>
                             <th>Image</th>
+                            <th>Title</th>
                             <th>Region</th>
                             <th>Township</th>
-                            <th>Sale Type</th>
-                            <th>Price</th>
-                            <th>Start Year</th>
-                            <th>End Year</th>
+                            <th>Expired</th>
                             <th>Created At</th>
                             <th class="no-sort">Action</th>
                         </thead>
@@ -51,7 +48,7 @@
         </div>
     </div>
     <br>
-    
+
 @endsection
 @section('script')
     <script>
@@ -61,12 +58,15 @@
                 serverSide: true,
                 aaSorting: [],
                 ajax: "/admin/new_project/datatables/ssd",
-                columns: [
-                    {
+                columns: [{
                         data: 'images',
                         name: 'images',
                         sortable: false,
                         searchable: false,
+                    },
+                    {
+                        data: 'title',
+                        name: 'title'
                     },
                     {
                         data: 'region',
@@ -77,26 +77,8 @@
                         name: 'township'
                     },
                     {
-                        data: 'new_project_sale_type',
-                        name: 'new_project_sale_type',
-                        sortable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: 'price',
-                        name: 'price',
-                        sortable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: 'start_at',
-                        name: 'start_at',
-                        sortable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: 'end_at',
-                        name: 'end_at',
+                        data: 'status',
+                        name: 'status',
                         sortable: false,
                         searchable: false,
                     },
@@ -128,6 +110,32 @@
                         $.ajax({
                             url: '/admin/new_project/' + id,
                             type: 'DELETE',
+                            data: {
+                                '_token': "{{ csrf_token() }}",
+                            },
+                            success: function() {
+                                table.ajax.reload();
+                            }
+                        });
+                    }
+                })
+            });
+            $(document).on('click', '.expired', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to renew this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, renew it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/admin/new_project/renew/' + id,
+                            type: 'POST',
                             data: {
                                 '_token': "{{ csrf_token() }}",
                             },

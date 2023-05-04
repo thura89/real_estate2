@@ -3,18 +3,18 @@
 <script>
     $(function() {
 
-        
+
         $('.input-images-1').imageUploader();
 
-        $("input[type='file']").on('change',function(){
-            $( "div" ).remove( ".upimg" );
+        $("input[type='file']").on('change', function() {
+            $("div").remove(".upimg");
             var img = "<div class='upimg'><img src='/backend/images/upload.png'></div>";
             $(img).appendTo('.uploaded');
         });
         // var text = "<span></span>";
         // $( text ).appendTo( ".image-uploader" );
 
-             
+
         let preloaded = [{
                 id: 1,
                 src: 'https://picsum.photos/500/500?random=1'
@@ -97,7 +97,7 @@
 
             // Show the modal
             // $modal.css('visibility', 'visible');
-     
+
         });
         // Input and label handler
         $('input').on('focus', function() {

@@ -79,8 +79,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                {{-- <div class="col form-group">
+                            {{-- <div class="row">
+                                 <div class="col form-group">
                                     <label for="street_name">Street Name</label>
                                     <input type="text" name="street_name" class="form-control">
                                 </div>
@@ -96,14 +96,14 @@
                                 <div class="col form-group">
                                     <label for="ward">Ward</label>
                                     <input type="text" name="ward" class="form-control">
-                                </div> --}}
+                                </div> 
                                 @if ($category == 6)
                                     <div class="col form-group">
                                         <label for="building_name">Building Name</label>
                                         <input type="text" name="building_name" class="form-control">
                                     </div>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                         {{-- Area Size --}}
                         <div class="form-group">
@@ -172,7 +172,7 @@
                             <h5>Partation</h5>
                             <hr>
                             <div class="row">
-                                <div class="col-6 col-md-4 form-group">
+                                {{-- <div class="col-6 col-md-4 form-group">
                                     <label for="width">Partation Type</label>
                                     <select name="partation_type" class="partation_type form-control">
                                         <option value="">Select</option>
@@ -180,8 +180,8 @@
                                             <option value="{{ $key }}">{{ $type }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col-6 col-md-4 form-group partation_hider">
+                                </div> --}}
+                                <div class="col-6 col-md-4 form-group partation_hider_pause">
                                     <label for="level">Bed Room</label>
                                     <select name="bed_room" class="form-control">
                                         <option value="">Select</option>
@@ -191,7 +191,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-6 col-md-4 form-group partation_hider">
+                                <div class="col-6 col-md-4 form-group partation_hider_pause">
                                     <label for="bath_room">Bath Room</label>
                                     <select name="bath_room" class="form-control">
                                         <option value="">Select</option>
@@ -215,15 +215,15 @@
                             </div> --}}
                         </div>
                         {{-- Price --}}
-                        <div class="price_sale_hider form-group">
-                            <h5>Sale Price</h5>
+                        <div class="price_sale_hider_pause form-group">
+                            <h5>Price</h5>
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
-                                    <label for="sale_price">Grand Total Price</label>
-                                    <input type="number" name="sale_price" class="form-control">
+                                    <label for="price">Price</label>
+                                    <input type="number" name="price" class="form-control">
                                 </div>
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="sale_area">Area Type</label>
                                     <select name="sale_area" class="form-control">
                                         <option value="">Select</option>
@@ -231,14 +231,14 @@
                                             <option value="{{ $key }}">{{ $area }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col form-group">
+                                </div> --}}
+                                {{-- <div class="col form-group">
                                     <label for="sale_price_by_area">Price By Area</label>
                                     <input type="text" name="sale_price_by_area" class="form-control">
-                                </div>
+                                </div> --}}
                                 <div class="col form-group">
-                                    <label for="sale_currency_code">Currency Code</label>
-                                    <select name="sale_currency_code" class="form-control">
+                                    <label for="currency_code">Currency Code</label>
+                                    <select name="currency_code" class="form-control">
                                         @foreach (config('const.currency_code') as $key => $currency)
                                             <option value="{{ $key }}">{{ $currency }}</option>
                                         @endforeach
@@ -247,7 +247,7 @@
                             </div>
                         </div>
                         {{-- Rent --}}
-                        <div class="price_rent_hider form-group">
+                        {{-- <div class="price_rent_hider form-group">
                             <h5>Rent Price</h5>
                             <hr>
                             <div class="row">
@@ -307,9 +307,9 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         {{-- Payment --}}
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <h5>Payment</h5>
                             <hr>
                             <div class="row">
@@ -338,13 +338,13 @@
                                     </fieldset>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         {{-- Situation --}}
                         <div class="form-group">
                             <h5>Situation</h5>
                             <hr>
                             <div class="row">
-                                <div class="col form-group">
+                                {{-- <div class="col form-group">
                                     <label for="year_of_construction">Year Of Construction</label>
                                     <select name="year_of_construction" class="form-control">
                                         <option value="">Select</option>
@@ -352,7 +352,7 @@
                                             <option value='{{ $i }}'>{{ $i }}</option>
                                         @endfor
                                     </select>
-                                </div>
+                                </div> --}}
                                 <div class="col form-group">
                                     <label for="building_repairing">Building Repairing</label>
                                     <select name="building_repairing" class="form-control">
@@ -372,7 +372,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
+                            {{-- <div class="row">
                                 @if ($category == 1)
                                     <div class="col-md-4 form-group">
                                         <label for="type_of_building">Type Of Building</label>
@@ -389,7 +389,7 @@
                                         </select>
                                     </div>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                         {{-- Suppliment --}}
                         {{-- <div class="form-group">
@@ -428,9 +428,9 @@
                                 </div>
                             </div>
                         </div> --}}
-                        @if ($category == 1)
-                            {{-- Unit Amenities --}}
-                            <div class="form-group">
+                        {{-- @if ($category == 1) --}}
+                        {{-- Unit Amenities --}}
+                        {{-- <div class="form-group">
                                 <h5>Unit Amenities</h5>
                                 <hr>
                                 <div class="row">
@@ -496,10 +496,10 @@
                                                     class="form-check-input">Private Swimming Pool</label></div>
                                     </div>
                                 </div>
-                            </div>
-                        @else
-                            {{-- Building Amenities --}}
-                            <div class="form-group">
+                            </div> --}}
+                        {{-- @else --}}
+                        {{-- Building Amenities --}}
+                        {{-- <div class="form-group">
                                 <h5>Building Amenities</h5>
                                 <hr>
                                 <div class="row">
@@ -533,9 +533,6 @@
                                                     class="form-check-input">Garden</label></div>
                                     </div>
                                     <div class="col form-group">
-                                        {{-- <div class="position-relative form-check"><label class="form-check-label"><input
-                                                type="checkbox" name="carpark" value="1"
-                                                class="form-check-input">Carpark</label></div> --}}
                                         <div class="position-relative form-check"><label class="form-check-label"><input
                                                     type="checkbox" name="own_transformer" value="1"
                                                     class="form-check-input">Own Transformer</label></div>
@@ -545,8 +542,8 @@
 
                                     </div>
                                 </div>
-                            </div>
-                        @endif
+                            </div> --}}
+                        {{-- @endif --}}
                         {{-- Image --}}
                         <div class="form-group">
                             <h5>Images</h5>
@@ -607,21 +604,21 @@
     {!! JsValidator::formRequest('App\Http\Requests\HouseSaleRequest', '#create') !!}
     @include('backend.property.script')
     <script>
-        $('.price_sale_hider').hide();
-        $('.price_rent_hider').hide();
-        $('.property_type').on('change', function() {
-            $('.price_sale_hider').hide();
-            $('.price_rent_hider').hide();
-            var type = this.value;
-            if (type == 1) {
-                $('.price_rent_hider').hide();
-                $('.price_sale_hider').show();
-            }
-            if (type == 2) {
-                $('.price_sale_hider').hide();
-                $('.price_rent_hider').show();
-            }
-        });
+        // $('.price_sale_hider').hide();
+        // $('.price_rent_hider').hide();
+        // $('.property_type').on('change', function() {
+        //     $('.price_sale_hider').hide();
+        //     $('.price_rent_hider').hide();
+        //     var type = this.value;
+        //     if (type == 1) {
+        //         $('.price_rent_hider').hide();
+        //         $('.price_sale_hider').show();
+        //     }
+        //     if (type == 2) {
+        //         $('.price_sale_hider').hide();
+        //         $('.price_rent_hider').show();
+        //     }
+        // });
         $('.area').hide();
         $('.area_widthxlenght').hide();
         $('.area_option').on('change', function() {

@@ -1,6 +1,10 @@
-@extends('backend.layouts.app')
+@extends('backend.agent.layouts.app')
 @section('title', 'Property Management')
-@section('want2buyrent-active', 'mm-active')
+@section('property-active', 'mm-active')
+@section('extra-css')
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
+@endsection
 @section('content')
     <div class="app-main__inner">
         <div class="app-page-title">
@@ -10,7 +14,7 @@
                         <i class="pe-7s-users icon-gradient bg-mean-fruit">
                         </i>
                     </div>
-                    <div>Create Want2BuyRent
+                    <div>Property Create {{ config('const.property_category')[$category] }}
                     </div>
                 </div>
             </div>
@@ -22,42 +26,23 @@
             <div class="card">
                 <div class="card-body">
                     @include('backend.layouts.flash')
-                    <form action="{{ route('admin.want2buyrent.store') }}" method="POST" id="create"
+                    <form action="{{ route('agent.property.create') }}" method="POST" id="create"
                         enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="property_category" value="{{ $category }}">
                         {{-- Property Type --}}
                         <div class="form-group">
-                            <h5>Info</h5>
+                            <h5>Property Type</h5>
                             <hr>
                             <div class="row">
-                                <div class="col-6 col-md-6 form-group">
-                                    <label for="properties_type">Property Type</label>
-                                    <select name="properties_type" class="property_type form-control">
+                                <div class="col-6 col-md-4 form-group">
+                                    <label for="price">Property Type</label>
+                                    <select name="property_type" class="property_type form-control">
                                         <option value="">Select Type</option>
-                                        @foreach (config('const.property_type') as $key => $property_type)
-                                            <option value="{{ $key }}">{{ $property_type }}</option>
+                                        @foreach (config('const.property_type') as $key => $area)
+                                            <option value="{{ $key }}">{{ $area }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col-6 col-md-6 form-group">
-                                    <label for="properties_category">Property Category</label>
-                                    <select name="properties_category" class="property_category form-control">
-                                        <option value="">Select Category</option>
-                                        @foreach (config('const.property_category') as $key => $category)
-                                            <option value="{{ $key }}">{{ $category }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-6 form-group">
-                                    <label for="title">Title</label>
-                                    <input type="text" name="title" class="form-control">
-                                </div>
-                                <div class="col-6 col-md-6 form-group">
-                                    <label for="phone_no">Phone No</label>
-                                    <input type="number" value="{{ Auth()->user()->phone }}" name="phone_no"
-                                        class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -67,11 +52,19 @@
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col form-group">
                                     <label for="region">Region</label>
                                     <select name="region" class="region form-control">
                                         <option value="">Select Region</option>
                                         @foreach ($regions as $key => $region)
-                                            <option value="{{ $region->id }}">{{ $region->name }}</option>
+                                            <option value="{{ $region->id }}"
+                                                @if (old('region') == $region->id) selected="selected" @endif>
+                                                {{ $region->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -102,12 +95,12 @@
                                 <div class="col-md-4 area_widthxlenght">
                                     <div class="row area_widthxlenght">
                                         <div class="col form-group">
-                                            <label for="area_width">Width</label>
-                                            <input type="number" name="area_width" class="form-control">
+                                            <label for="width">Width</label>
+                                            <input type="number" name="width" class="form-control">
                                         </div>
                                         <div class="col form-group">
-                                            <label for="area_length">Length</label>
-                                            <input type="number" name="area_length" class="form-control">
+                                            <label for="length">Length</label>
+                                            <input type="number" name="length" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -130,19 +123,19 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 floor_level">
-                                    <div class="form-group">
-                                        <label for="fence_width">Floor Level</label>
-                                        <select name="floor_level" class="form-control">
-                                            <option value="">Please Select</option>
-                                            @foreach (config('const.floor_level') as $key => $level)
-                                                <option value="{{ $key }}">{{ $level }}</option>
-                                            @endforeach
-                                        </select>
+                                @if ($category == 3 || $category == 4 || $category == 6 || $category == 8)
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="fence_width">Floor Level</label>
+                                            <select name="floor_level" class="form-control">
+                                                <option value="">Please Select</option>
+                                                @foreach (config('const.floor_level') as $key => $level)
+                                                    <option value="{{ $key }}">{{ $level }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-
-
+                                @endif
                             </div>
                         </div>
                         {{-- Partation --}}
@@ -172,43 +165,14 @@
 
                             </div>
                         </div>
-                        {{-- Situation --}}
-                        <div class="form-group">
-                            <h5>Situation</h5>
+                        {{-- Price --}}
+                        <div class="price_sale_hider_pause form-group">
+                            <h5>Price</h5>
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
-                                    <label for="repairing">Repairing</label>
-                                    <select name="repairing" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.building_repairing') as $key => $repair)
-                                            <option value="{{ $key }}">{{ $repair }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col form-group">
-                                    <label for="situations">Situations</label>
-                                    <select name="situations" class="form-control">
-                                        <option value="">Select</option>
-                                        @foreach (config('const.building_condition') as $key => $condition)
-                                            <option value="{{ $key }}">{{ $condition }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- Budget Price --}}
-                        <div class="form-group">
-                            <h5>Budget Price</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col form-group">
-                                    <label for="budget_from">Budget From</label>
-                                    <input type="number" name="budget_from" class="form-control">
-                                </div>
-                                <div class="col form-group">
-                                    <label for="budget_to">Budget To</label>
-                                    <input type="number" name="budget_to" class="form-control">
+                                    <label for="price">Price</label>
+                                    <input type="number" name="price" class="form-control">
                                 </div>
                                 <div class="col form-group">
                                     <label for="currency_code">Currency Code</label>
@@ -220,34 +184,73 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- Detail --}}
+                        {{-- Situation --}}
                         <div class="form-group">
-                            <h5>Detail Description</h5>
+                            <h5>Situation</h5>
                             <hr>
                             <div class="row">
                                 <div class="col form-group">
-                                    <textarea name="descriptions" class="form-control"></textarea>
+                                    <label for="building_repairing">Repairing</label>
+                                    <select name="building_repairing" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.building_repairing') as $key => $repair)
+                                            <option value="{{ $key }}">{{ $repair }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="building_condition">Condition</label>
+                                    <select name="building_condition" class="form-control">
+                                        <option value="">Select</option>
+                                        @foreach (config('const.building_condition') as $key => $condition)
+                                            <option value="{{ $key }}">{{ $condition }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        {{-- Terms And Condition --}}
+
+                        {{-- Image --}}
                         <div class="form-group">
-                            <h5>Terms And Condition</h5>
+                            <h5>Images</h5>
                             <hr>
-                            {{-- Terms & Condition --}}
-                            <div class="row">
-                                <div class="col-6 col-md-5 form-group">
-                                    <input name="terms_condition" type="checkbox" id="agreecheck">
-                                    <label for="agreecheck">By posting this content, I agree to be contacted by
-                                        affiliates</label>
-                                </div>
+                            <div class="input-field">
+                                <label class="active">Photos</label>
+                                <div class="input-images-1" style="padding-top: .5rem;"></div>
                             </div>
-                            {{-- Submit Button --}}
+                        </div>
+                        {{-- Additional Note --}}
+                        <div class="form-group">
+                            <h5>Additional Note</h5>
+                            <hr>
                             <div class="row">
                                 <div class="col form-group">
-                                    <button class="btn btn-secondary back-btn">Back</button>
-                                    <button type="submit" class="btn btn-primary" id="agreebtn">Create</button>
+                                    <textarea name="note" class="form-control"></textarea>
                                 </div>
+                            </div>
+                        </div>
+                        {{-- Status --}}
+                        <div class="form-group">
+                            <h5>Status</h5>
+                            <hr>
+                            {{-- Feature --}}
+                            <div class="row">
+                                {{-- Recommended --}}
+                                <div class="col-6 col-md-3 form-group">
+                                    <input name="recommended_feature" type="checkbox" id="recommended_feature">
+                                    <label for="recommended_feature">Recommended Feature</label>
+                                </div>
+                                {{-- Hot --}}
+                                <div class="col-6 col-md-3 form-group">
+                                    <input name="hot_feature" id="hot_feature" type="checkbox">
+                                    <label for="hot_feature">Hot Feature</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col form-group">
+                                <button class="btn btn-secondary back-btn">Back</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                             </div>
                         </div>
                     </form>
@@ -257,47 +260,49 @@
     </div>
 @endsection
 @section('script')
-    {!! JsValidator::formRequest('App\Http\Requests\CreateWant2BuyRentRequest', '#create') !!}
+    {!! JsValidator::formRequest('App\Http\Requests\PropertyCreateRequest', '#create') !!}
     @include('backend.property.script')
     <script>
-        $(document).ready(function() {
-            $('.hider').hide();
-            $('.property_category').on('change', function() {
-                var category = this.value;
-
-                if (category == 3) {
-                    $('.hider').show();
-                } else {
-                    $('.hider').hide();
-                }
-
-            });
+        $('.area').hide();
+        $('.area_widthxlenght').hide();
+        $('.area_option').on('change', function() {
             $('.area').hide();
             $('.area_widthxlenght').hide();
-            $('.area_option').on('change', function() {
+            var type = this.value;
+            if (type == 1) {
                 $('.area').hide();
+                $('.area_widthxlenght').show();
+            }
+            if (type == 2) {
+                $('.area').show();
                 $('.area_widthxlenght').hide();
-                var type = this.value;
-                if (type == 1) {
-                    $('.area').hide();
-                    $('.area_widthxlenght').show();
-                }
-                if (type == 2) {
-                    $('.area').show();
-                    $('.area_widthxlenght').hide();
+            }
+        });
+        $('.region').on('change', function() {
+            $('.region_old').hide();
+            $('.township_old').hide();
+            var region_id = this.value;
+            if (region_id == '') {
+                $('.region_old').show();
+                $('.township_old').show();
+            }
+            $(".township").html('');
+            $.ajax({
+                url: "{{ url('/agent/township') }}",
+                type: "POST",
+                data: {
+                    region_id: region_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function(result) {
+                    $('.township').html('<option value="">Select State</option>');
+                    $.each(result.township, function(key, value) {
+                        $(".township").append('<option value="' + value.id + '">' +
+                            value.name + '</option>');
+                    });
                 }
             });
-            $('.floor_level').hide();
-            $('.property_category').on('change', function() {
-                $('.floor_level').hide();
-                var category = this.value;
-                if (category == 3 || category == 4 || category == 6 || category == 8) {
-                    $('.floor_level').show();
-                } else {
-                    $('.floor_level').hide();
-                }
-
-            });
-        })
+        });
     </script>
 @endsection

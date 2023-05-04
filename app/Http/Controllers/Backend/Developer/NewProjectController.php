@@ -35,7 +35,7 @@ class NewProjectController extends Controller
             'region',
             'township',
         ])->where('user_id', auth()->user()->id)
-          ->latest('updated_at');
+            ->latest('updated_at');
         return Datatables::of($data)
             ->editColumn('images', function ($each) {
                 $image = json_decode($each['images']);
@@ -52,29 +52,27 @@ class NewProjectController extends Controller
                 $township = $each->township()->first('name');
                 return $township->name ?? '-';
             })
-            ->editColumn('new_project_sale_type', function ($each) {
-                return config('const.developer_sale_type')[$each->new_project_sale_type] ?? '-';
-            })
-            ->editColumn('price', function ($each) {
-                return $each->min_price .'~'. $each->max_price .' '. config('const.currency_code')[$each->currency_code] ?? '-';
-            })
-
-            ->editColumn('start_at', function ($each) {
-                return Carbon::parse($each->project_start_at)->format('Y') ?? '-';
-            })
-
-            ->editColumn('end_at', function ($each) {
-                return Carbon::parse($each->project_end_at)->format('Y') ?? '-';
+            ->editColumn('status', function ($each) {
+                if ($each->status == config('const.pending') && $each->status != null) {
+                    return '<span class="badge badge-pill badge-danger">Expired</span>' ?? '-';
+                } else {
+                    return '<span class="badge badge-pill badge-success">Active</span>' ?? '-';
+                }
             })
             ->editColumn('created_at', function ($each) {
                 return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
             })
             ->addColumn('action', function ($each) {
+                if ($each->status == config('const.pending') && $each->status != null) {
+                    $renew = '<a href="" data-id="' . $each->id . '" class="expired badge badge-pill badge-info text-white" title="Renew">renew</a>';
+                } else {
+                    $renew = '';
+                }
                 $edit_icon = '<a href="' . route('developer.new_project.edit', $each->id) . '" class="text-warning"><i class="fas fa-edit"></i></a>';
                 $delete_icon = '<a href="" class="text-danger delete" data-id="' . $each->id . '"><i class="fas fa-trash-alt"></i></a>';
-                return '<div class="action-icon">' . $edit_icon . $delete_icon . '</div>';
+                return '<div class="action-icon">' . $renew . $edit_icon . $delete_icon . '</div>';
             })
-            ->rawColumns(['budget', 'action','images'])
+            ->rawColumns(['images', 'budget', 'action', 'status'])
             ->make(true);
     }
 
@@ -101,44 +99,12 @@ class NewProjectController extends Controller
         $data->user_id = Auth()->user()->id;
 
         /* Address */
+        $data->title = $request->title;
         $data->region = $request->region;
         $data->township = $request->township;
-        $data->wards = $request->wards;
-        $data->townsandvillages = $request->townsandvillages;
-        $data->street_name = $request->street_name;
-        $data->type_of_street = $request->type_of_street;
-
-        /* Price */
-        $data->area_unit = $request->area_unit;
-        $data->min_price = $request->min_price;
-        $data->max_price = $request->max_price;
-        $data->currency_code = $request->currency_code;
-
-        /* Payment */
-        $data->purchase_type = $request->purchase_type;
-        $data->installment = ($request->installment == 'on') ? 1 : 0;
-
-        /* Situation */
-        $data->new_project_sale_type = $request->new_project_sale_type;
-        $data->preparation = $request->preparation;
-        $data->project_start_at = Carbon::createFromDate($request->project_start_at);
-        $data->project_end_at = Carbon::createFromDate($request->project_end_at);
 
         /* Description */
         $data->about_project = $request->about_project;
-
-        /* Facility */
-        $data->elevator = $request->elevator ? 1 : 0;
-        $data->garage = $request->garage ? 1 : 0;
-        $data->fitness_center = $request->fitness_center ? 1 : 0;
-        $data->security = $request->security ? 1 : 0;
-        $data->swimming_pool = $request->swimming_pool ? 1 : 0;
-        $data->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-        $data->playground = $request->playground ? 1 : 0;
-        $data->garden = $request->garden ? 1 : 0;
-        $data->carpark = $request->carpark ? 1 : 0;
-        $data->own_transformer = $request->own_transformer ? 1 : 0;
-        $data->disposal = $request->disposal ? 1 : 0;
 
         /* Project Image */
         if ($request->hasfile('images')) {
@@ -175,7 +141,7 @@ class NewProjectController extends Controller
     {
         /* Get Region */
         $regions = Region::get(['name', 'id']);
-        $data = NewProject::findOrFail($id);
+        $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
         $decode_images = json_decode($data['images']) ?? [];
         $images = [];
         foreach ($decode_images as $key => $image) {
@@ -185,7 +151,7 @@ class NewProjectController extends Controller
             ];
         }
         $images = json_encode($images);
-        return view('backend.developer.new_project.edit', compact('id', 'regions', 'data','images'));
+        return view('backend.developer.new_project.edit', compact('id', 'regions', 'data', 'images'));
     }
 
     /**
@@ -201,82 +167,53 @@ class NewProjectController extends Controller
         $data->user_id = Auth()->user()->id;
 
         /* Address */
+        $data->title = $request->title ?? $data->title;
         $data->region = $request->region ?? $data->region;
         $data->township = $request->township ?? $data->township;
-        $data->wards = $request->wards;
-        $data->townsandvillages = $request->townsandvillages;
-        $data->street_name = $request->street_name;
-        $data->type_of_street = $request->type_of_street;
-
-        /* Price */
-        $data->area_unit = $request->area_unit;
-        $data->min_price = $request->min_price;
-        $data->max_price = $request->max_price;
-        $data->currency_code = $request->currency_code;
-
-        /* Payment */
-        $data->purchase_type = $request->purchase_type;
-        $data->installment = ($request->installment == 'on') ? 1 : 0;
-
-        /* Situation */
-        $data->new_project_sale_type = $request->new_project_sale_type;
-        $data->preparation = $request->preparation;
-        $data->project_start_at = Carbon::createFromDate($request->project_start_at);
-        $data->project_end_at = Carbon::createFromDate($request->project_end_at);
 
         /* Description */
         $data->about_project = $request->about_project;
 
-        /* Facility */
-        $data->elevator = $request->elevator ? 1 : 0;
-        $data->garage = $request->garage ? 1 : 0;
-        $data->fitness_center = $request->fitness_center ? 1 : 0;
-        $data->security = $request->security ? 1 : 0;
-        $data->swimming_pool = $request->swimming_pool ? 1 : 0;
-        $data->spa_hot_tub = $request->spa_hot_tub ? 1 : 0;
-        $data->playground = $request->playground ? 1 : 0;
-        $data->garden = $request->garden ? 1 : 0;
-        $data->carpark = $request->carpark ? 1 : 0;
-        $data->own_transformer = $request->own_transformer ? 1 : 0;
-        $data->disposal = $request->disposal ? 1 : 0;
-
         /* Photo */
-        $store_data = json_decode($data->images);
-        if (($request->photos[0] != null)) {
-            $count = count($request->photos);
-            $oldreq = $request->old ?? [];
-            $reverse = array_reverse($oldreq) ?? [];
-            $old = array_splice($reverse, $count) ?? [];
-            if($old != null){
-                $diff_data = array_diff($store_data, $old);
-                foreach ($diff_data as $key => $diff) {
-                    Storage::disk('public')->delete('new_project/' . $diff);
-                }    
-            }else{
-                if ($store_data) {
-                    foreach ($store_data as $key => $diff) {
-                        Storage::disk('public')->delete('new_project/' . $diff);
-                    }
+
+        /* Splice if not image  */
+        if ($request->old || $request->photos) {
+            $old_data = $request->old ?? [];
+
+            $count = count($request->file('photos') ?? []);
+            $reverse_data = array_reverse($old_data);
+            $splice_data = array_splice($reverse_data, $count);
+
+            /* Fetch Old Image */
+            $store_data = json_decode($data->images);
+
+            /* Diff image */
+            $collection = collect($store_data);
+            $diff_image = $collection->diff($splice_data);
+
+            /* Delete image */
+            if (!$diff_image->all() == []) {
+                foreach ($diff_image as $key => $diff) {
+                    Storage::disk('public')->delete('/new_project/' . $diff);
                 }
             }
-            foreach ($request->photos as $image) {
-                $file_name = uniqid() . '_' . time() . '.' . $image->extension();
-                Storage::disk('public')->put('/new_project/' . $file_name, file_get_contents($image));
-                $img[] = $file_name;
+
+            /* Get Remain Data from coming form */
+            foreach ($splice_data as $image) {
+                $datas[] = $image;
             }
-            $merge = array_merge($img,$old);
-            $data->images = json_encode($merge);
-        } else {
-            if ($store_data != $request->old) {
-                $old = $request->old ?? [];
-                $remain_data = array_intersect($store_data, $old);
-                $diff_data = array_diff($store_data, $old);
-                foreach ($diff_data as $key => $diff) {
-                    Storage::disk('public')->delete('new_project/' . $diff);
+
+            /* Upload New image */
+            if ($request->hasfile('photos')) {
+                foreach ($request->file('photos') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('new_project/' . $file_name, file_get_contents($image));
+                    $datas[] = $file_name;
                 }
-                $data->images = json_encode($remain_data);
             }
+            $data->images = json_encode($datas);
         }
+
 
         $data->update();
         return redirect()->route('developer.new_project.index')->with('update', 'Successfully Updated');
@@ -290,7 +227,16 @@ class NewProjectController extends Controller
      */
     public function destroy($id)
     {
-        $data = NewProject::findOrFail($id);
+        $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
         $data->delete();
+    }
+    public function expired($id)
+    {
+        $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->updated_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return redirect()->route('developer.new_project.index')->with('Renew', 'Successfully Extended');
     }
 }

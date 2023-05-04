@@ -93,7 +93,7 @@ Route::namespace('API')->group(function () {
         Route::get('/user/want2buyrent', 'Want2BuyRentController@index');
         Route::get('/user/want2buyrent/{id}/show', 'Want2BuyRentController@show');
         Route::post('/user/want2buyrent/create', 'Want2BuyRentController@store');
-        Route::post('/user/want2buyrent/{id}/update', 'Want2BuyRentController@update');
+        Route::post('/user/want2buyrent/update', 'Want2BuyRentController@update');
         Route::post('/user/want2buyrent/{id}/delete', 'Want2BuyRentController@destroy');
         Route::get('/user/want2buyrent/{id}/renew', 'Want2BuyRentController@renew');
 
@@ -110,6 +110,10 @@ Route::namespace('API')->group(function () {
 
         /* Property Create - Update */
         Route::post('user/property/delete_image', 'PropertyController@DeletePropertyImage');
+
+        /* Property Create / Update  */
+        Route::post('user/property/create', 'PropertyController@PropertyCreate')->name('user.property.create');
+        Route::post('user/property/update', 'PropertyController@PropertyUpdate')->name('user.property.update');
 
         /* House  */
         Route::post('user/property/create/house_shop', 'PropertyController@house_shop_create');

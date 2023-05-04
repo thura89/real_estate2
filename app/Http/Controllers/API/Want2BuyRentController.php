@@ -72,30 +72,31 @@ class Want2BuyRentController extends Controller
             'properties_category' => 'required',
             'properties_type' => 'required',
             'title' => 'required',
-            'phone_no' => 'required',
+            'phone_no' => 'required|digits_between:9,11',
 
             /* Address */
             'region' => 'required',
             'township' => 'required',
 
             /* AreaSize */
-            'area_unit' => 'required',
-            'area_width' => 'required',
-            'area_length' => 'required',
-            'completion' => 'required',
-            'floor_level' => 'required_if:properties_category,==,3',
-            'furnished_status' => 'required_if:properties_category,==,3',
+            'area_option' => 'required|numeric',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+            'area_width' => 'required_if:area_option,==,1',
+            'area_length' => 'required_if:area_option,==,1',
+
+            'floor_level' => 'required_if:properties_category,3,4,6,8',
+
+            'repairing' => 'required',
+            'situations' => 'required',
 
             /* Budget Price */
-            'budget_from' => 'required',
-            'budget_to' => 'required',
+            'budget_from' => 'required|numeric',
+            'budget_to' => 'required|numeric',
             'currency_code' => 'required',
 
             /* Description */
             'descriptions' => 'required',
-
-            /* Broker */
-            'co_broke' => 'required',
 
             /* Term And Condition */
             'terms_condition' => 'required',
@@ -106,25 +107,35 @@ class Want2BuyRentController extends Controller
 
         $data = new WantToBuyRent();
         $data->user_id = Auth()->user()->id;
-        $data->title = $request->title;
-        $data->budget_from = $request->budget_from;
-        $data->budget_to = $request->budget_to;
-        $data->currency_code = $request->currency_code;
-        $data->area_unit = $request->area_unit;
-        $data->area_width = $request->area_width;
-        $data->area_length = $request->area_length;
-        $data->floor_level = $request->floor_level;
-        $data->completion = $request->completion;
-        $data->furnished_status = $request->furnished_status;
-        $data->phone_no = $request->phone_no;
-        $data->region = $request->region;
-        $data->township = $request->township;
-        $data->properties_type = $request->properties_type;
-        $data->properties_category = $request->properties_category;
-        $data->descriptions = $request->descriptions;
-        $data->co_broke = $request->co_broke;
+        $data->properties_type = $request->properties_type ?? null;
+        $data->properties_category = $request->properties_category ?? null;
+        $data->title = $request->title ?? null;
+        $data->phone_no = $request->phone_no ?? null;
+
+        $data->region = $request->region ?? null;
+        $data->township = $request->township ?? null;
+
+        $data->area_option = $request->area_option ?? null;
+        $data->area_unit = $request->area_unit ?? null;
+        $data->area_width = $request->area_width ?? null;
+        $data->area_length = $request->area_length ?? null;
+        $data->area_size = $request->area_size ?? null;
+        $data->floor_level = $request->floor_level ?? null;
+
+        $data->furnished_status = $request->repairing ?? null;
+        $data->situations = $request->situations ?? null;
+
+        $data->budget_from = $request->budget_from ?? null;
+        $data->budget_to = $request->budget_to ?? null;
+        $data->currency_code = $request->currency_code ?? null;
+
+        $data->bed_room = $request->bed_room ?? null;
+        $data->bath_room = $request->bath_room ?? null;
+
+        $data->descriptions = $request->descriptions ?? null;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
-        $data->status = $request->status ?? 1;
+        $data->status = config('const.publish');
+
         $data->save();
 
         return ResponseHelper::success('Successfully Created', Null);
@@ -164,37 +175,38 @@ class Want2BuyRentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
             /* Info */
             'properties_category' => 'required',
             'properties_type' => 'required',
             'title' => 'required',
-            'phone_no' => 'required',
+            'phone_no' => 'required|digits_between:9,11',
 
             /* Address */
             'region' => 'required',
             'township' => 'required',
 
             /* AreaSize */
-            'area_unit' => 'required',
-            'area_width' => 'required',
-            'area_length' => 'required',
-            'completion' => 'required',
-            'floor_level' => 'required_if:properties_category,==,3',
-            'furnished_status' => 'required_if:properties_category,==,3',
+            'area_option' => 'required|numeric',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+            'area_width' => 'required_if:area_option,==,1',
+            'area_length' => 'required_if:area_option,==,1',
+
+            'floor_level' => 'required_if:properties_category,3,4,6,8',
+
+            'repairing' => 'required',
+            'situations' => 'required',
 
             /* Budget Price */
-            'budget_from' => 'required',
-            'budget_to' => 'required',
+            'budget_from' => 'required|numeric',
+            'budget_to' => 'required|numeric',
             'currency_code' => 'required',
 
             /* Description */
             'descriptions' => 'required',
-
-            /* Broker */
-            'co_broke' => 'required',
 
             /* Term And Condition */
             'terms_condition' => 'required',
@@ -203,27 +215,36 @@ class Want2BuyRentController extends Controller
             return ResponseHelper::fail('Fail Request', $validator->errors());
         }
 
-        $data = WantToBuyRent::findOrFail($id);
-        $data->user_id = Auth()->user()->id;
-        $data->title = $request->title;
-        $data->budget_from = $request->budget_from;
-        $data->budget_to = $request->budget_to;
-        $data->currency_code = $request->currency_code;
-        $data->area_unit = $request->area_unit;
-        $data->area_width = $request->area_width;
-        $data->area_length = $request->area_length;
-        $data->floor_level = $request->floor_level;
-        $data->completion = $request->completion;
-        $data->furnished_status = $request->furnished_status;
-        $data->phone_no = $request->phone_no;
-        $data->region = $request->region ?? $data->region;
-        $data->township = $request->township ?? $data->township;
-        $data->properties_type = $request->properties_type ?? $data->properties_type;
-        $data->properties_category = $request->properties_category ?? $data->properties_category;
-        $data->descriptions = $request->descriptions;
-        $data->co_broke = $request->co_broke ? 1 : 0;
-        $data->terms_condition = $request->terms_condition;
-        $data->status = $request->status ?? 1;
+        $data = WantToBuyRent::where('user_id', Auth::user()->id)->findOrFail($request->id);
+        $data->properties_type = $request->properties_type ?? null;
+        $data->properties_category = $request->properties_category ?? null;
+        $data->title = $request->title ?? null;
+        $data->phone_no = $request->phone_no ?? null;
+
+        $data->region = $request->region ?? null;
+        $data->township = $request->township ?? null;
+
+        $data->area_option = $request->area_option ?? null;
+        $data->area_unit = $request->area_unit ?? null;
+        $data->area_width = $request->area_width ?? null;
+        $data->area_length = $request->area_length ?? null;
+        $data->area_size = $request->area_size ?? null;
+        $data->floor_level = $request->floor_level ?? null;
+
+        $data->furnished_status = $request->repairing ?? null;
+        $data->situations = $request->situations ?? null;
+
+        $data->budget_from = $request->budget_from ?? null;
+        $data->budget_to = $request->budget_to ?? null;
+        $data->currency_code = $request->currency_code ?? null;
+
+        $data->bed_room = $request->bed_room ?? null;
+        $data->bath_room = $request->bath_room ?? null;
+
+        $data->descriptions = $request->descriptions ?? null;
+        $data->terms_condition = $request->terms_condition ? 1 : 0;
+        $data->status = config('const.publish');
+
         $data->update();
 
         return ResponseHelper::success('Successfully Updated', Null);

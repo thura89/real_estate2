@@ -18,6 +18,11 @@ class UserNewProjectResource extends JsonResource
         $region = $this->region ?? null;
         $township = $this->township ?? null;
         /* Get Image */
+
+        // User
+        $userRegion = $this->user->region()->first('name');
+        $userTownship = $this->user->township()->first('name');
+
         $decode_images = json_decode($this->images);
         $images = [];
         foreach ($decode_images as $key => $image) {
@@ -25,34 +30,10 @@ class UserNewProjectResource extends JsonResource
         }
         $images = $images ?? null;
         return [
-
+            'title' => $this->title,
             'region' => $region ?? null,
             'township' => $township ?? null,
-            'min_price' => number_format($this->min_price) ?? null,
-            'max_price' => number_format($this->max_price) ?? null,
-            'currency_code' => $this->currency_code ?? null,
-            'project_start_at' => Carbon::parse($this->project_start_at)->format('Y') ?? null,
-            'project_end_at' => Carbon::parse($this->project_end_at)->format('Y') ?? null,
-            'townsandvillages' => $this->townsandvillages ?? null,
-            // 'wards' => $this->wards ?? null,
-            // 'street_name' => $this->street_name ?? null,
-            // 'type_of_street' => $this->type_of_street ?? null,
-            'area_unit' => $this->area_unit ?? null,
-            'purchase_type' => $this->purchase_type ?? null,
-            'installment' => $this->installment ?? null,
-            'new_project_sale_type' => $this->new_project_sale_type ?? null,
-            'preparation' => $this->preparation ?? null,
             'about_project' => $this->about_project ?? null,
-            'elevator' => $this->elevator ?? null,
-            'garage' => $this->garage ?? null,
-            'fitness_center' => $this->fitness_center ?? null,
-            'security' => $this->security ?? null,
-            'swimming_pool' => $this->swimming_pool ?? null,
-            'spa_hot_tub' => $this->spa_hot_tub ?? null,
-            'playground' => $this->playground ?? null,
-            'garden' => $this->garden ?? null,
-            'own_transformer' => $this->own_transformer ?? null,
-            'disposal' => $this->disposal ?? null,
             'images' => $images ?? null,
             'user' => [
                 'name' => $this->user->name ?? null,
@@ -63,6 +44,7 @@ class UserNewProjectResource extends JsonResource
                 'township' => $userTownship['name'] ?? null,
                 'address' => $this->user->address ?? null,
             ],
+            'expired_at' => Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];

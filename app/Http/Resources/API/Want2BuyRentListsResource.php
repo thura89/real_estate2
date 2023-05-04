@@ -16,6 +16,11 @@ class Want2BuyRentListsResource extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->status == null || $this->status == 0) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -28,7 +33,7 @@ class Want2BuyRentListsResource extends JsonResource
             'properties_type' => $this->properties_type,
             'properties_category' => $this->properties_category,
             'descriptions' => Str::limit($this->descriptions, 50, '...'),
-            'status' => (string)$this->status, //
+            'status' => $status ?? 0,
             'expired_at' => Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];

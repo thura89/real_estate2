@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyList;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\PropertyDetail;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PropertyDetail16;
 use App\Http\Resources\PropertyDetail257;
@@ -45,7 +46,6 @@ class PropertyController extends Controller
             'address',
             'partation',
             'price',
-            'rentPrice',
             'propertyImage',
             'areasize',
             'user',
@@ -61,24 +61,12 @@ class PropertyController extends Controller
                 ->where('title', 'like', '%' . $keyword . '%')
                 ->orWhere('suppliments.note', 'like', '%' . $keyword . '%');
         }
-        if ($request->get('status')) {
-            $data->where('status', $request->get('status'));
-        }
-        if ($request->get('recommended_feature')) {
-            $data->where('recommended_feature', $request->get('recommended_feature'));
-        }
-        if ($request->get('hot_feature')) {
-            $data->where('hot_feature', $request->get('hot_feature'));
-        }
         if ($request->get('title')) {
             $title = $request->get('title');
             $data->where('title',  'LIKE', "%$title%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
-        }
-        if ($request->get('status')) {
-            $data->where('status', $request->get('status'));
         }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
@@ -105,77 +93,28 @@ class PropertyController extends Controller
         if ($request->get('min_price') || $request->get('max_price')) {
             $min = $request->get('min_price');
             $max = $request->get('max_price');
-            if ($request->get('type') == 1) {
-                $data->whereHas('price', function ($query) use ($min, $max) {
-                    $query->whereBetween('price', [$min, $max]);
-                });
-            } else {
-                $data->whereHas('rentprice', function ($query) use ($min, $max) {
-                    $query->whereBetween('price', [$min, $max]);
-                });
-            }
+            $data->whereHas('price', function ($query) use ($min, $max) {
+                $query->whereBetween('price', [$min, $max]);
+            });
         }
         if ($request->get('currency_code')) {
             $currency_code = $request->get('currency_code');
-            if ($request->get('property_type') == 1) {
-                $data->whereHas('price', function ($query) use ($currency_code) {
-                    $query->where('currency_code', $currency_code);
-                });
-            } else {
-                $data->whereHas('rentprice', function ($query) use ($currency_code) {
-                    $query->where('currency_code', $currency_code);
-                });
-            }
-        }
-        if ($request->get('purchase_type')) {
-            $purchase_type = $request->get('purchase_type');
-            $data->whereHas('payment', function ($query) use ($purchase_type) {
-                $query->where('purchase_type', $purchase_type);
+            $data->whereHas('price', function ($query) use ($currency_code) {
+                $query->where('currency_code', $currency_code);
             });
         }
-        if ($request->get('installment')) {
-            $installment = $request->get('installment');
-            if ($installment === 'yes') {
-                $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment', 1);
-                });
-            }
-            if ($installment === 'no') {
-                $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment', 0);
-                });
-            }
-        }
-        if ($request->get('year_of_construction')) {
-            $year_of_construction = $request->get('year_of_construction');
-            $data->whereHas('situation', function ($query) use ($year_of_construction) {
-                $query->where('year_of_construction', $year_of_construction);
+        if ($request->get('repairing')) {
+            $repairing = $request->get('repairing');
+            $data->whereHas('situation', function ($query) use ($repairing) {
+                $query->where('building_repairing', $repairing);
             });
         }
-        if ($request->get('building_repairing')) {
-            $building_repairing = $request->get('building_repairing');
-            $data->whereHas('situation', function ($query) use ($building_repairing) {
-                $query->where('building_repairing', $building_repairing);
+        if ($request->get('condition')) {
+            $condition = $request->get('condition');
+            $data->whereHas('situation', function ($query) use ($condition) {
+                $query->where('building_condition', $condition);
             });
         }
-        if ($request->get('building_condition')) {
-            $building_condition = $request->get('building_condition');
-            $data->whereHas('situation', function ($query) use ($building_condition) {
-                $query->where('building_condition', $building_condition);
-            });
-        }
-        if ($request->get('fence_condition')) {
-            $fence_condition = $request->get('fence_condition');
-            $data->whereHas('situation', function ($query) use ($fence_condition) {
-                $query->where('fence_condition', $fence_condition);
-            });
-        }
-        // if ($request->get('type_of_street')) {
-        //     $type_of_street = $request->get('type_of_street');
-        //     $data->whereHas('address', function ($query) use ($type_of_street) {
-        //         $query->where('type_of_street', $type_of_street);
-        //     });
-        // }
         if ($request->get('area_option')) {
             $area_option = $request->get('area_option');
             $data->whereHas('areasize', function ($query) use ($area_option) {
@@ -194,10 +133,10 @@ class PropertyController extends Controller
                 $query->where('width', $width);
             });
         }
-        if ($request->get('length_val')) {
-            $length_val = $request->get('length_val');
-            $data->whereHas('areasize', function ($query) use ($length_val) {
-                $query->where('length', $length_val);
+        if ($request->get('length')) {
+            $length = $request->get('length');
+            $data->whereHas('areasize', function ($query) use ($length) {
+                $query->where('length', $length);
             });
         }
         if ($request->get('area_unit')) {
@@ -235,27 +174,15 @@ class PropertyController extends Controller
             $sort = $request->get('sort');
             /* Sort By Max Price */
             if ($sort == 'max') {
-                if ($request->get('property_type') == 1) {
-                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                        ->select('properties.*', 'prices.price as price_order')
-                        ->orderBy('price_order', 'DESC');
-                } else {
-                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                        ->select('properties.*', 'rent_prices.price as price_order')
-                        ->orderBy('price_order', 'DESC');
-                }
+                $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                    ->select('properties.*', 'prices.price as price_order')
+                    ->orderBy('price_order', 'DESC');
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
-                if ($request->get('property_type') == 1) {
-                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                        ->select('properties.*', 'prices.price as price_order')
-                        ->orderBy('price_order', 'ASC');
-                } else {
-                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                        ->select('properties.*', 'rent_prices.price as price_order')
-                        ->orderBy('price_order', 'ASC');
-                }
+                $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                    ->select('properties.*', 'prices.price as price_order')
+                    ->orderBy('price_order', 'ASC');
             }
             if ($sort == 'new') {
                 $data->orderBy('updated_at', 'DESC');
@@ -279,36 +206,19 @@ class PropertyController extends Controller
             'address',
             'areasize',
             'partation',
-            'payment',
             'price',
-            'rentPrice',
             'propertyImage',
             'situation',
             'suppliment',
-            'unitAmenity',
             'user',
             'wishlist'
         ])->whereDate('properties.created_at', '>=', Carbon::today()->subMonths(12))
             ->where('user_id', Auth::user()->id)->find($id);
         if ($property) {
-            $category = $property->category;
+            $data = new PropertyDetail($property);
+            return ResponseHelper::success('Success', $data);
             /* Redirect to Edit Page By Relative */
             /* House , Shoop */
-            if ($category == 1 || $category == 6) {
-                // return $property;
-                $data = new PropertyDetail16($property);
-                return ResponseHelper::success('Success', $data);
-            }
-            /* Land , House Land , Industiral */
-            if ($category == 2 || $category == 5 || $category == 7) {
-                $data = new PropertyDetail257($property);
-                return ResponseHelper::success('Success', $data);
-            }
-            /* Aparment Condo and Office */
-            if ($category == 3 || $category == 4 || $category == 8) {
-                $data = new PropertyDetail348($property);
-                return ResponseHelper::success('Success', $data);
-            }
         }
         return ResponseHelper::fail('Fail', null);
     }
@@ -325,7 +235,238 @@ class PropertyController extends Controller
 
         return $output;
     }
-    /* Create House, Shop */
+
+    // Property Create
+    public function PropertyCreate(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            /* Property Type */
+            'property_type' => 'required',
+            'property_category' => 'required',
+
+            /* Address */
+            'title' => 'required',
+            'region' => 'required',
+            'township' => 'required',
+
+            /* AreaSize */
+            'area_option' => 'required',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+
+            /* Situation */
+            'repairing' => 'required',
+            'condition' => 'required',
+
+            /* Sale Price */
+            'price' => 'required_if:property_type,==,1',
+            'currency_code' => 'required_if:property_type,==,1',
+
+            /* Image */
+            'images' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail to request', $validate->errors());
+        }
+
+        DB::beginTransaction();
+        try {
+            /* Property Store */
+            $property = new Property();
+            $property->title = $request->title;
+            $property->p_code = UUIDGenerate::pCodeGenerator();
+            $property->user_id = Auth::user()->id;
+            $property->lat = '16.7731649'; // Sample lag
+            $property->long = '96.1597431'; // Sample long
+            $property->properties_type = $request->property_type;
+            $property->category = $request->property_category;
+            $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
+            $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
+            $property->status = config('const.publish'); //Publish Status
+            $property->save();
+
+
+            /* Address Store */
+            $address = new Address();
+            $address->region = $request->region ?? null;
+            $address->township = $request->township ?? null;
+            $property->address()->save($address);
+
+            /* Area Size Store */
+            $area_size = new AreaSize();
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
+            }
+
+            if ($request->property_category == 3 || $request->property_category == 4 || $request->property_category == 6 || $request->property_category == 8) {
+                $area_size->level = $request->floor_level ?? null;
+            }
+
+            $property->areasize()->save($area_size);
+
+            /* Partation Store */
+            $partation = new Partation();
+            $partation->type = 1; //Default 
+            $partation->bed_room = $request->bed_room ?? null;
+            $partation->bath_room = $request->bath_room ?? null;
+            $property->partation()->save($partation);
+
+            /* Price Store */
+            $price = new Price();
+            $price->price = $request->price;
+            $price->currency_code = $request->currency_code;
+            $property->price()->save($price);
+
+            /* Situation Store */
+            $situation = new Situation();
+            $situation->building_repairing = $request->repairing;
+            $situation->building_condition = $request->condition;
+            $property->situation()->save($situation);
+
+            /* Electri & water Store */
+            $suppliment = new Suppliment();
+            $suppliment->note = $request->note ?? null;
+            $property->suppliment()->save($suppliment);
+
+
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data[] = $file_name;
+                }
+            }
+            $property_image = new PropertyImage();
+            $property_image->images = json_encode($data);
+            $property->propertyImage()->save($property_image);
+
+            DB::commit();
+            return ResponseHelper::success('Successfully created', Null);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseHelper::fail('Fail to request', $e);
+        }
+    }
+
+    // Property Update
+    public function PropertyUpdate(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+
+            /* Address */
+            'title' => 'required',
+            'region' => 'required',
+            'township' => 'required',
+
+            /* AreaSize */
+            'area_option' => 'required',
+            'width' => 'required_if:area_option,==,1',
+            'length' => 'required_if:area_option,==,1',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+
+            /* Situation */
+            'repairing' => 'required',
+            'condition' => 'required',
+
+            /* Sale Price */
+            'price' => 'required_if:property_type,==,1',
+            'currency_code' => 'required_if:property_type,==,1',
+
+        ]);
+
+        if ($validate->fails()) {
+            return ResponseHelper::fail('Fail to request', $validate->errors());
+        }
+
+        DB::beginTransaction();
+        try {
+            /* Call Id */
+            $property = Property::where('user_id', Auth::user()->id)->findOrFail($request->id);
+            $property->title = $request->title;
+            $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
+            $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
+
+            // Address Store
+            $property->address->region = $request->region ?? $property->address->region;
+            $property->address->township = $request->township ?? $property->address->township;
+
+            /** Area Size Store */
+            $property->areasize->area_option = $request->area_option;
+
+            if ($property->property_category == 3 || $property->property_category == 4 || $property->property_category == 6 || $property->property_category == 8) {
+                $property->areasize->level = $request->floor_level ?? null;
+            }
+
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $property->areasize->width = $request->width;
+                $property->areasize->length = $request->length;
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $property->areasize->area_size = $request->area_size;
+                $property->areasize->area_unit = $request->area_unit;
+            }
+
+            /* Partation Store */
+            $property->partation->bed_room = $request->bed_room ?? $property->partation->bed_room;
+            $property->partation->bath_room = $request->bath_room ?? $property->partation->bath_room;
+
+            /* Price Data Store */
+            if (!$property->price) {
+                /* Price Store */
+                $price = new Price();
+                $price->price = $request->price;
+                $price->currency_code = $request->currency_code;
+                $property->price()->save($price);
+            } else {
+                $property->price->price = $request->price;
+                $property->price->currency_code = $request->currency_code;
+            }
+
+            /* Situation Store */
+            $property->situation->building_repairing = $request->repairing;
+            $property->situation->building_condition = $request->condition;
+
+            $property->suppliment->note = $request->note ?? $property->suppliment->note;
+
+
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data_images[] = $file_name;
+                }
+                $decode_images = json_decode($property->propertyImage->images);
+                $result = array_merge($decode_images, $data_images);
+                $property->propertyImage->images = $result;
+            }
+
+            $property->push();
+
+            DB::commit();
+            return ResponseHelper::success('Successfully Updated', Null);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseHelper::fail('Fail to request', $e);
+        }
+    }
+
+    /* Create House, Shop Category = 1 / 6 */
     public function house_shop_create(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -539,7 +680,7 @@ class PropertyController extends Controller
             return ResponseHelper::fail('Fail to request', $e);
         }
     }
-    /* Update House , Shop */
+    /* Update House , Shop Category = 1 / 6 */
     public function house_shop_update(Request $request)
     {
 
@@ -793,7 +934,7 @@ class PropertyController extends Controller
         }
         return ResponseHelper::fail('Fail Request', 'you are not own this');
     }
-    /* Create Land, House Land , Industrial */
+    /* Create Land, House Land , Industrial = Category 2 / 5/ 7 */
     public function land_house_land_create(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -806,7 +947,6 @@ class PropertyController extends Controller
 
             /* Area Size */
             'area_option' => 'required|in:1,2',
-            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             'width' => 'required_if:area_option,==,1',
             'length' => 'required_if:area_option,==,1',
             'area_size' => 'required_if:area_option,==,2',
@@ -992,11 +1132,10 @@ class PropertyController extends Controller
             return ResponseHelper::success('Successfully Created', null);
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e;
             return ResponseHelper::fail('Something Wrong', $e);
         }
     }
-    /* Update Land, House Land , Industrial */
+    /* Update Land, House Land , Industrial = Category 2 / 5/ 7 */
     public function land_house_land_update(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -1009,7 +1148,6 @@ class PropertyController extends Controller
 
             /* Area Size */
             'area_option' => 'required|in:1,2',
-            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             'width' => 'required_if:area_option,==,1',
             'length' => 'required_if:area_option,==,1',
             'area_size' => 'required_if:area_option,==,2',
@@ -1212,7 +1350,7 @@ class PropertyController extends Controller
         }
         return ResponseHelper::fail('Fail Request', 'you are not own this');
     }
-    /* Create Aparment Condo , Office */
+    /* Create Aparment Condo , Office  Category 3 / 4 / 8 */
     public function apart_condo_office_create(ApartCondoCreateRequest $request)
     {
 
@@ -1224,7 +1362,7 @@ class PropertyController extends Controller
 
             /* Area Size */
             'area_option' => 'required|in:1,2',
-            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             'width' => 'required_if:area_option,==,1',
             'length' => 'required_if:area_option,==,1',
             'area_size' => 'required_if:area_option,==,2',
@@ -1310,9 +1448,7 @@ class PropertyController extends Controller
                 $area_size->area_size = $request->area_size;
                 $area_size->area_unit = $request->area_unit;
             }
-            if ($request->property_category == 6) {
-                $area_size->level = $request->floor_level;
-            }
+            $area_size->level = $request->floor_level;
             $property->areasize()->save($area_size);
 
             /* Partation Store */
@@ -1421,7 +1557,7 @@ class PropertyController extends Controller
             return ResponseHelper::fail('Something Wrong', $e);
         }
     }
-    /* Update Aparment Condo , Office */
+    /* Update Aparment Condo , Office  Category 3 / 4 / 8 */
     public function apart_condo_office_update(ApartCondoUpdateRequest $request)
     {
         $validate = Validator::make($request->all(), [
@@ -1432,7 +1568,7 @@ class PropertyController extends Controller
 
             /* Area Size */
             'area_option' => 'required|in:1,2',
-            'floor_level' => 'required_if:property_category,==,6|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
+            'floor_level' => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27',
             'width' => 'required_if:area_option,==,1',
             'length' => 'required_if:area_option,==,1',
             'area_size' => 'required_if:area_option,==,2',
@@ -1509,9 +1645,8 @@ class PropertyController extends Controller
                     $property->areasize->area_size = $request->area_size;
                     $property->areasize->area_unit = $request->area_unit;
                 }
-                if ($request->property_category == 6) {
-                    $property->areasize->level = $request->floor_level;
-                }
+
+                $property->areasize->level = $request->floor_level;
 
                 /* Partation Store */
                 $property->partation->type = $request->partation_type;

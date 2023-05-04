@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\NewProject;
 use App\Property;
 use App\WantToBuyRent;
 use Carbon\Carbon;
@@ -42,6 +43,7 @@ class W2BExpired extends Command
     public function handle()
     {
         WantToBuyRent::where('created_at', '<', Carbon::now()->subYear())->update(['status' => 0]);
+        NewProject::where('created_at', '<', Carbon::now()->subYear())->update(['status' => 0]);
         Property::where('created_at', '<', Carbon::now()->subYear())->update(['status' => 0]);
         $this->info('Success');
     }

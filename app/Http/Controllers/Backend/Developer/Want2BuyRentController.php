@@ -33,8 +33,22 @@ class Want2BuyRentController extends Controller
         $data = WantToBuyRent::query()->with([
             'region',
             'township',
-        ])->where('user_id', auth()->user()->id);
+        ])->where('user_id', auth()->user()->id)->orderBy('created_at', 'DESC');
         return Datatables::of($data)
+            ->filterColumn('region', function ($query, $keyword) {
+                $query->whereHas('address', function ($qa) use ($keyword) {
+                    $qa->whereHas('region', function ($qr) use ($keyword) {
+                        $qr->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            })
+            ->filterColumn('township', function ($query, $keyword) {
+                $query->whereHas('address', function ($qa) use ($keyword) {
+                    $qa->whereHas('township', function ($qt) use ($keyword) {
+                        $qt->where('name', 'LIKE', '%' . $keyword . '%');
+                    });
+                });
+            })
             ->editColumn('region', function ($each) {
                 $region = $each->region()->first('name');
                 return $region->name ?? '-';
@@ -44,16 +58,13 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  . '</div>';
+                return '<div class="budget">' . $each->budget_from . '-' . $each->budget_to  . ' ' .  $each->currency_code . '</div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
             })
             ->editColumn('properties_category', function ($each) {
                 return config('const.property_category')[$each->properties_category] ?? '-';
-            })
-            ->editColumn('co_broke', function ($each) {
-                return config('const.broker')[$each->co_broke] ?? '-';
             })
             ->editColumn('status', function ($each) {
                 if ($each->status == config('const.pending')) {
@@ -63,8 +74,26 @@ class Want2BuyRentController extends Controller
                     return '<span class="badge badge-pill badge-success">Active</span>' ?? '-';
                 }
             })
+            ->editColumn('post_by', function ($each) {
+                if ($each->user_id) {
+                    if ($each->user['user_type'] == 1 || $each->user['user_type'] == 2 || $each->user['user_type'] == 3) {
+                        return $each->user['name'] . ' (Admin)' ?? 'Admin(-)';
+                    }
+                    if ($each->user['user_type'] == 4) {
+                        return $each->user['name'] . ' (Agent)' ?? 'Agent(-)';
+                    }
+                    if ($each->user['user_type'] == 5) {
+                        return $each->user['name'] . ' (Dev)' ?? 'Developer(-)';
+                    }
+                    if ($each->user['user_type'] == 6) {
+                        return $each->user['name'] . ' (User)' ?? 'User(-)';
+                    }
+                    return '-';
+                }
+                return '-';
+            })
             ->editColumn('created_at', function ($each) {
-                return Carbon::parse($each->created_at)->format('d-m-y H:i:s');
+                return Carbon::parse($each->created_at)->format('d-m-y');
             })
             ->addColumn('action', function ($each) {
                 if ($each->status == config('const.pending')) {
@@ -101,27 +130,30 @@ class Want2BuyRentController extends Controller
     {
         $data = new WantToBuyRent();
         $data->user_id = Auth()->user()->id;
-        $data->title = $request->title;
-        $data->budget_from = $request->budget_from;
-        $data->budget_to = $request->budget_to;
-        $data->currency_code = $request->currency_code;
-        $data->area_unit = $request->area_unit;
-        $data->area_width = $request->area_width;
-        $data->area_length = $request->area_length;
-        $data->floor_level = $request->floor_level;
-        $data->completion = $request->completion;
-        $data->furnished_status = $request->furnished_status;
-        $data->phone_no = $request->phone_no;
-        $data->region = $request->region;
-        $data->township = $request->township;
-        $data->properties_type = $request->properties_type;
-        $data->properties_category = $request->properties_category;
-        $data->descriptions = $request->descriptions;
-        $data->co_broke = $request->co_broke;
+        $data->properties_type = $request->properties_type ?? null;
+        $data->properties_category = $request->properties_category ?? null;
+        $data->title = $request->title ?? null;
+        $data->phone_no = $request->phone_no ?? null;
+        $data->region = $request->region ?? null;
+        $data->township = $request->township ?? null;
+        $data->area_option = $request->area_option ?? null;
+        $data->area_unit = $request->area_unit ?? null;
+        $data->area_width = $request->area_width ?? null;
+        $data->area_length = $request->area_length ?? null;
+        $data->area_size = $request->area_size ?? null;
+        $data->floor_level = $request->floor_level ?? null;
+        $data->bed_room = $request->bed_room ?? null;
+        $data->bath_room = $request->bath_room ?? null;
+        $data->floor_level = $request->floor_level ?? null;
+        $data->furnished_status = $request->repairing ?? null;
+        $data->situations = $request->situations ?? null;
+        $data->budget_from = $request->budget_from ?? null;
+        $data->budget_to = $request->budget_to ?? null;
+        $data->currency_code = $request->currency_code ?? null;
+        $data->descriptions = $request->descriptions ?? null;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
         $data->status = config('const.publish');
         $data->save();
-
         return redirect()->route('developer.want2buyrent.index')->with('create', 'Successfully Created');
     }
 
@@ -192,7 +224,7 @@ class Want2BuyRentController extends Controller
      */
     public function destroy($id)
     {
-        $data = WantToBuyRent::findOrFail($id);
+        $data = WantToBuyRent::where('user_id', Auth::user()->id)->findOrFail($id);
         $data->delete();
     }
     public function expired($id)

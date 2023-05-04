@@ -35,12 +35,16 @@ class CreateWant2BuyRentRequest extends FormRequest
             'township' => 'required',
 
             /* AreaSize */
-            'area_unit' => 'required|numeric',
-            'area_width' => 'required|numeric',
-            'area_length' => 'required|numeric',
-            'completion' => 'required',
-            'floor_level' => 'required_if:properties_category,==,3',
-            'furnished_status' => 'required_if:properties_category,==,3',
+            'area_option' => 'required|numeric',
+            'area_size' => 'required_if:area_option,==,2',
+            'area_unit' => 'required_if:area_option,==,2',
+            'area_width' => 'required_if:area_option,==,1',
+            'area_length' => 'required_if:area_option,==,1',
+
+            'floor_level' => 'required_if:properties_category,3,4,6,8',
+
+            'repairing' => 'required',
+            'situations' => 'required',
 
             /* Budget Price */
             'budget_from' => 'required|numeric',
@@ -49,9 +53,6 @@ class CreateWant2BuyRentRequest extends FormRequest
 
             /* Description */
             'descriptions' => 'required',
-
-            /* Broker */
-            'co_broke' => 'required',
 
             /* Term And Condition */
             'terms_condition' => 'required',

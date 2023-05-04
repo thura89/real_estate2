@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Partation extends Model
 {
-    //
+    protected $guarded = [];
 }

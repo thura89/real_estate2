@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\WishList;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,23 +19,19 @@ class PropertyList extends JsonResource
      */
     public function toArray($request)
     {
-        // return 'here';
-        // return $this->user->properties()->count();
+
+        // return $this->price;
         $data = [];
         $image = $this->propertyImage()->first('images');
         $image = json_decode($image['images']);
         $image = asset(config('const.p_img_path')) . '/' . $image[0];
 
-
-        /* Buy properties_type => 1 */
-        if ($this->properties_type == 1) {
+        /* Price */
+        if ($this->price) {
             $currency_code = $this->price->currency_code ? config('const.currency_code')[$this->price->currency_code] : '';
             $price =  $this->price ? number_format($this->price->price) . ' ' . $currency_code  : '0';
-        }
-        /* Buy properties_type => 0 */
-        if ($this->properties_type == 2) {
-            $rent_currency_code = $this->rentprice->currency_code ? config('const.currency_code')[$this->rentprice->currency_code] : '';
-            $price = $this->rentprice ? number_format($this->rentprice->price) . ' ' . $rent_currency_code : '0';
+        } else {
+            $price = null;
         }
 
 
@@ -66,15 +63,20 @@ class PropertyList extends JsonResource
         $data['id'] = $this->id;
         $data['image'] = $image ?? '/backend/images/no-image.jpeg';
         $data['title'] = $this->title;
-        $data['price'] = $price;
+        $data['price'] = $price ?? null;
         $data['township'] = $township['name'] ?? null;
         $data['region'] = $region['name'] ?? null;
         $data['property_type'] = config('const.property_type')[$this->properties_type];
         $data['category'] = config('const.property_category')[$this->category];
         $data['bed_room'] = $this->partation->bed_room ?? null;
         $data['bath_room'] = $this->partation->bath_room ?? null;
-        $data['note'] = $this->suppliment->note ?? null;
+        $data['note'] = $this->suppliment ? Str::limit($this->suppliment->note, 50, '...') : null;
         $data['area_size'] = $area_size ?? null;
+
+        if ($this->category == 3 || $this->category == 4 || $this->category == 6 || $this->category == 8) {
+            $data['floor_level'] = $this->areasize ? $this->areasize->floor_level : null;
+        }
+
         $data['recommended_feature'] = $this->recommended_feature;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id', Auth::guard('api')->user()->id)->where('property_id', $this->id)->first();
@@ -84,9 +86,7 @@ class PropertyList extends JsonResource
                 $data['favorite_status'] = 0;
             }
         }
-        $data['phone'] =  $this->phone ?? null;
-        $data['other_phone'] =  $this->other_phone ?? [];
-        $data['company_name'] =  $this->company_name ?? null;
+
         $data['region'] =  $region['name'] ?? null;
         $data['township'] =  $township['name'] ?? null;
 

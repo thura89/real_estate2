@@ -20,7 +20,6 @@ class ExpiredPropertyController extends Controller
     }
     public function ssd(Request $request)
     {
-        $date = Carbon::today()->subMonths(12);
         $data = Property::query()->with([
             'address',
             'areasize',
@@ -32,8 +31,7 @@ class ExpiredPropertyController extends Controller
             'situation',
             'suppliment',
             'unitAmenity',
-        ])->whereDate('created_at', '<=', $date)
-            ->where('status', config('const.pending'));
+        ])->where('status', config('const.pending'));
         if ($request->get('status')) {
             $data->where('status', $request->get('status'));
         }

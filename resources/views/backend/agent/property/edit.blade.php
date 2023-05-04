@@ -1,4 +1,4 @@
-@extends('backend.layouts.app')
+@extends('backend.agent.layouts.app')
 @section('title', 'Property Management')
 @section('update_property-active', 'mm-active')
 @section('extra-css')
@@ -26,7 +26,7 @@
             <div class="card">
                 <div class="card-body">
                     @include('backend.layouts.flash')
-                    <form action="{{ route('admin.property.update') }}" class="form" method="POST" id="update"
+                    <form action="{{ route('agent.property.update') }}" class="form" method="POST" id="update"
                         enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="property_category" value="{{ $category }}">
@@ -324,6 +324,33 @@
                     $('.area').show();
                     $('.area_widthxlenght').hide();
                 }
+            });
+
+            $('.region').on('change', function() {
+                $('.region_old').hide();
+                $('.township_old').hide();
+                var region_id = this.value;
+                if (region_id == '') {
+                    $('.region_old').show();
+                    $('.township_old').show();
+                }
+                $(".township").html('');
+                $.ajax({
+                    url: "{{ url('/agent/township') }}",
+                    type: "POST",
+                    data: {
+                        region_id: region_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('.township').html('<option value="">Select State</option>');
+                        $.each(result.township, function(key, value) {
+                            $(".township").append('<option value="' + value.id + '">' +
+                                value.name + '</option>');
+                        });
+                    }
+                });
             });
         });
     </script>

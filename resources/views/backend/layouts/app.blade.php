@@ -119,11 +119,7 @@
                     $('#agreebtn').prop('disabled', false);
                 }
             });
-            // $('[data-toggle="tooltip"]').tooltip();
         });
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
     </script>
     @yield('script')
 </body>

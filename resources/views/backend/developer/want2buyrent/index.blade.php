@@ -38,7 +38,6 @@
                             <th>Budget</th>
                             <th>Type</th>
                             <th>Category</th>
-                            <th>Broker</th>
                             <th>Status</th>
                             <th>Created</th>
                             <th width="100px;" class="no-sort">Action</th>
@@ -84,10 +83,6 @@
                     {
                         data: 'properties_category',
                         name: 'properties_category'
-                    },
-                    {
-                        data: 'co_broke',
-                        name: 'co_broke'
                     },
                     {
                         data: 'status',

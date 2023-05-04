@@ -40,6 +40,7 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_adm
     /* New Project */
     Route::resource('/new_project', 'NewProjectController');
     Route::get('/new_project/datatables/ssd', 'NewProjectController@ssd');
+    Route::post('/new_project/renew/{id}', 'NewProjectController@expired')->name('newproject.expired');
 
     /* Want To Buy & Rent */
     Route::resource('/want2buyrent', 'Want2BuyRentController');
@@ -58,6 +59,10 @@ Route::prefix('admin')->name('admin.')->namespace('Backend')->middleware('is_adm
     /* News */
     Route::resource('/slider', 'SliderController');
     Route::get('/slider/datatables/ssd', 'SliderController@ssd');
+
+    /* Property Create / Update  */
+    Route::post('/property/create', 'PropertyController@PropertyCreate')->name('property.create');
+    Route::post('/property/update', 'PropertyController@PropertyUpdate')->name('property.update');
 
     /* House  */
     Route::post('/property/create/house_shop', 'PropertyController@house_shop_create')->name('property.create.house_shop');

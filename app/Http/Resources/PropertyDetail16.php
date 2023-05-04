@@ -57,7 +57,7 @@ class PropertyDetail16 extends JsonResource
         /* AreaSize */
         $data['area_size'] = $data_area_size;
         if ($this->category == 6) {
-            /* Category 2 */
+            /* Category 6 */
             $data['floor_level'] = $this->areasize ? $this->areasize->floor_level : null;
         }
 

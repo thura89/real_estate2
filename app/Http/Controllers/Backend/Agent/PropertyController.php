@@ -44,13 +44,10 @@ class PropertyController extends Controller
             'address',
             'areasize',
             'partation',
-            'payment',
             'price',
-            'rentPrice',
             'propertyImage',
             'situation',
             'suppliment',
-            'unitAmenity',
         ])->whereDate('created_at', '>=', $date)
             ->where('user_id', Auth::user()->id)
             ->where('status', config('const.publish')); //published Status;
@@ -89,57 +86,18 @@ class PropertyController extends Controller
         if ($request->get('min_price') || $request->get('max_price')) {
             $min = $request->get('min_price');
             $max = $request->get('max_price');
-            if ($request->get('type') == 1) {
-                $data->whereHas('price', function ($query) use ($min, $max) {
-                    $query->whereBetween('price', [$min, $max]);
-                });
-            } else {
-                $data->whereHas('rentprice', function ($query) use ($min, $max) {
-                    $query->whereBetween('price', [$min, $max]);
-                });
-            }
+            $data->whereHas('price', function ($query) use ($min, $max) {
+                $query->whereBetween('price', [$min, $max]);
+            });
         }
 
         if ($request->get('currency_code')) {
             $currency_code = $request->get('currency_code');
-            if ($request->get('property_type') == 1) {
-                $data->whereHas('price', function ($query) use ($currency_code) {
-                    $query->where('currency_code', $currency_code);
-                });
-            } else {
-                $data->whereHas('rentprice', function ($query) use ($currency_code) {
-                    $query->where('currency_code', $currency_code);
-                });
-            }
-        }
-
-        if ($request->get('purchase_type')) {
-            $purchase_type = $request->get('purchase_type');
-            $data->whereHas('payment', function ($query) use ($purchase_type) {
-                $query->where('purchase_type', $purchase_type);
+            $data->whereHas('price', function ($query) use ($currency_code) {
+                $query->where('currency_code', $currency_code);
             });
         }
 
-        if ($request->get('installment')) {
-            $installment = $request->get('installment');
-            if ($installment === 'yes') {
-                $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment', 1);
-                });
-            }
-            if ($installment === 'no') {
-                $data->whereHas('payment', function ($query) use ($installment) {
-                    $query->where('installment', 0);
-                });
-            }
-        }
-
-        if ($request->get('year_of_construction')) {
-            $year_of_construction = $request->get('year_of_construction');
-            $data->whereHas('situation', function ($query) use ($year_of_construction) {
-                $query->where('year_of_construction', $year_of_construction);
-            });
-        }
         if ($request->get('building_repairing')) {
             $building_repairing = $request->get('building_repairing');
             $data->whereHas('situation', function ($query) use ($building_repairing) {
@@ -152,50 +110,6 @@ class PropertyController extends Controller
                 $query->where('building_condition', $building_condition);
             });
         }
-
-        if ($request->get('fence_condition')) {
-            $fence_condition = $request->get('fence_condition');
-            $data->whereHas('situation', function ($query) use ($fence_condition) {
-                $query->where('fence_condition', $fence_condition);
-            });
-        }
-
-        // if ($request->get('water_sys')) {
-        //     $water_sys = $request->get('water_sys');
-        //     if ($water_sys == 'yes') {
-        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 1);
-        //         });
-        //     }
-
-        //     if ($water_sys == 'no') {
-        //         $data->whereHas('suppliment', function ($query) use ($water_sys) {
-        //             $query->where('water_sys', 0);
-        //         });
-        //     }
-
-        // }
-
-        // if ($request->get('electricity_sys')) {
-        //     $electricity_sys = $request->get('electricity_sys');
-        //     if ($electricity_sys == 'yes') {
-        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 1);
-        //         });
-        //     }
-        //     if ($electricity_sys == 'no') {
-        //         $data->whereHas('suppliment', function ($query) use ($electricity_sys) {
-        //             $query->where('electricity_sys', 0);
-        //         });
-        //     }
-        // }
-
-        // if ($request->get('type_of_street')) {
-        //     $type_of_street = $request->get('type_of_street');
-        //     $data->whereHas('address', function ($query) use ($type_of_street) {
-        //         $query->where('type_of_street', $type_of_street);
-        //     });
-        // }
         if ($request->get('area_option')) {
             $area_option = $request->get('area_option');
             $data->whereHas('areasize', function ($query) use ($area_option) {
@@ -233,13 +147,6 @@ class PropertyController extends Controller
             });
         }
 
-        if ($request->get('partation_type')) {
-            $partation_type = $request->get('partation_type');
-            $data->whereHas('partation', function ($query) use ($partation_type) {
-                $query->where('type', $partation_type);
-            });
-        }
-
         if ($request->get('bed_room')) {
             $bed_room = $request->get('bed_room');
             $data->whereHas('partation', function ($query) use ($bed_room) {
@@ -256,30 +163,17 @@ class PropertyController extends Controller
 
         if ($request->get('sorter')) {
             $sort = $request->get('sorter');
-            $type = $request->get('type');
             /* Sort By Max Price */
             if ($sort == 'max') {
-                if ($type == 1) {
-                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                        ->select('properties.*', 'prices.price as price_order')
-                        ->orderBy('price_order', 'DESC');
-                } else {
-                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                        ->select('properties.*', 'rent_prices.price as price_order')
-                        ->orderBy('price_order', 'DESC');
-                }
+                $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                    ->select('properties.*', 'prices.price as price_order')
+                    ->orderBy('price_order', 'DESC');
             }
             /* Sort By Min Price */
             if ($sort == 'min') {
-                if ($type == 1) {
-                    $data->join('prices', 'properties.id', '=', 'prices.properties_id')
-                        ->select('properties.*', 'prices.price as price_order')
-                        ->orderBy('price_order', 'ASC');
-                } else {
-                    $data->join('rent_prices', 'properties.id', '=', 'rent_prices.properties_id')
-                        ->select('properties.*', 'rent_prices.price as price_order')
-                        ->orderBy('price_order', 'ASC');
-                }
+                $data->join('prices', 'properties.id', '=', 'prices.properties_id')
+                    ->select('properties.*', 'prices.price as price_order')
+                    ->orderBy('price_order', 'ASC');
             }
             if ($sort == 'new') {
                 $data->orderBy('updated_at', 'DESC');
@@ -336,10 +230,7 @@ class PropertyController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('price', function ($each) {
-                if ($each->properties_type == 1) {
-                    return number_format($each->price->price) . ' ' . config('const.currency_code')[$each->price->currency_code] ?? '-';
-                }
-                return number_format($each->rentprice->price) . ' ' . config('const.currency_code')[$each->rentprice->currency_code] ?? '-';
+                return $each->price ? number_format($each->price->price) . ' ' . config('const.currency_code')[$each->price->currency_code] : '-';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -367,26 +258,231 @@ class PropertyController extends Controller
             ->rawColumns(['images', 'recommended_feature', 'action'])
             ->make(true);
     }
+
     /* Property Create by Relative */
     public function create(Request $request)
     {
         $regions = Region::get(['name', 'id']);
         $category = $request->property_category;
         $type = $request->property_type;
-        /* House , Shop */
-        if ($category == 1 || $category == 6) {
-            return view('backend.agent.property.create.house_shop', compact('regions', 'category', 'type'));
-        }
-        /* House Land, Land, Industrial */
-        if ($category == 2 || $category == 5 || $category == 7) {
-            return view('backend.agent.property.create.land_house_land', compact('regions', 'category', 'type'));
-        }
-        /* Apartment Condo , Office */
-        if ($category == 3 || $category == 4 || $category == 8) {
-            return view('backend.agent.property.create.apartment_condo_office', compact('regions', 'category', 'type'));
-        }
-        return back();
+        return view('backend.agent.property.create', compact('regions', 'category', 'type'));
     }
+
+    /* Property Edit By relative */
+    public function edit(Request $request, $id)
+    {
+        /* Get Region */
+        $regions = Region::get(['name', 'id']);
+
+        /* Get Property */
+        $property = Property::where('user_id', Auth::user()->id)->findOrFail($id);
+        $category = $property->category;
+
+        /* Get Image */
+        $data = $property->propertyImage()->first('images');
+        $decode_images = json_decode($data['images']);
+        $images = [];
+        foreach ($decode_images as $key => $image) {
+            $images[] = [
+                'id' => $image,
+                'src' => asset(config('const.p_img_path')) . '/' . $image
+            ];
+        }
+        $images = json_encode($images);
+
+        return view('backend.agent.property.edit', compact('id', 'property', 'regions', 'category', 'images'));
+    }
+
+    // Property Create
+    public function PropertyCreate(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            /* Property Store */
+            $property = new Property();
+            $property->title = $request->title;
+            $property->p_code = UUIDGenerate::pCodeGenerator();
+            $property->user_id = Auth()->user()->id;
+            $property->lat = '16.7731649'; // Sample lag
+            $property->long = '96.1597431'; // Sample long
+            $property->properties_type = $request->property_type;
+            $property->category = $request->property_category;
+            $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
+            $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
+            $property->status = config('const.publish'); //Publish Status
+            $property->save();
+
+            /* Address Store */
+            $address = new Address();
+            $address->region = $request->region ?? null;
+            $address->township = $request->township ?? null;
+            $property->address()->save($address);
+
+            /* Area Size Store */
+            $area_size = new AreaSize();
+            $area_size->area_option = $request->area_option;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $area_size->width = $request->width;
+                $area_size->length = $request->length;
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $area_size->area_size = $request->area_size;
+                $area_size->area_unit = $request->area_unit;
+            }
+
+            $area_size->level = $request->floor_level ?? null;
+            $property->areasize()->save($area_size);
+
+            /* Partation Store */
+            $partation = new Partation();
+            $partation->type = 1; //Default 
+            $partation->bed_room = $request->bed_room ?? null;
+            $partation->bath_room = $request->bath_room ?? null;
+            $property->partation()->save($partation);
+
+            /* Price Store */
+            $price = new Price();
+            $price->price = $request->price;
+            $price->currency_code = $request->currency_code;
+            $property->price()->save($price);
+
+            /* Situation Store */
+            $situation = new Situation();
+            $situation->building_repairing = $request->building_repairing;
+            $situation->building_condition = $request->building_condition;
+            $property->situation()->save($situation);
+
+            /* Electri & water Store */
+            $suppliment = new Suppliment();
+            $suppliment->note = $request->note ?? null;
+            $property->suppliment()->save($suppliment);
+
+
+            /* Property Image */
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                    Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                    $data[] = $file_name;
+                }
+            }
+            $property_image = new PropertyImage();
+            $property_image->images = json_encode($data);
+            $property->propertyImage()->save($property_image);
+
+            DB::commit();
+            return redirect()->route('agent.property.index')->with('create', 'Successfully Created');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['fail' => 'Fail Input'])->withInput();
+        }
+    }
+
+    // Property Update
+    public function PropertyUpdate(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            /* Call Id */
+            $property = Property::findOrFail($request->id);
+            $property->title = $request->title;
+            $property->recommended_feature = $request->recommended_feature ? 1 : 0; //Recommend Feature Status
+            $property->hot_feature = $request->hot_feature ? 1 : 0; //Hot Feature Status
+
+            // Address Store
+            $property->address->region = $request->region ?? $property->address->region;
+            $property->address->township = $request->township ?? $property->address->township;
+
+            /** Area Size Store */
+            $property->areasize->area_option = $request->area_option;
+            $property->areasize->level = $request->floor_level ?? null;
+            /* Width x length */
+            if ($request->area_option == 1) {
+                $property->areasize->width = $request->width;
+                $property->areasize->length = $request->length;
+            }
+            /** Area */
+            if ($request->area_option == 2) {
+                $property->areasize->area_size = $request->area_size;
+                $property->areasize->area_unit = $request->area_unit;
+            }
+
+            /* Partation Store */
+            $property->partation->bed_room = $request->bed_room ?? null;
+            $property->partation->bath_room = $request->bath_room ?? null;
+
+            /* Price Data Store */
+            if (!$property->price) {
+                /* Price Store */
+                $price = new Price();
+                $price->price = $request->price;
+                $price->currency_code = $request->currency_code;
+                $property->price()->save($price);
+            } else {
+                $property->price->price = $request->price;
+                $property->price->currency_code = $request->currency_code;
+            }
+
+            /* Situation Store */
+            $property->situation->building_repairing = $request->building_repairing;
+            $property->situation->building_condition = $request->building_condition;
+
+            $property->suppliment->note = $request->note ?? null;
+
+
+            // Splice if not img 
+            if ($request->old || $request->photos) {
+                $old_data = $request->old ?? [];
+                $count = count($request->file('photos') ?? []);
+                $data = array_reverse($old_data);
+                $splice_data = array_splice($data, $count);
+
+                // Fetch Old Image
+                $store_data = $property->propertyImage->first('images');
+                $store_data = json_decode($store_data['images']);
+
+                // Diff image
+                $collection = collect($store_data);
+                $diff_image = $collection->diff($splice_data);
+
+                // Delete image
+                if (!$diff_image->all() == []) {
+                    foreach ($diff_image as $key => $diff) {
+                        Storage::disk('public')->delete('property_images/' . $diff);
+                    }
+                }
+
+                // Get Remain Data from coming form
+                foreach ($splice_data as $image) {
+                    $data[] = $image;
+                }
+
+                // Upload New image
+                if ($request->hasfile('photos')) {
+                    foreach ($request->file('photos') as $image) {
+                        $file_name = uniqid() . '_' . time() . '.' . $image->extension();
+                        Storage::disk('public')->put('/property_images/' . $file_name, file_get_contents($image));
+                        $data[] = $file_name;
+                    }
+                }
+                // Splice No Need Data
+                $filtered = array_splice($data, $count);
+                $property->propertyImage->images = json_encode($filtered);
+            }
+
+            $property->push();
+
+            DB::commit();
+            return redirect()->route('agent.property.index')->with('update', 'Successfully Updated');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['fail' => 'Fail Input'])->withInput();
+        }
+    }
+
     /* Create House, Shop */
     public function house_shop_create(Request $request)
     {
@@ -1313,44 +1409,7 @@ class PropertyController extends Controller
             return back()->withErrors(['fail' => 'Hello Something Wrong'])->withInput();
         }
     }
-    /* Property Edit By relative */
-    public function edit(Request $request, $id)
-    {
-        /* Get Region */
-        $regions = Region::get(['name', 'id']);
 
-        /* Get Property */
-        $property = Property::findOrFail($id);
-        $category = $property->category;
-
-        /* Get Image */
-        $data = $property->propertyImage()->first('images');
-        $decode_images = json_decode($data['images']);
-        $images = [];
-        foreach ($decode_images as $key => $image) {
-            $images[] = [
-                'id' => $image,
-                'src' => asset(config('const.p_img_path')) . '/' . $image
-            ];
-        }
-        $images = json_encode($images);
-
-        /* Redirect to Edit Page By Relative */
-        /* House , Shoop */
-        if ($category == 1 || $category == 6) {
-            return view('backend.agent.property.edit.house_shop', compact('id', 'property', 'regions', 'category', 'images'));
-        }
-        /* Land , House Land , Industiral */
-        if ($category == 2 || $category == 5 || $category == 7) {
-            return view('backend.agent.property.edit.landhouse_land', compact('id', 'property', 'regions', 'category', 'images'));
-        }
-        /* Aparment Condo and Office */
-        if ($category == 3 || $category == 4 || $category == 8) {
-            return view('backend.agent.property.edit.apartment_condo_office', compact('id', 'property', 'regions', 'category', 'images'));
-        }
-
-        return redirect()->back();
-    }
     public function destroy($id)
     {
         $property = Property::where('user_id', Auth::user()->id)

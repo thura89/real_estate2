@@ -34,7 +34,7 @@ class Want2BuyRentController extends Controller
             'region',
             'township',
             'user',
-        ]);
+        ])->orderBy('created_at', 'DESC');
         return Datatables::of($data)
             ->filterColumn('region', function ($query, $keyword) {
                 $query->whereHas('address', function ($qa) use ($keyword) {
@@ -59,7 +59,7 @@ class Want2BuyRentController extends Controller
                 return $township->name ?? '-';
             })
             ->editColumn('budget', function ($each) {
-                return '<div class="budget">' . $each->budget_from . '~' . $each->budget_to  . '</div>';
+                return '<div class="budget">' . $each->budget_from . '-' . $each->budget_to  . ' ' .  $each->currency_code . '</div>';
             })
             ->editColumn('properties_type', function ($each) {
                 return config('const.property_type')[$each->properties_type] ?? '-';
@@ -77,7 +77,6 @@ class Want2BuyRentController extends Controller
             })
             ->editColumn('post_by', function ($each) {
                 if ($each->user_id) {
-                    // return $each->user['name'];
                     if ($each->user['user_type'] == 1 || $each->user['user_type'] == 2 || $each->user['user_type'] == 3) {
                         return $each->user['name'] . ' (Admin)' ?? 'Admin(-)';
                     }
@@ -132,23 +131,26 @@ class Want2BuyRentController extends Controller
     {
         $data = new WantToBuyRent();
         $data->user_id = Auth()->user()->id;
-        $data->title = $request->title;
-        $data->budget_from = $request->budget_from;
-        $data->budget_to = $request->budget_to;
-        $data->currency_code = $request->currency_code;
-        $data->area_unit = $request->area_unit;
-        $data->area_width = $request->area_width;
-        $data->area_length = $request->area_length;
-        $data->floor_level = $request->floor_level;
-        $data->completion = $request->completion;
-        $data->furnished_status = $request->furnished_status;
-        $data->phone_no = $request->phone_no;
-        $data->region = $request->region;
-        $data->township = $request->township;
-        $data->properties_type = $request->properties_type;
-        $data->properties_category = $request->properties_category;
-        $data->descriptions = $request->descriptions;
-        $data->co_broke = $request->co_broke;
+        $data->properties_type = $request->properties_type ?? null;
+        $data->properties_category = $request->properties_category ?? null;
+        $data->title = $request->title ?? null;
+        $data->phone_no = $request->phone_no ?? null;
+        $data->region = $request->region ?? null;
+        $data->township = $request->township ?? null;
+        $data->area_option = $request->area_option ?? null;
+        $data->area_unit = $request->area_unit ?? null;
+        $data->area_width = $request->area_width ?? null;
+        $data->area_length = $request->area_length ?? null;
+        $data->area_size = $request->area_size ?? null;
+        $data->floor_level = $request->floor_level ?? null;
+        $data->bed_room = $request->bed_room ?? null;
+        $data->bath_room = $request->bath_room ?? null;
+        $data->furnished_status = $request->repairing ?? null;
+        $data->situations = $request->situations ?? null;
+        $data->budget_from = $request->budget_from ?? null;
+        $data->budget_to = $request->budget_to ?? null;
+        $data->currency_code = $request->currency_code ?? null;
+        $data->descriptions = $request->descriptions ?? null;
         $data->terms_condition = $request->terms_condition ? 1 : 0;
         $data->status = config('const.publish');
         $data->save();
@@ -191,26 +193,29 @@ class Want2BuyRentController extends Controller
     public function update(Request $request, $id)
     {
         $data = WantToBuyRent::findOrFail($id);
-        $data->user_id = Auth()->user()->id;
-        $data->title = $request->title;
-        $data->budget_from = $request->budget_from;
-        $data->budget_to = $request->budget_to;
-        $data->currency_code = $request->currency_code;
-        $data->area_unit = $request->area_unit;
-        $data->area_width = $request->area_width;
-        $data->area_length = $request->area_length;
-        $data->floor_level = $request->floor_level;
-        $data->completion = $request->completion;
-        $data->furnished_status = $request->furnished_status;
-        $data->phone_no = $request->phone_no;
-        $data->region = $request->region ?? $data->region;
-        $data->township = $request->township ?? $data->township;
         $data->properties_type = $request->properties_type ?? $data->properties_type;
         $data->properties_category = $request->properties_category ?? $data->properties_category;
-        $data->descriptions = $request->descriptions;
-        $data->co_broke = $request->co_broke ? 1 : 0;
-        $data->terms_condition = $request->terms_condition;
-        // $data->status = $request->status ?? 1;
+        $data->title = $request->title ?? $data->title;
+        $data->phone_no = $request->phone_no ?? $data->phone_no;
+        $data->region = $request->region ?? $data->region;
+        $data->township = $request->township ?? $data->township;
+        $data->area_option = $request->area_option ?? $data->area_option;
+        $data->area_unit = $request->area_unit ?? $data->area_unit;
+        $data->area_width = $request->area_width ?? $data->area_width;
+        $data->area_length = $request->area_length ?? $data->area_length;
+        $data->area_size = $request->area_size ?? $data->area_size;
+        $data->floor_level = $request->floor_level ?? $data->floor_level;
+        $data->bed_room = $request->bed_room ?? $data->bed_room;
+        $data->bath_room = $request->bath_room ?? $data->bath_room;
+        $data->floor_level = $request->floor_level ?? $data->floor_level;
+        $data->furnished_status = $request->repairing ?? $data->furnished_status;
+        $data->situations = $request->situations ?? $data->situations;
+        $data->budget_from = $request->budget_from ?? $data->budget_from;
+        $data->budget_to = $request->budget_to ?? $data->budget_to;
+        $data->currency_code = $request->currency_code ?? $data->currency_code;
+        $data->descriptions = $request->descriptions ?? $data->descriptions;
+        $data->terms_condition = 1;
+
         $data->update();
         return redirect()->route('admin.want2buyrent.index')->with('update', 'Successfully Updated');
     }

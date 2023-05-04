@@ -32,10 +32,15 @@ Route::prefix('developer')->name('developer.')->namespace('Backend\Developer')->
     /* New Project */
     Route::resource('/new_project', 'NewProjectController');
     Route::get('/new_project/datatables/ssd', 'NewProjectController@ssd');
+    Route::post('/new_project/renew/{id}', 'NewProjectController@expired');
 
     /* Agent Profile */
     Route::get('profile', 'DeveloperPageController@profile')->name('profile');
     Route::post('profile/{id}', 'DeveloperPageController@profile_update')->name('profile.update');
+
+    /* Property Create / Update  */
+    Route::post('/property/create', 'PropertyController@PropertyCreate')->name('property.create');
+    Route::post('/property/update', 'PropertyController@PropertyUpdate')->name('property.update');
 
     // House 
     Route::post('/property/create/house_shop', 'PropertyController@house_shop_create')->name('property.create.house_shop');

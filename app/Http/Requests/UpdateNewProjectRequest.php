@@ -24,27 +24,11 @@ class UpdateNewProjectRequest extends FormRequest
     public function rules()
     {
         return [
+
             /* Address */
-            // 'wards' => 'required',
-            // 'street_name' => 'required',
-            'townsandvillages' => 'required',
-            // 'type_of_street' => 'required',
-
-            /* Price */
-            'area_unit' => 'required',
-            'min_price' => 'required',
-            'max_price' => 'required',
-            'currency_code' => 'required',
-
-            /* Payment */
-            'purchase_type' => 'required',
-            'installment' => 'required',
-
-            /* Situation */
-            'new_project_sale_type' => 'required',
-            'preparation' => 'required',
-            'project_start_at' => 'required',
-            'project_end_at' => 'required',
+            'title' => 'required',
+            'region' => 'required',
+            'township' => 'required',
 
             /* Description */
             'about_project' => 'required',

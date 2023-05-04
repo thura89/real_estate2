@@ -33,6 +33,10 @@ Route::prefix('agent')->name('agent.')->namespace('Backend\Agent')->middleware('
     Route::get('profile', 'AgentPageController@profile')->name('profile');
     Route::post('profile/{id}', 'AgentPageController@profile_update')->name('profile.update');
 
+    /* Property Create / Update  */
+    Route::post('/property/create', 'PropertyController@PropertyCreate')->name('property.create');
+    Route::post('/property/update', 'PropertyController@PropertyUpdate')->name('property.update');
+    
     // House 
     Route::post('/property/create/house_shop' , 'PropertyController@house_shop_create')->name('property.create.house_shop');
     Route::post('/property/update/house_shop' , 'PropertyController@house_shop_update')->name('property.update.house_shop');
