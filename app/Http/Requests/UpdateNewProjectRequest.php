@@ -27,8 +27,6 @@ class UpdateNewProjectRequest extends FormRequest
 
             /* Address */
             'title' => 'required',
-            'region' => 'required',
-            'township' => 'required',
 
             /* Description */
             'about_project' => 'required',

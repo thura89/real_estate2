@@ -163,8 +163,7 @@ class NewProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = NewProject::findOrFail($id);
-        $data->user_id = Auth()->user()->id;
+        $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
 
         /* Address */
         $data->title = $request->title ?? $data->title;
