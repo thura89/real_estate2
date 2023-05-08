@@ -77,7 +77,6 @@ class UserNewProjectController extends Controller
 
         return ResponseHelper::success('Successfully Created', Null);
     }
-
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
@@ -165,7 +164,6 @@ class UserNewProjectController extends Controller
             return ResponseHelper::fail('fail', null);
         }
     }
-
     public function destroy(Request $request, $id)
     {
         $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
@@ -177,5 +175,14 @@ class UserNewProjectController extends Controller
         }
         $data->delete();
         return ResponseHelper::success('Successfully Delete', Null);
+    }
+    public function renew($id)
+    {
+        $data = NewProject::where('user_id', Auth::user()->id)->findOrFail($id);
+        $data->created_at = Carbon::now();
+        $data->updated_at = Carbon::now();
+        $data->status = config('const.publish'); //Renew status == 1
+        $data->update();
+        return ResponseHelper::success('Success', 'Successfully Extended');
     }
 }

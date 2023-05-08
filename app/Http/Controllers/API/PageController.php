@@ -83,34 +83,28 @@ class PageController extends Controller
                 $query->where('currency_code', $currency_code);
             });
         }
-        if ($request->get('purchase_type')) {
-            $purchase_type = $request->get('purchase_type');
-            $data->with('payment')->whereHas('payment', function ($query) use ($purchase_type) {
-                $query->where('purchase_type', $purchase_type);
+        if ($request->get('repairing')) {
+            $repairing = $request->get('repairing');
+            $data->with('situation')->whereHas('situation', function ($query) use ($repairing) {
+                $query->where('building_repairing', $repairing);
             });
         }
-        if ($request->get('building_repairing')) {
-            $building_repairing = $request->get('building_repairing');
-            $data->with('situation')->whereHas('situation', function ($query) use ($building_repairing) {
-                $query->where('building_repairing', $building_repairing);
+        if ($request->get('situations')) {
+            $situations = $request->get('situations');
+            $data->with('situation')->whereHas('situation', function ($query) use ($situations) {
+                $query->where('building_condition', $situations);
             });
         }
-        if ($request->get('building_condition')) {
-            $building_condition = $request->get('building_condition');
-            $data->with('situation')->whereHas('situation', function ($query) use ($building_condition) {
-                $query->where('building_condition', $building_condition);
+        if ($request->get('width')) {
+            $width = $request->get('width');
+            $data->with('areasize')->whereHas('areasize', function ($query) use ($width) {
+                $query->where('building_width', $width);
             });
         }
-        if ($request->get('building_width')) {
-            $building_width = $request->get('building_width');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($building_width) {
-                $query->where('building_width', $building_width);
-            });
-        }
-        if ($request->get('building_length')) {
-            $building_length = $request->get('building_length');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($building_length) {
-                $query->where('building_length', $building_length);
+        if ($request->get('length')) {
+            $length = $request->get('length');
+            $data->with('areasize')->whereHas('areasize', function ($query) use ($length) {
+                $query->where('building_length', $length);
             });
         }
         if ($request->get('floor_level')) {

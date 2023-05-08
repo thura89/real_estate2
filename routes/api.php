@@ -106,6 +106,7 @@ Route::namespace('API')->group(function () {
             Route::post('/user/newproject/delete_images', 'UserNewProjectController@DeleteNewProjectImage');
             Route::post('/user/newproject/{id}/update', 'UserNewProjectController@update');
             Route::post('/user/newproject/{id}/delete', 'UserNewProjectController@destroy');
+            Route::get('/user/newproject/{id}/renew', 'UserNewProjectController@renew');
         });
 
         /* Property Create - Update */
