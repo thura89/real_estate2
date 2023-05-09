@@ -15,6 +15,11 @@ class NewProjectDetail extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->status == null || $this->status == 0) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
         /** Project region */
         $region = $this->region()->first('name');
         $township = $this->township()->first('name');
@@ -32,12 +37,15 @@ class NewProjectDetail extends JsonResource
 
 
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'region' => $region->name ?? null,
             'township' => $township->name ?? null,
             'about_project' => $this->about_project,
             'images' => $images ?? [],
+            'status' => $status,
             'user' => [
+                'id' => $this->user->id ?? null,
                 'name' => $this->user->name ?? null,
                 'company_name' => $this->user->company_name ?? null,
                 'profile_photo' => $this->user->profile_photo ?? null,
@@ -46,6 +54,7 @@ class NewProjectDetail extends JsonResource
                 'township' => $userTownship['name'] ?? null,
                 'address' => $this->user->address ?? null,
             ],
+            'expired_at' => Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('d-m-y H:m:s'),
             'created_at' => Carbon::parse($this->created_at)->format('d-m-y H:m:s'),
         ];

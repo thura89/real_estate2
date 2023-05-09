@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\User;
 use App\Property;
-
 use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -67,47 +66,9 @@ class DeveloperController extends Controller
         }
 
         $data =  $data->orderBy('created_at', 'DESC')->paginate(10);
-
-        $data = PropertiesByDeveloper::collection($data);
-
-        return $data;
+        if (!$data) {
+            return ResponseHelper::fail('Fail', null);
+        }
+        return PropertiesByDeveloper::collection($data);
     }
-    // public function agentPropertyDetail(Request $request,$id,$property)
-    // {
-    //     $property = Property::with([
-    //         'address',
-    //         'areasize',
-    //         'partation',
-    //         'payment',
-    //         'price',
-    //         'rentPrice',
-    //         'propertyImage',
-    //         'situation',
-    //         'suppliment',
-    //         'unitAmenity',
-    //         'user'
-    //     ])->where('id',$id)->first();
-    //     $category = $property->category;
-
-    //     if ($property) {
-    //         /* Redirect to Edit Page By Relative */
-    //         /* House , Shoop */
-    //         if ($category == 1 || $category == 6) {
-    //             $data = new PropertyDetail16($property);
-    //             return ResponseHelper::success('Success', $data);
-    //         }
-    //         /* Land , House Land , Industiral */
-    //         if ($category == 2 || $category == 5 || $category == 7) {
-    //             $data = new PropertyDetail257($property);
-    //             return ResponseHelper::success('Success', $data);
-    //         }
-    //         /* Aparment Condo and Office */
-    //         if ($category == 3 || $category == 4 || $category == 8) {
-    //             $data = new PropertyDetail348($property);
-    //             return ResponseHelper::success('Success', $data);
-    //         }
-
-    //     }
-    //     return ResponseHelper::fail('Fail', null);
-    // }
 }

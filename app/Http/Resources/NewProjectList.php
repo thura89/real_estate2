@@ -16,6 +16,11 @@ class NewProjectList extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->status == null || $this->status == 0) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
         // Properties
         $region = $this->region()->first('name');
         $township = $this->township()->first('name');
@@ -31,8 +36,8 @@ class NewProjectList extends JsonResource
             'title' => Str::limit($this->title, 60, '...'),
             'region' => $region->name ?? '-',
             'township' => $township->name ?? '-',
-            'images' => $image ?? '/backend/images/no-image.jpeg',
-            'status' => $this->status,
+            'image' => $image ?? '/backend/images/no-image.jpeg',
+            'status' => $status,
             'expired_at' => Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s'),
             'user' => [
                 'company_name' => $this->user->company_name,

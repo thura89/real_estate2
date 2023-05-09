@@ -15,11 +15,16 @@ class UserNewProjectResource extends JsonResource
      */
     public function toArray($request)
     {
-        $region = $this->region ?? null;
-        $township = $this->township ?? null;
-        /* Get Image */
+        if ($this->status == null || $this->status == 0) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
+        /** Project region */
+        $region = $this->region()->first('name');
+        $township = $this->township()->first('name');
 
-        // User
+        /** User Region */
         $userRegion = $this->user->region()->first('name');
         $userTownship = $this->user->township()->first('name');
 
@@ -29,13 +34,17 @@ class UserNewProjectResource extends JsonResource
             $images[] = asset(config('const.new_project_img_path')) . '/' . $image;
         }
         $images = $images ?? null;
+
         return [
+            'id' => $this->id,
             'title' => $this->title,
-            'region' => $region ?? null,
-            'township' => $township ?? null,
-            'about_project' => $this->about_project ?? null,
-            'images' => $images ?? null,
+            'region' => $region->name ?? null,
+            'township' => $township->name ?? null,
+            'about_project' => $this->about_project,
+            'images' => $images ?? [],
+            'status' => $status,
             'user' => [
+                'id' => $this->user->id ?? null,
                 'name' => $this->user->name ?? null,
                 'company_name' => $this->user->company_name ?? null,
                 'profile_photo' => $this->user->profile_photo ?? null,
