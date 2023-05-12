@@ -166,7 +166,12 @@ class PropertyController extends Controller
                 $query->where('bath_room', $bath_room);
             });
         }
-
+        if ($request->get('user_type')) {
+            $user_type = $request->get('user_type');
+            $data->whereHas('user', function ($query) use ($user_type) {
+                $query->where('user_type', $user_type);
+            });
+        }
         if ($request->get('sort')) {
             $sort = $request->get('sort');
             /* Sort By Max Price */

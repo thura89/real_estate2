@@ -74,16 +74,16 @@ class PropertyList extends JsonResource
         $data['area_size'] = $area_size ?? null;
 
         if ($this->category == 3 || $this->category == 4 || $this->category == 6 || $this->category == 8) {
-            $data['floor_level'] = $this->areasize ? $this->areasize->floor_level : null;
+            $data['floor_level'] = $this->areasize ? $this->areasize->level : null;
         }
 
-        $data['recommended_feature'] = $this->recommended_feature;
+        $data['recommended_feature'] = (string)$this->recommended_feature;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id', Auth::guard('api')->user()->id)->where('property_id', $this->id)->first();
             if ($favorite) {
-                $data['favorite_status'] = $favorite->id;
+                $data['favorite_status'] = (string)$favorite->id;
             } else {
-                $data['favorite_status'] = 0;
+                $data['favorite_status'] = '0';
             }
         }
 
