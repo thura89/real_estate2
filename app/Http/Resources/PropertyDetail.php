@@ -50,7 +50,7 @@ class PropertyDetail extends JsonResource
         /* AreaSize */
         $data['area_size'] = $data_area_size;
         if ($this->category == 3 || $this->category == 4 || $this->category == 6 || $this->category == 8) {
-            $data['floor_level'] = $this->areasize ? $this->areasize->floor_level : null;
+            $data['floor_level'] = $this->areasize ? $this->areasize->level : null;
         }
 
         /* partation */
