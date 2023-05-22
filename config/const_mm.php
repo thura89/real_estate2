@@ -45,8 +45,8 @@ return array(
                 2 => 'Area',
         ],
         'currency_code' => [
-                'mmk' => 'သိန်း',
-                'us' => 'အမေရိကန်',
+                'mmk' => 'သိန်း(ကျပ်)',
+                'us' => 'ဒေါ်လာ',
                 'sg' => 'စင်ကာပူ',
         ],
         'installment' => [
@@ -74,11 +74,10 @@ return array(
                 3 => 'ပရိဘောဂအပြည့်အစုံ'
         ],
         'building_condition' => [
-                1 => 'လူနေနေပါသည်',
-                2 => 'Currently Unoccupied',
-                3 => 'အိမ်အသစ်'
+                1 => 'အိမ်အသစ်',
+                2 => 'အခြား',
         ],
-        
+
         'fence_condition' => [
                 1 => 'Yes',
                 0 => 'No',
@@ -146,25 +145,26 @@ return array(
                 27 => '၂၇လွှာ',
 
         ],
+
         'property_category' => [
-                1 => 'အိမ်',
-                2 => 'လုံးချင်းအိမ်',
+                1 => 'လုံးချင်းအိမ်',
+                2 => 'မြေကွက်',
                 3 => 'တိုက်ခန်း',
-                4 => 'ရုံး',
-                5 => 'မြေ',
-                6 => 'ဆိုင်',
-                7 => 'စက်မှုဇုံ',
-                8 => 'ကွန်ဒို' ,
+                4 => 'ရုံးခန်း',
+                5 => 'ခြံမြေလယ်မြေ',
+                6 => 'ဆိုင်ခန်း',
+                7 => 'စက်မှူဇုံ',
+                8 => 'ကွန်ဒို',
         ],
         'property_category_img' => [
                 [
                         'id' => 1,
-                        'title' => 'အိမ်',
+                        'title' => 'လုံးချင်းအိမ်',
                         'url' => 'storage/property_images/house.jpg',
                 ],
                 [
                         'id' => 2,
-                        'title' => 'လုံးချင်းအိမ်',
+                        'title' => 'မြေကွက်',
                         'url' => 'storage/property_images/land_house.jpg',
                 ],
                 [
@@ -174,22 +174,22 @@ return array(
                 ],
                 [
                         'id' => 4,
-                        'title' => 'ရုံး',
+                        'title' => 'ရုံးခန်း',
                         'url' => 'storage/property_images/office.jpg',
                 ],
                 [
                         'id' => 5,
-                        'title' => 'မြေ',
+                        'title' => 'ခြံမြေလယ်မြေ',
                         'url' => 'storage/property_images/land.jpg',
                 ],
                 [
                         'id' => 6,
-                        'title' => 'ဆိုင်',
+                        'title' => 'ဆိုင်ခန်း',
                         'url' => 'storage/property_images/shop.jpg',
                 ],
                 [
                         'id' => 7,
-                        'title' => 'စက်မှုဇုံ',
+                        'title' => 'စက်မှူဇုံ',
                         'url' => 'storage/property_images/industrial.jpg',
                 ],
                 [
@@ -199,13 +199,13 @@ return array(
                 ],
         ],
         'developer_sale_type' => [
-                1 => 'အိမ်',
-                2 => 'မြေ',
+                1 => 'လုံးချင်းအိမ်',
+                2 => 'မြေကွက်',
                 3 => 'တိုက်ခန်း',
                 4 => 'ကွန်ဒို',
                 5 => 'ဗီလာ',
-                6 => 'ဆိုင်',
-                7 => 'ရုံး',
+                6 => 'ဆိုင်ခန်း',
+                7 => 'ရုံးခန်း',
         ],
         'property_type' => [
                 1 => 'အရောင်း',

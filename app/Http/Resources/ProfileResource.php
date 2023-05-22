@@ -15,10 +15,13 @@ class ProfileResource extends JsonResource
      */
     public function toArray($request)
     {
+        $region = $this->region()->first('name');
+        $township = $this->township()->first('name');
+
         if ($this->company_images) {
             $company_images = [];
             foreach ($this->company_images as $key => $image) {
-                $company_images[] = asset(config('const.company_images')) . '/' .$image;
+                $company_images[] = asset(config('const.company_images')) . '/' . $image;
             }
         }
         return [
@@ -30,6 +33,8 @@ class ProfileResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'other_phone' => $this->other_phone ?? [],
+            'region' => $region ?? null,
+            'township' => $township ?? null,
             'address' => $this->address,
             'description' => $this->description,
             'profile_photo' => $this->profile_photo,

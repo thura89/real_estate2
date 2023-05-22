@@ -167,6 +167,8 @@ class AuthController extends Controller
             'agent_type' => 'required_if:user_type,==,4',
             'company_name' => 'required_if:user_type,!=,6',
             'address' => 'required',
+            'region' => 'required',
+            'township' => 'required',
             'profile_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
             'cover_photo' => 'required|mimes:jpeg,bmp,png,jpg,gif',
             'company_images.*' => 'required|image|mimes:jpg,jpeg,png,gif',
@@ -205,6 +207,8 @@ class AuthController extends Controller
                 $user->agent_type = $request->agent_type;
             }
             $user->address = $request->address;
+            $user->region = $request->region;
+            $user->township = $request->township;
             $user->description = $request->description;
             $user->profile_photo = $profile_img_name;
             $user->cover_photo = $cover_img_name;

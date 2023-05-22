@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Developer;
 
 use App\User;
+use App\Region;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +20,12 @@ class DeveloperPageController extends Controller
 
     public function profile(Request $request)
     {
+        $regions = Region::get(['name', 'id']);
         $developerUser = User::findOrFail(Auth()->user()->id);
         if ($developerUser['company_images'] == null) {
             $images = [];
             $images = json_encode($images);
-        }else{
+        } else {
             $decode_images = $developerUser['company_images'];
             $images = [];
             foreach ($decode_images as $key => $image) {
@@ -34,23 +36,24 @@ class DeveloperPageController extends Controller
             }
             $images = json_encode($images);
         }
-        return view('backend.developer.profile',compact('developerUser','images'));
+        return view('backend.developer.profile', compact('developerUser', 'images', 'regions'));
     }
-    
-    public function profile_update($id ,UpdateProfileDeveloperRequest $request){
+
+    public function profile_update($id, UpdateProfileDeveloperRequest $request)
+    {
         $developerUser = User::findOrFail($id);
         if ($request->hasFile('profile_photo')) {
-            Storage::disk('public')->delete('/profile/'.$developerUser->profile_photo);
+            Storage::disk('public')->delete('/profile/' . $developerUser->profile_photo);
             $profile_img = $request->file('profile_photo');
-            $profile_img_name = uniqid().'_'.time().'.'.$profile_img->extension();
-            Storage::disk('public')->put('/profile/'.$profile_img_name, file_get_contents($profile_img));
+            $profile_img_name = uniqid() . '_' . time() . '.' . $profile_img->extension();
+            Storage::disk('public')->put('/profile/' . $profile_img_name, file_get_contents($profile_img));
             $developerUser->profile_photo = $profile_img_name;
         }
         if ($request->hasFile('cover_photo')) {
-            Storage::disk('public')->delete('/cover/'.$developerUser->cover_photo);
+            Storage::disk('public')->delete('/cover/' . $developerUser->cover_photo);
             $cover_img = $request->file('cover_photo');
-            $cover_img_name = uniqid().'_'.time().'.'.$cover_img->extension();
-            Storage::disk('public')->put('/cover/'.$cover_img_name, file_get_contents($cover_img));
+            $cover_img_name = uniqid() . '_' . time() . '.' . $cover_img->extension();
+            Storage::disk('public')->put('/cover/' . $cover_img_name, file_get_contents($cover_img));
             $developerUser->cover_photo = $cover_img_name;
         }
         /* Property Image */
@@ -99,7 +102,6 @@ class DeveloperPageController extends Controller
             }
             // Splice No Need Data
             $company_images = array_splice($data, $count);
-           
         }
         $developerUser->company_images = $company_images;
         $developerUser->company_name = $request->company_name;
@@ -109,6 +111,8 @@ class DeveloperPageController extends Controller
         $developerUser->other_phone = $request->other_phone ?? null;
         $developerUser->agent_type = $request->agent_type;
         $developerUser->address = $request->address;
+        $developerUser->region = $request->region ?? $developerUser->region;
+        $developerUser->township = $request->township ?? $developerUser->township;
         $developerUser->description = $request->description;
         $developerUser->password = $request->password ? Hash::make($request->password) : $developerUser->password;
         $developerUser->update();

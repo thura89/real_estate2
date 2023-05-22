@@ -5,25 +5,30 @@
     <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link type="text/css" rel="stylesheet" href="{{ asset('/backend/css/image-uploader.css') }}">
     <style>
-        .remove-field i{
-            font-size:24px;
-            color:red;
+        .remove-field i {
+            font-size: 24px;
+            color: red;
         }
-        .remove-field i:hover{
-            font-size:24px;
-            color:#000fff33;
+
+        .remove-field i:hover {
+            font-size: 24px;
+            color: #000fff33;
         }
-        .add-field i{
+
+        .add-field i {
             font-size: 24px;
         }
-        .add-field i:hover{
-            font-size:24px;
-            color:#000fff33;
+
+        .add-field i:hover {
+            font-size: 24px;
+            color: #000fff33;
         }
-        .multi-fields span{
+
+        .multi-fields span {
             display: contents !important;
         }
-        p.add{
+
+        p.add {
             line-height: 37px;
         }
     </style>
@@ -59,25 +64,30 @@
                             </div>
                             <div class="col-md-6 col pl-0 form-group">
                                 <label for="name">Name</label>
-                                <input type="name" name="name" class="form-control" value="{{ $developerUser->name }}">
+                                <input type="name" name="name" class="form-control"
+                                    value="{{ $developerUser->name }}">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 col form-group">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" class="form-control" value="{{ $developerUser->email }}">
+                                <input type="email" name="email" class="form-control"
+                                    value="{{ $developerUser->email }}">
                             </div>
                             <div class="col-md-4 col pl-0 form-group">
                                 <label for="phone">Phone</label>
-                                <input type="number" name="phone" class="form-control" value="{{ $developerUser->phone }}">
+                                <input type="number" name="phone" class="form-control"
+                                    value="{{ $developerUser->phone }}">
                             </div>
                             <div class="col-md-4 col pl-0 form-group">
                                 <label for="other_phone">Other Phone</label>
                                 <div class="multi-field-wrapper">
                                     <div class="multi-fields">
                                         <div class="multi-field d-flex">
-                                            <input type="number" name="other_phone[]" class="form-control" value="{{ old('other_phone')}}">
-                                            <button type="button" class="btn remove-field"><i class="pe-7s-less"></i></button>
+                                            <input type="number" name="other_phone[]" class="form-control"
+                                                value="{{ old('other_phone') }}">
+                                            <button type="button" class="btn remove-field"><i
+                                                    class="pe-7s-less"></i></button>
                                         </div>
                                     </div>
                                     <div class="d-flex">
@@ -89,36 +99,63 @@
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <textarea name="address" class="form-control" cols="30" rows="10">{{ $developerUser->address}}</textarea>
+                            <textarea name="address" class="form-control" cols="30" rows="10">{{ $developerUser->address }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col form-group">
+                                <label for="region">Region</label>
+                                @php
+                                    $region = $developerUser->region()->first('name');
+                                @endphp
+                                <span class="region_old badge badge-secondary">{{ $region['name'] ?? '' }}</span>
+                                <select name="region" class="region form-control">
+                                    <option value="">Select Region</option>
+                                    @foreach ($regions as $key => $region)
+                                        <option value="{{ $region->id }}"
+                                            @if (old('region') == $region->id) selected="selected" @endif>
+                                            {{ $region->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col form-group">
+                                <label for="township">Township</label>
+                                @php
+                                    $township = $developerUser->township()->first('name');
+                                @endphp
+                                <span class="township_old badge badge-secondary">{{ $township['name'] ?? '' }}</span>
+                                <select name="township" class="township form-control">
+
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" class="form-control" id="" cols="30" rows="10">{{ $developerUser->description}}</textarea>
+                            <textarea name="description" class="form-control" id="" cols="30" rows="10">{{ $developerUser->description }}</textarea>
                         </div>
                         <div class="form-group">
                             <div class="profile_photo">
                                 <label for="profile_photo">Profile Photo</label>
-                                <input type="file" name="profile_photo" id="profile_photo" class="form-control"/>
+                                <input type="file" name="profile_photo" id="profile_photo" class="form-control" />
                             </div>
                             <div class="preview_profile_photo mt-2">
                                 @if ($developerUser->profile_photo)
-                                        <img src="{{ $developerUser->profile_photo}}" alt="">
+                                    <img src="{{ $developerUser->profile_photo }}" alt="">
                                 @endif
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="cover_photo">
                                 <label for="cover_photo">Cover Photo</label>
-                                <input type="file" name="cover_photo" id="cover_photo" class="form-control"/>
+                                <input type="file" name="cover_photo" id="cover_photo" class="form-control" />
                             </div>
                             <div class="preview_cover_photo mt-2">
                                 @if ($developerUser->cover_photo)
-                                        <img src="{{ $developerUser->cover_photo}}" alt="">
+                                    <img src="{{ $developerUser->cover_photo }}" alt="">
                                 @endif
                             </div>
                         </div>
-                         {{-- Image --}}
-                         <div class="form-group">
+                        {{-- Image --}}
+                        <div class="form-group">
                             <div class="input-field">
                                 <label class="active">Company Photos</label>
                                 <div class="input-images-2" style="padding-top: .5rem;"></div>
@@ -146,14 +183,16 @@
             @if ($developerUser->other_phone)
                 var $wrapper = $('.multi-fields', this);
                 @foreach ($developerUser->other_phone as $phone)
-                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('{{ $phone }}');
+                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val(
+                        '{{ $phone }}');
                 @endforeach
                 $('.multi-fields').find('div').first().remove();
             @endif
             $('.multi-field-wrapper').each(function() {
                 var $wrapper = $('.multi-fields', this);
                 $(".add-field", $(this)).click(function(e) {
-                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input').val('').focus();
+                    $('.multi-field:first-child', $wrapper).clone(true).appendTo($wrapper).find(
+                        'input').val('').focus();
                 });
                 $('.multi-field .remove-field', $wrapper).click(function() {
                     if ($('.multi-field', $wrapper).length > 1)
@@ -163,7 +202,7 @@
             $('#cover_photo').on('change', function() {
                 $('.preview_cover_photo').html('');
                 var f_length = document.getElementById('cover_photo').files.length;
-    
+
                 for (let index = 0; index < f_length; index++) {
                     $('.preview_cover_photo').append(
                         `<img src="${URL.createObjectURL(event.target.files[index])}">`);
@@ -172,11 +211,38 @@
             $('#profile_photo').on('change', function() {
                 $('.preview_profile_photo').html('');
                 var f_length = document.getElementById('profile_photo').files.length;
-    
+
                 for (let index = 0; index < f_length; index++) {
                     $('.preview_profile_photo').append(
                         `<img src="${URL.createObjectURL(event.target.files[index])}">`);
                 }
+            });
+            $('.region').on('change', function() {
+                $('.region_old').hide();
+                $('.township_old').hide();
+                var region_id = this.value;
+                if (region_id == '') {
+                    $('.region_old').show();
+                    $('.township_old').show();
+                }
+                $(".township").html('');
+                $.ajax({
+                    url: "{{ url('/developer/township') }}",
+                    type: "POST",
+                    data: {
+                        region_id: region_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('.township').html('<option value="">Select State</option>');
+                        $.each(result.township, function(key, value) {
+                            $(".township").append('<option value="' + value.id + '">' +
+                                value.name + '</option>');
+                        });
+
+                    }
+                });
             });
         });
     </script>

@@ -74,9 +74,8 @@ return array(
                 3 => 'Fully Furnished'
         ],
         'building_condition' => [
-                1 => 'Living',
-                2 => 'Currently Unoccupied',
-                3 => 'New House'
+                1 => 'New House',
+                2 => 'Others',
         ],
 
         'fence_condition' => [

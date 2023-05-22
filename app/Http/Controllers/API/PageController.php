@@ -339,4 +339,69 @@ class PageController extends Controller
         }
         return ResponseHelper::fail('Fail', null);
     }
+
+
+    public function categoryItemCount(Request $request)
+    {
+        $lang = 'const';
+        if ($request->lang == 'en') {
+            $lang = 'const';
+        }
+        if ($request->lang == 'mm') {
+            $lang = 'const_mm';
+        }
+        $category_1 = Property::query()->where('category', 1)->where('status', config('const.publish'))->count();
+        $category_2 = Property::query()->where('category', 2)->where('status', config('const.publish'))->count();
+        $category_3 = Property::query()->where('category', 3)->where('status', config('const.publish'))->count();
+        $category_4 = Property::query()->where('category', 4)->where('status', config('const.publish'))->count();
+        $category_5 = Property::query()->where('category', 5)->where('status', config('const.publish'))->count();
+        $category_6 = Property::query()->where('category', 6)->where('status', config('const.publish'))->count();
+        $category_7 = Property::query()->where('category', 7)->where('status', config('const.publish'))->count();
+        $category_8 = Property::query()->where('category', 8)->where('status', config('const.publish'))->count();
+        $data = array(
+            'category_itemcount' => [
+                [
+                    'category_id' => '1',
+                    'category_name' => config($lang . '.property_category.1'),
+                    'item_count' => (string)$category_1,
+                ],
+                [
+                    'category_id' => '2',
+                    'category_name' => config($lang . '.property_category.2'),
+                    'item_count' => (string)$category_2,
+                ],
+                [
+                    'category_id' => '3',
+                    'category_name' => config($lang . '.property_category.3'),
+                    'item_count' => (string)$category_3,
+                ],
+                [
+                    'category_id' => '4',
+                    'category_name' => config($lang . '.property_category.4'),
+                    'item_count' => (string)$category_4,
+                ],
+                [
+                    'category_id' => '5',
+                    'category_name' => config($lang . '.property_category.5'),
+                    'item_count' => (string)$category_5,
+                ],
+                [
+                    'category_id' => '6',
+                    'category_name' => config($lang . '.property_category.6'),
+                    'item_count' => (string)$category_6,
+                ],
+                [
+                    'category_id' => '7',
+                    'category_name' => config($lang . '.property_category.7'),
+                    'item_count' => (string)$category_7,
+                ],
+                [
+                    'category_id' => '8',
+                    'category_name' => config($lang . '.property_category.8'),
+                    'item_count' => (string)$category_8,
+                ],
+            ]
+        );
+        return ResponseHelper::success('Success', $data);
+    }
 }

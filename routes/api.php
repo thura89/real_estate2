@@ -66,6 +66,7 @@ Route::namespace('API')->group(function () {
     Route::post('/mobile/forgetpassword_send_code', 'AuthController@forgetPassword_send_code');
     Route::post('/mobile-register/resetpassword', 'AuthController@resetPassword');
 
+    Route::get('/category-itemcount', 'PageController@categoryItemCount');
 
     Route::post('/login', 'AuthController@login');
 

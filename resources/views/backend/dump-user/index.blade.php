@@ -2,52 +2,62 @@
 @section('title', 'dump User Management')
 @section('dump-user-active', 'mm-active')
 @section('content')
-<div class="app-main__inner">
-    <div class="app-page-title">
-        <div class="page-title-wrapper">
-            <div class="page-title-heading">
-                <div class="page-title-icon">
-                    <i class="pe-7s-users icon-gradient bg-mean-fruit">
-                    </i>
+    <div class="app-main__inner">
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-users icon-gradient bg-mean-fruit">
+                        </i>
+                    </div>
+                    <div>Dump / User Management
+                    </div>
                 </div>
-                <div>Dump / User Management
+            </div>
+        </div>
+        <div class="content">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-borderd DataTables">
+                        <thead>
+                            <th>#</th>
+                            <th>Company Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>IP Addr</th>
+                            <th>User Agent</th>
+                            <th>Login At</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <div class="content">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-borderd DataTables">
-                    <thead>
-                        <th>#</th>
-                        <th>Company Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>IP Addr</th>
-                        <th>User Agent</th>
-                        <th>Login At</th>
-                        <th>Created At</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 @section('script')
     <script>
         $(document).ready(function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
             var table = $('.DataTables').DataTable({
                 processing: true,
                 serverSide: true,
                 aaSorting: [],
                 ajax: "/admin/dump-user/datatables/ssd",
-                columns: [
-                    {
+                columns: [{
                         data: 'profile_photo',
                         name: 'profile_photo',
                         sortable: false,
@@ -118,6 +128,11 @@
                                 '_token': "{{ csrf_token() }}",
                             },
                             success: function() {
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Successfully Deleted'
+                                });
                                 table.ajax.reload();
                             }
                         });

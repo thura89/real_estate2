@@ -19,6 +19,15 @@ class PropertyDetail extends JsonResource
     {
 
         $data = [];
+
+        if ($this->situation) {
+            if ($this->situation->building_condition == 3) {
+                $condition = null;
+            } else {
+                $condition = (string)$this->situation->building_condition;
+            }
+        }
+
         /** Area Size */
         if ($this->areasize->area_option == 1) {
             $data_area_size = [
@@ -63,7 +72,7 @@ class PropertyDetail extends JsonResource
 
         /* Situation */
         $data['repairing'] = $this->situation ? (string)$this->situation->building_repairing : null;
-        $data['condition'] = $this->situation ? (string)$this->situation->building_condition : null;
+        $data['condition'] = $condition;
 
         /* Get Image */
         if ($this->propertyImage) {
@@ -93,14 +102,14 @@ class PropertyDetail extends JsonResource
         $data['expired_at'] = Carbon::parse($this->created_at)->addYear()->format('Y-m-d H:m:s');
         $data['created_at'] = Carbon::parse($this->created_at)->format('Y-m-d H:m:s');
         $data['user'] = [
-            'id' => (string)$this->user->id ?? null,
-            'name' => $this->user->name ?? null,
-            'phone' => $this->user->phone ?? null,
-            'company_name' => $this->user->company_name ?? null,
-            'user_type' => (string)$this->user->user_type ?? null,
-            'post_count' => $this->user->properties ? (string)$this->user->properties->count() : '0',
-            'profile_photo' => $this->user->profile_photo ?? null,
-            'cover_photo' => $this->user->cover_photo ?? null,
+            'id' => $this->user ? (string)$this->user->id : null,
+            'name' => $this->user ? $this->user->name : null,
+            'phone' => $this->user ? $this->user->phone : null,
+            'company_name' => $this->user ? $this->user->company_name : null,
+            'user_type' => $this->user ? (string)$this->user->user_type : null,
+            'post_count' => $this->user ? $this->user->properties ? (string)$this->user->properties->count() : '0' : null,
+            'profile_photo' => $this->user ? $this->user->profile_photo : null,
+            'cover_photo' => $this->user ? $this->user->cover_photo : null,
         ];
         return $data;
     }

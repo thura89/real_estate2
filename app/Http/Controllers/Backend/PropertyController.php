@@ -1357,7 +1357,7 @@ class PropertyController extends Controller
     {
         $property = Property::findOrFail($id);
         $property->delete();
-        return redirect()->route('admin.property.index')->with('delete', 'Successfully Deleted');
+        return redirect()->back()->with('delete', 'Successfully Deleted');
     }
     public function township(Request $request)
     {
