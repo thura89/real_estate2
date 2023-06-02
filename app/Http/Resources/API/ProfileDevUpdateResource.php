@@ -20,6 +20,8 @@ class ProfileDevUpdateResource extends JsonResource
                 $company_images[] = asset(config('const.company_images')) . '/' .$image;
             }
         }
+        $region = $this->region()->first(['id','name']);
+        $township = $this->township()->first(['id','name']);
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -27,6 +29,8 @@ class ProfileDevUpdateResource extends JsonResource
             'user_type' => $this->user_type,
             'email' => $this->email,
             'phone' => $this->phone,
+            'region' => $region ?? null,
+            'township' => $township ?? null,
             'address' => $this->address,
             'description' => $this->description,
             'profile_photo' => $this->profile_photo,

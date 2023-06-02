@@ -364,41 +364,49 @@ class PageController extends Controller
                     'category_id' => '1',
                     'category_name' => config($lang . '.property_category.1'),
                     'item_count' => (string)$category_1,
+                    'url' => 'storage/property_images/house.jpg',
                 ],
                 [
                     'category_id' => '2',
                     'category_name' => config($lang . '.property_category.2'),
                     'item_count' => (string)$category_2,
+                    'url' => 'storage/property_images/land_house.jpg',
                 ],
                 [
                     'category_id' => '3',
                     'category_name' => config($lang . '.property_category.3'),
                     'item_count' => (string)$category_3,
+                    'url' => 'storage/property_images/apartment.jpg',
                 ],
                 [
                     'category_id' => '4',
                     'category_name' => config($lang . '.property_category.4'),
                     'item_count' => (string)$category_4,
+                    'url' => 'storage/property_images/office.jpg',
                 ],
                 [
                     'category_id' => '5',
                     'category_name' => config($lang . '.property_category.5'),
                     'item_count' => (string)$category_5,
+                    'url' => 'storage/property_images/land.jpg',
                 ],
                 [
                     'category_id' => '6',
                     'category_name' => config($lang . '.property_category.6'),
                     'item_count' => (string)$category_6,
+                    'url' => 'storage/property_images/shop.jpg',
                 ],
                 [
                     'category_id' => '7',
                     'category_name' => config($lang . '.property_category.7'),
                     'item_count' => (string)$category_7,
+                    'url' => 'storage/property_images/industrial.jpg',
                 ],
                 [
                     'category_id' => '8',
                     'category_name' => config($lang . '.property_category.8'),
                     'item_count' => (string)$category_8,
+                    'url' => 'storage/property_images/condo.jpg',
                 ],
             ]
         );

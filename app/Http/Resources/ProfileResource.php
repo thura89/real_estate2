@@ -15,8 +15,8 @@ class ProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        $region = $this->region()->first('name');
-        $township = $this->township()->first('name');
+        $region = $this->region()->first(['id','name']);
+        $township = $this->township()->first(['id','name']);
 
         if ($this->company_images) {
             $company_images = [];

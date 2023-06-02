@@ -9,7 +9,7 @@
             'result' => true,
             'message' => $message,
             'data' => $data
-        ]);
+        ],200);
     }
 
     public static function fail($message , $data)
@@ -18,7 +18,7 @@
             'result' => false,
             'message' => $message,
             'data' => $data,
-        ]);
+        ],400);
     }
  }
 

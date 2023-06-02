@@ -225,6 +225,7 @@ class AuthController extends Controller
             return ResponseHelper::fail('Invalid', " Can't find code, Please Resend verify code");
         }
     }
+
     public function forgetPassword_send_code(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -243,6 +244,7 @@ class AuthController extends Controller
         }
         return ResponseHelper::fail('Fail to request', 'Please Register');
     }
+    
     public function resetPassword(Request $request)
     {
         $validate = Validator::make($request->all(), [
