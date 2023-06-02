@@ -13,6 +13,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PropertyList;
 use App\Http\Resources\PropertyDetail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\API\RegionResource;
 use App\Http\Resources\API\Want2BuyRentListsResource;
@@ -364,49 +365,49 @@ class PageController extends Controller
                     'category_id' => '1',
                     'category_name' => config($lang . '.property_category.1'),
                     'item_count' => (string)$category_1,
-                    'url' => 'storage/property_images/house.jpg',
+                    'url' => asset('storage/category_img/house.png'),
                 ],
                 [
                     'category_id' => '2',
                     'category_name' => config($lang . '.property_category.2'),
                     'item_count' => (string)$category_2,
-                    'url' => 'storage/property_images/land_house.jpg',
+                    'url' => asset('storage/category_img/land_house.png'),
                 ],
                 [
                     'category_id' => '3',
                     'category_name' => config($lang . '.property_category.3'),
                     'item_count' => (string)$category_3,
-                    'url' => 'storage/property_images/apartment.jpg',
+                    'url' => asset('storage/category_img/apartment.png'),
                 ],
                 [
                     'category_id' => '4',
                     'category_name' => config($lang . '.property_category.4'),
                     'item_count' => (string)$category_4,
-                    'url' => 'storage/property_images/office.jpg',
+                    'url' => asset('storage/category_img/office.png'),
                 ],
                 [
                     'category_id' => '5',
                     'category_name' => config($lang . '.property_category.5'),
                     'item_count' => (string)$category_5,
-                    'url' => 'storage/property_images/land.jpg',
+                    'url' => asset('storage/category_img/land.png'),
                 ],
                 [
                     'category_id' => '6',
                     'category_name' => config($lang . '.property_category.6'),
                     'item_count' => (string)$category_6,
-                    'url' => 'storage/property_images/shop.jpg',
+                    'url' => asset('storage/category_img/shop.png'),
                 ],
                 [
                     'category_id' => '7',
                     'category_name' => config($lang . '.property_category.7'),
                     'item_count' => (string)$category_7,
-                    'url' => 'storage/property_images/industrial.jpg',
+                    'url' => asset('storage/category_img/industrial.png'),
                 ],
                 [
                     'category_id' => '8',
                     'category_name' => config($lang . '.property_category.8'),
                     'item_count' => (string)$category_8,
-                    'url' => 'storage/property_images/condo.jpg',
+                    'url' => asset('storage/category_img/condo.png'),
                 ],
             ]
         );
