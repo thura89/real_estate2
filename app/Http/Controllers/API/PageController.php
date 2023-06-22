@@ -42,18 +42,16 @@ class PageController extends Controller
         }
         if ($request->get('title')) {
             $title = $request->get('title');
-            $data->whereHas('suppliment', function ($query) use ($title) {
-                $query->where('title', 'like', '%' . $title . '%');
-            });
+            $data->where('title',  'LIKE', "%$title%");
         }
         if ($request->get('p_code')) {
             $data->where('p_code', $request->get('p_code'));
         }
-        if ($request->get('property_type')) {
-            $data->where('properties_type', $request->get('property_type'));
-        }
         if ($request->get('category')) {
             $data->where('category', $request->get('category'));
+        }
+        if ($request->get('type')) {
+            $data->where('properties_type', $request->get('type'));
         }
         if ($request->get('region')) {
             $region = $request->get('region');
@@ -71,9 +69,9 @@ class PageController extends Controller
                 $query->where('township', $township);
             });
         }
-        if ($request->min_price || $request->max_price) {
-            $min = $request->min_price;
-            $max = $request->max_price;
+        if ($request->get('min_price') || $request->get('max_price')) {
+            $min = $request->get('min_price');
+            $max = $request->get('max_price');
             $data->whereHas('price', function ($query) use ($min, $max) {
                 $query->whereBetween('price', [$min, $max]);
             });
@@ -86,38 +84,56 @@ class PageController extends Controller
         }
         if ($request->get('repairing')) {
             $repairing = $request->get('repairing');
-            $data->with('situation')->whereHas('situation', function ($query) use ($repairing) {
+            $data->whereHas('situation', function ($query) use ($repairing) {
                 $query->where('building_repairing', $repairing);
             });
         }
-        if ($request->get('situations')) {
-            $situations = $request->get('situations');
-            $data->with('situation')->whereHas('situation', function ($query) use ($situations) {
-                $query->where('building_condition', $situations);
+        if ($request->get('condition')) {
+            $condition = $request->get('condition');
+            $data->whereHas('situation', function ($query) use ($condition) {
+                $query->where('building_condition', $condition);
+            });
+        }
+        if ($request->get('area_option')) {
+            $area_option = $request->get('area_option');
+            $data->whereHas('areasize', function ($query) use ($area_option) {
+                $query->where('area_option', $area_option);
+            });
+        }
+        if ($request->get('area_size')) {
+            $area_size = $request->get('area_size');
+            $data->whereHas('areasize', function ($query) use ($area_size) {
+                $query->where('area_size', $area_size);
             });
         }
         if ($request->get('width')) {
             $width = $request->get('width');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($width) {
-                $query->where('building_width', $width);
+            $data->whereHas('areasize', function ($query) use ($width) {
+                $query->where('width', $width);
             });
         }
         if ($request->get('length')) {
             $length = $request->get('length');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($length) {
-                $query->where('building_length', $length);
+            $data->whereHas('areasize', function ($query) use ($length) {
+                $query->where('length', $length);
+            });
+        }
+        if ($request->get('area_unit')) {
+            $area_unit = $request->get('area_unit');
+            $data->whereHas('areasize', function ($query) use ($area_unit) {
+                $query->where('area_unit', $area_unit);
             });
         }
         if ($request->get('floor_level')) {
             $floor_level = $request->get('floor_level');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($floor_level) {
+            $data->whereHas('areasize', function ($query) use ($floor_level) {
                 $query->where('level', $floor_level);
             });
         }
-        if ($request->get('areasize')) {
-            $areasize = $request->get('areasize');
-            $data->with('areasize')->whereHas('areasize', function ($query) use ($areasize) {
-                $query->where('areasize', $areasize);
+        if ($request->get('partation_type')) {
+            $partation_type = $request->get('partation_type');
+            $data->whereHas('partation', function ($query) use ($partation_type) {
+                $query->where('type', $partation_type);
             });
         }
         if ($request->get('bed_room')) {
