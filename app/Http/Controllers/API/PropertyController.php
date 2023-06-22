@@ -408,9 +408,12 @@ class PropertyController extends Controller
             /** Area Size Store */
             $property->areasize->area_option = $request->area_option;
 
-            if ($property->property_category == 3 || $property->property_category == 4 || $property->property_category == 6 || $property->property_category == 8) {
-                $property->areasize->level = $request->floor_level ?? null;
+            if ($request->floor_level) {                
+                if ($property->category == 3 || $property->category == 4 || $property->category == 6 || $property->category == 8) {
+                    $property->areasize->level = $request->floor_level ?? null;
+                }
             }
+            
 
             /* Width x length */
             if ($request->area_option == 1) {
