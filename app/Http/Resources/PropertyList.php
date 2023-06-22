@@ -77,6 +77,9 @@ class PropertyList extends JsonResource
             $data['floor_level'] = $this->areasize ? $this->areasize->level : null;
         }
 
+        $data['repairing'] = (string)$this->situation->building_repairing ?? null;
+        $data['condition'] = (string)$this->situation->building_condition ?? null;
+
         $data['recommended_feature'] = (string)$this->recommended_feature;
         if (Auth::guard('api')->check()) {
             $favorite = WishList::where('user_id', Auth::guard('api')->user()->id)->where('property_id', $this->id)->first();
