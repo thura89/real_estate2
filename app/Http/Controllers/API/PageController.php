@@ -361,68 +361,149 @@ class PageController extends Controller
     public function categoryItemCount(Request $request)
     {
         $lang = 'const';
+        $region_id = $request->region_id;
         if ($request->lang == 'en') {
             $lang = 'const';
         }
         if ($request->lang == 'mm') {
             $lang = 'const_mm';
         }
-        $category_1 = Property::query()->where('category', 1)->where('status', config('const.publish'))->count();
-        $category_2 = Property::query()->where('category', 2)->where('status', config('const.publish'))->count();
-        $category_3 = Property::query()->where('category', 3)->where('status', config('const.publish'))->count();
-        $category_4 = Property::query()->where('category', 4)->where('status', config('const.publish'))->count();
-        $category_5 = Property::query()->where('category', 5)->where('status', config('const.publish'))->count();
-        $category_6 = Property::query()->where('category', 6)->where('status', config('const.publish'))->count();
-        $category_7 = Property::query()->where('category', 7)->where('status', config('const.publish'))->count();
-        $category_8 = Property::query()->where('category', 8)->where('status', config('const.publish'))->count();
+        // CateCount1
+        $category_1 = Property::query()->with(['address'])->where('category', 1)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_1->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_1;
+        }
+        // CateCount2
+        $category_2 = Property::query()->with(['address'])->where('category', 2)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_2->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_2;
+        }
+        // CateCount1
+        $category_3 = Property::query()->with(['address'])->where('category', 3)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_3->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_3;
+        }
+        // CateCount4
+        $category_4 = Property::query()->with(['address'])->where('category', 4)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_4->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_4;
+        }
+        // CateCount5
+        $category_5 = Property::query()->with(['address'])->where('category', 5)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_5->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_5;
+        }
+        // CateCount6
+        $category_6 = Property::query()->with(['address'])->where('category', 6)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_6->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_6;
+        }
+        // CateCount7
+        $category_7 = Property::query()->with(['address'])->where('category', 7)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_7->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_7;
+        }
+        // CateCount8
+        $category_8 = Property::query()->with(['address'])->where('category', 8)
+                                       ->where('status', config('const.publish'));
+        if ($region_id != 0) {
+            $category_8->whereHas('address', function ($query) use ($region_id) {
+                $query->where('region', $region_id);
+            });
+        } else {
+            $category_8;
+        }
+
+        // $category_2 = Property::query()->where('category', 2)->where('status', config('const.publish'))->count();
+        // $category_3 = Property::query()->where('category', 3)->where('status', config('const.publish'))->count();
+        // $category_4 = Property::query()->where('category', 4)->where('status', config('const.publish'))->count();
+        // $category_5 = Property::query()->where('category', 5)->where('status', config('const.publish'))->count();
+        // $category_6 = Property::query()->where('category', 6)->where('status', config('const.publish'))->count();
+        // $category_7 = Property::query()->where('category', 7)->where('status', config('const.publish'))->count();
+        // $category_8 = Property::query()->where('category', 8)->where('status', config('const.publish'))->count();
         $data = array(
             'category_itemcount' => [
                 [
                     'category_id' => '1',
                     'category_name' => config($lang . '.property_category.1'),
-                    'item_count' => (string)$category_1,
+                    'item_count' => (string)$category_1->count(),
                     'url' => asset('storage/category_img/house.png'),
                 ],
                 [
                     'category_id' => '2',
                     'category_name' => config($lang . '.property_category.2'),
-                    'item_count' => (string)$category_2,
+                    'item_count' => (string)$category_2->count(),
                     'url' => asset('storage/category_img/land_house.png'),
                 ],
                 [
                     'category_id' => '3',
                     'category_name' => config($lang . '.property_category.3'),
-                    'item_count' => (string)$category_3,
+                    'item_count' => (string)$category_3->count(),
                     'url' => asset('storage/category_img/apartment.png'),
                 ],
                 [
                     'category_id' => '4',
                     'category_name' => config($lang . '.property_category.4'),
-                    'item_count' => (string)$category_4,
+                    'item_count' => (string)$category_4->count(),
                     'url' => asset('storage/category_img/office.png'),
                 ],
                 [
                     'category_id' => '5',
                     'category_name' => config($lang . '.property_category.5'),
-                    'item_count' => (string)$category_5,
+                    'item_count' => (string)$category_5->count(),
                     'url' => asset('storage/category_img/land.png'),
                 ],
                 [
                     'category_id' => '6',
                     'category_name' => config($lang . '.property_category.6'),
-                    'item_count' => (string)$category_6,
+                    'item_count' => (string)$category_6->count(),
                     'url' => asset('storage/category_img/shop.png'),
                 ],
                 [
                     'category_id' => '7',
                     'category_name' => config($lang . '.property_category.7'),
-                    'item_count' => (string)$category_7,
+                    'item_count' => (string)$category_7->count(),
                     'url' => asset('storage/category_img/industrial.png'),
                 ],
                 [
                     'category_id' => '8',
                     'category_name' => config($lang . '.property_category.8'),
-                    'item_count' => (string)$category_8,
+                    'item_count' => (string)$category_8->count(),
                     'url' => asset('storage/category_img/condo.png'),
                 ],
             ]
